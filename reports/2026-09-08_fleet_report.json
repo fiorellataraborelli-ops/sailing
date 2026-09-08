@@ -1,0 +1,1001 @@
+{
+ "date": "2026-09-08",
+ "team": "Team Sweden (Roman)",
+ "method_notes": [
+  "Positions are taken at mark roundings detected from each boat's own track.",
+  "RACE_END is synced across the fleet (all boats within ~1 s), so it is not a finish time and is never used for ranking. The final leg is excluded.",
+  "No boat logged a wind instrument; wind direction is estimated from the committee's line bearing and the beat, and no wind speed is available.",
+  "Manoeuvre counts come from speed dips and over-count on downwind legs, where surfing makes speed oscillate. Treat upwind tack counts as reliable and downwind gybe counts as indicative only."
+ ],
+ "races": [
+  {
+   "race_number": 1,
+   "gun_local": "13:05",
+   "boats_tracked": 13,
+   "wind": {
+    "line_length_m": 1003.7,
+    "line_bearing_deg": 54.0,
+    "line_square_deg": 324.0,
+    "first_beat_bearing_deg": 324.9
+   },
+   "order_at_last_mark": [
+    "Patakin 3",
+    "Team Sweden (Roman)",
+    "GTG New 2026",
+    "Lady in red 2",
+    "noticia",
+    "Ba ba",
+    "Phantom7",
+    "joust70",
+    "Yupi",
+    "Florida 65",
+    "J70 Let it be",
+    "Mag",
+    "Dime Piece"
+   ],
+   "rows": [
+    {
+     "boat": "Patakin 3",
+     "marks_min": [
+      31.97,
+      48.83,
+      74.78
+     ],
+     "leg_min": [
+      31.97,
+      16.87,
+      25.94
+     ],
+     "leg_avg_sog_kn": [
+      5.92,
+      12.16,
+      5.89
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 31.97,
+      "avg_sog_kn": 5.92,
+      "path_m": 5788.9,
+      "straight_line_m": 4654.9,
+      "extra_distance_m": 1134.0,
+      "path_ratio": 1.244,
+      "tacks": 0
+     },
+     "start": {
+      "distance_to_line_m": 6.5,
+      "along_line_from_pin": 0.276
+     }
+    },
+    {
+     "boat": "Team Sweden (Roman)",
+     "marks_min": [
+      32.67,
+      49.52,
+      75.79
+     ],
+     "leg_min": [
+      32.67,
+      16.85,
+      26.28
+     ],
+     "leg_avg_sog_kn": [
+      5.88,
+      11.67,
+      5.86
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 32.67,
+      "avg_sog_kn": 5.88,
+      "path_m": 5903.8,
+      "straight_line_m": 4655.2,
+      "extra_distance_m": 1248.6,
+      "path_ratio": 1.268,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 5.2,
+      "along_line_from_pin": 0.453
+     }
+    },
+    {
+     "boat": "GTG New 2026",
+     "marks_min": [
+      32.53,
+      49.97,
+      76.43
+     ],
+     "leg_min": [
+      32.52,
+      17.44,
+      26.46
+     ],
+     "leg_avg_sog_kn": [
+      5.98,
+      11.7,
+      5.99
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 32.52,
+      "avg_sog_kn": 5.98,
+      "path_m": 5973.8,
+      "straight_line_m": 4673.5,
+      "extra_distance_m": 1300.3,
+      "path_ratio": 1.278,
+      "tacks": 1
+     },
+     "start": {
+      "distance_to_line_m": 5.8,
+      "along_line_from_pin": 0.65
+     }
+    },
+    {
+     "boat": "Lady in red 2",
+     "marks_min": [
+      33.52,
+      50.27,
+      77.04
+     ],
+     "leg_min": [
+      33.52,
+      16.75,
+      26.78
+     ],
+     "leg_avg_sog_kn": [
+      5.84,
+      11.44,
+      5.87
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.52,
+      "avg_sog_kn": 5.84,
+      "path_m": 5982.7,
+      "straight_line_m": 4658.4,
+      "extra_distance_m": 1324.3,
+      "path_ratio": 1.284,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 5.9,
+      "along_line_from_pin": 0.359
+     }
+    },
+    {
+     "boat": "noticia",
+     "marks_min": [
+      33.32,
+      50.33,
+      77.21
+     ],
+     "leg_min": [
+      33.32,
+      17.02,
+      26.87
+     ],
+     "leg_avg_sog_kn": [
+      5.91,
+      11.58,
+      5.89
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.32,
+      "avg_sog_kn": 5.91,
+      "path_m": 6043.3,
+      "straight_line_m": 4676.3,
+      "extra_distance_m": 1367.0,
+      "path_ratio": 1.292,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 4.3,
+      "along_line_from_pin": 0.905
+     }
+    },
+    {
+     "boat": "Ba ba",
+     "marks_min": [
+      32.71,
+      49.93,
+      77.42
+     ],
+     "leg_min": [
+      32.71,
+      17.22,
+      27.49
+     ],
+     "leg_avg_sog_kn": [
+      5.93,
+      11.83,
+      5.7
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 32.71,
+      "avg_sog_kn": 5.93,
+      "path_m": 5954.6,
+      "straight_line_m": 4687.0,
+      "extra_distance_m": 1267.6,
+      "path_ratio": 1.27,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 7.4,
+      "along_line_from_pin": 0.592
+     }
+    },
+    {
+     "boat": "Phantom7",
+     "marks_min": [
+      34.26,
+      50.49,
+      77.65
+     ],
+     "leg_min": [
+      34.26,
+      16.23,
+      27.16
+     ],
+     "leg_avg_sog_kn": [
+      5.95,
+      11.73,
+      5.86
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 34.26,
+      "avg_sog_kn": 5.95,
+      "path_m": 6202.6,
+      "straight_line_m": 4695.8,
+      "extra_distance_m": 1506.8,
+      "path_ratio": 1.321,
+      "tacks": 7
+     },
+     "start": {
+      "distance_to_line_m": 13.0,
+      "along_line_from_pin": 0.906
+     }
+    },
+    {
+     "boat": "joust70",
+     "marks_min": [
+      33.38,
+      51.07,
+      77.83
+     ],
+     "leg_min": [
+      33.38,
+      17.68,
+      26.76
+     ],
+     "leg_avg_sog_kn": [
+      5.83,
+      11.82,
+      5.72
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.38,
+      "avg_sog_kn": 5.83,
+      "path_m": 5957.3,
+      "straight_line_m": 4707.5,
+      "extra_distance_m": 1249.8,
+      "path_ratio": 1.265,
+      "tacks": 1
+     },
+     "start": {
+      "distance_to_line_m": 4.9,
+      "along_line_from_pin": 0.873
+     }
+    },
+    {
+     "boat": "Yupi",
+     "marks_min": [
+      33.69,
+      51.38,
+      78.02
+     ],
+     "leg_min": [
+      33.69,
+      17.69,
+      26.63
+     ],
+     "leg_avg_sog_kn": [
+      6.04,
+      11.57,
+      5.79
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.69,
+      "avg_sog_kn": 6.04,
+      "path_m": 6200.5,
+      "straight_line_m": 4741.0,
+      "extra_distance_m": 1459.5,
+      "path_ratio": 1.308,
+      "tacks": 3
+     },
+     "start": {
+      "distance_to_line_m": 17.2,
+      "along_line_from_pin": 0.943
+     }
+    },
+    {
+     "boat": "Florida 65",
+     "marks_min": [
+      32.89,
+      51.36,
+      78.37
+     ],
+     "leg_min": [
+      32.89,
+      18.47,
+      27.01
+     ],
+     "leg_avg_sog_kn": [
+      5.96,
+      11.52,
+      5.8
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 32.89,
+      "avg_sog_kn": 5.96,
+      "path_m": 6019.1,
+      "straight_line_m": 4673.7,
+      "extra_distance_m": 1345.4,
+      "path_ratio": 1.288,
+      "tacks": 0
+     },
+     "start": {
+      "distance_to_line_m": 4.8,
+      "along_line_from_pin": 0.437
+     }
+    },
+    {
+     "boat": "J70 Let it be",
+     "marks_min": [
+      32.92,
+      51.32,
+      78.73
+     ],
+     "leg_min": [
+      32.92,
+      18.4,
+      27.41
+     ],
+     "leg_avg_sog_kn": [
+      5.97,
+      10.86,
+      5.88
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 32.92,
+      "avg_sog_kn": 5.97,
+      "path_m": 6031.3,
+      "straight_line_m": 4700.8,
+      "extra_distance_m": 1330.5,
+      "path_ratio": 1.283,
+      "tacks": 0
+     },
+     "start": {
+      "distance_to_line_m": 2.2,
+      "along_line_from_pin": 0.892
+     }
+    },
+    {
+     "boat": "Mag",
+     "marks_min": [
+      33.95,
+      52.46,
+      78.82
+     ],
+     "leg_min": [
+      33.95,
+      18.51,
+      26.36
+     ],
+     "leg_avg_sog_kn": [
+      6.08,
+      10.99,
+      5.89
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.95,
+      "avg_sog_kn": 6.08,
+      "path_m": 6315.0,
+      "straight_line_m": 4719.3,
+      "extra_distance_m": 1595.7,
+      "path_ratio": 1.338,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 14.0,
+      "along_line_from_pin": 0.707
+     }
+    },
+    {
+     "boat": "Dime Piece",
+     "marks_min": [
+      33.11,
+      51.28,
+      78.98
+     ],
+     "leg_min": [
+      33.11,
+      18.17,
+      27.71
+     ],
+     "leg_avg_sog_kn": [
+      6.11,
+      11.37,
+      5.79
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.11,
+      "avg_sog_kn": 6.11,
+      "path_m": 6183.0,
+      "straight_line_m": 4714.7,
+      "extra_distance_m": 1468.3,
+      "path_ratio": 1.311,
+      "tacks": 0
+     },
+     "start": {
+      "distance_to_line_m": 4.3,
+      "along_line_from_pin": 0.98
+     }
+    }
+   ],
+   "along_line_vs_beat1_time_correlation": 0.55,
+   "correlation_meaning": "Positive means boats starting nearer the committee-boat end took longer to the first windward mark.",
+   "team_summary": {
+    "position_at_each_mark": [
+     3,
+     2,
+     2
+    ],
+    "gap_to_leader_min": [
+     0.7,
+     0.69,
+     1.01
+    ],
+    "beat1_avg_sog_vs_fleet_kn": -0.08,
+    "beat1_extra_distance_vs_fleet_m": -113.8,
+    "beat1_tacks_vs_fleet_median": 0
+   }
+  },
+  {
+   "race_number": 2,
+   "gun_local": "14:55",
+   "boats_tracked": 12,
+   "wind": {
+    "line_length_m": 1005.6,
+    "line_bearing_deg": 54.8,
+    "line_square_deg": 324.8,
+    "first_beat_bearing_deg": 318.5
+   },
+   "order_at_last_mark": [
+    "Ba ba",
+    "Yupi",
+    "joust70",
+    "Patakin 3",
+    "noticia",
+    "Mag",
+    "Phantom7",
+    "Florida 65",
+    "Lady in red 2",
+    "J70 Let it be",
+    "Dime Piece",
+    "Team Sweden (Roman)"
+   ],
+   "rows": [
+    {
+     "boat": "Ba ba",
+     "marks_min": [
+      33.03,
+      48.77,
+      75.89
+     ],
+     "leg_min": [
+      33.02,
+      15.74,
+      27.13
+     ],
+     "leg_avg_sog_kn": [
+      5.75,
+      12.34,
+      5.75
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.02,
+      "avg_sog_kn": 5.75,
+      "path_m": 5835.7,
+      "straight_line_m": 4637.4,
+      "extra_distance_m": 1198.3,
+      "path_ratio": 1.258,
+      "tacks": 0
+     },
+     "start": {
+      "distance_to_line_m": 5.2,
+      "along_line_from_pin": 0.468
+     }
+    },
+    {
+     "boat": "Yupi",
+     "marks_min": [
+      33.44,
+      49.83,
+      77.18
+     ],
+     "leg_min": [
+      33.44,
+      16.38,
+      27.36
+     ],
+     "leg_avg_sog_kn": [
+      5.66,
+      11.74,
+      5.62
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.44,
+      "avg_sog_kn": 5.66,
+      "path_m": 5755.5,
+      "straight_line_m": 4645.5,
+      "extra_distance_m": 1110.0,
+      "path_ratio": 1.239,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 6.7,
+      "along_line_from_pin": 0.364
+     }
+    },
+    {
+     "boat": "joust70",
+     "marks_min": [
+      34.49,
+      50.77,
+      77.43
+     ],
+     "leg_min": [
+      34.49,
+      16.27,
+      26.66
+     ],
+     "leg_avg_sog_kn": [
+      5.66,
+      12.18,
+      5.64
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 34.49,
+      "avg_sog_kn": 5.66,
+      "path_m": 5989.9,
+      "straight_line_m": 4650.3,
+      "extra_distance_m": 1339.6,
+      "path_ratio": 1.288,
+      "tacks": 3
+     },
+     "start": {
+      "distance_to_line_m": 4.3,
+      "along_line_from_pin": 0.13
+     }
+    },
+    {
+     "boat": "Patakin 3",
+     "marks_min": [
+      33.87,
+      50.55,
+      77.73
+     ],
+     "leg_min": [
+      33.87,
+      16.68,
+      27.18
+     ],
+     "leg_avg_sog_kn": [
+      5.61,
+      11.65,
+      5.8
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.87,
+      "avg_sog_kn": 5.61,
+      "path_m": 5828.1,
+      "straight_line_m": 4659.6,
+      "extra_distance_m": 1168.5,
+      "path_ratio": 1.251,
+      "tacks": 1
+     },
+     "start": {
+      "distance_to_line_m": 13.6,
+      "along_line_from_pin": 0.08
+     }
+    },
+    {
+     "boat": "noticia",
+     "marks_min": [
+      33.28,
+      50.11,
+      78.01
+     ],
+     "leg_min": [
+      33.27,
+      16.83,
+      27.9
+     ],
+     "leg_avg_sog_kn": [
+      5.77,
+      11.82,
+      5.73
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 33.27,
+      "avg_sog_kn": 5.77,
+      "path_m": 5869.3,
+      "straight_line_m": 4644.2,
+      "extra_distance_m": 1225.1,
+      "path_ratio": 1.264,
+      "tacks": 0
+     },
+     "start": {
+      "distance_to_line_m": 3.5,
+      "along_line_from_pin": 0.255
+     }
+    },
+    {
+     "boat": "Mag",
+     "marks_min": [
+      34.88,
+      51.13,
+      78.34
+     ],
+     "leg_min": [
+      34.88,
+      16.24,
+      27.22
+     ],
+     "leg_avg_sog_kn": [
+      5.63,
+      12.11,
+      5.64
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 34.88,
+      "avg_sog_kn": 5.63,
+      "path_m": 6028.5,
+      "straight_line_m": 4667.7,
+      "extra_distance_m": 1360.8,
+      "path_ratio": 1.292,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 15.5,
+      "along_line_from_pin": 0.089
+     }
+    },
+    {
+     "boat": "Phantom7",
+     "marks_min": [
+      35.0,
+      51.52,
+      78.81
+     ],
+     "leg_min": [
+      35.0,
+      16.52,
+      27.29
+     ],
+     "leg_avg_sog_kn": [
+      5.77,
+      12.1,
+      5.82
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 35.0,
+      "avg_sog_kn": 5.77,
+      "path_m": 6148.8,
+      "straight_line_m": 4653.9,
+      "extra_distance_m": 1494.9,
+      "path_ratio": 1.321,
+      "tacks": 4
+     },
+     "start": {
+      "distance_to_line_m": 18.3,
+      "along_line_from_pin": 0.355
+     }
+    },
+    {
+     "boat": "Florida 65",
+     "marks_min": [
+      35.08,
+      51.24,
+      79.09
+     ],
+     "leg_min": [
+      35.07,
+      16.17,
+      27.85
+     ],
+     "leg_avg_sog_kn": [
+      5.76,
+      12.29,
+      5.75
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 35.07,
+      "avg_sog_kn": 5.76,
+      "path_m": 6195.3,
+      "straight_line_m": 4650.5,
+      "extra_distance_m": 1544.8,
+      "path_ratio": 1.332,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 13.7,
+      "along_line_from_pin": 0.379
+     }
+    },
+    {
+     "boat": "Lady in red 2",
+     "marks_min": [
+      34.48,
+      51.18,
+      79.26
+     ],
+     "leg_min": [
+      34.48,
+      16.7,
+      28.08
+     ],
+     "leg_avg_sog_kn": [
+      5.65,
+      11.94,
+      5.76
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 34.48,
+      "avg_sog_kn": 5.65,
+      "path_m": 5990.5,
+      "straight_line_m": 4644.9,
+      "extra_distance_m": 1345.6,
+      "path_ratio": 1.29,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 3.1,
+      "along_line_from_pin": 0.298
+     }
+    },
+    {
+     "boat": "J70 Let it be",
+     "marks_min": [
+      35.3,
+      51.84,
+      79.91
+     ],
+     "leg_min": [
+      35.3,
+      16.54,
+      28.07
+     ],
+     "leg_avg_sog_kn": [
+      5.82,
+      11.26,
+      5.72
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 35.3,
+      "avg_sog_kn": 5.82,
+      "path_m": 6306.6,
+      "straight_line_m": 4671.4,
+      "extra_distance_m": 1635.2,
+      "path_ratio": 1.35,
+      "tacks": 1
+     },
+     "start": {
+      "distance_to_line_m": 10.8,
+      "along_line_from_pin": 0.906
+     }
+    },
+    {
+     "boat": "Dime Piece",
+     "marks_min": [
+      34.21,
+      51.33,
+      79.95
+     ],
+     "leg_min": [
+      34.21,
+      17.12,
+      28.62
+     ],
+     "leg_avg_sog_kn": [
+      5.79,
+      11.66,
+      5.63
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 34.21,
+      "avg_sog_kn": 5.79,
+      "path_m": 6100.5,
+      "straight_line_m": 4665.2,
+      "extra_distance_m": 1435.3,
+      "path_ratio": 1.308,
+      "tacks": 2
+     },
+     "start": {
+      "distance_to_line_m": 10.9,
+      "along_line_from_pin": 0.511
+     }
+    },
+    {
+     "boat": "Team Sweden (Roman)",
+     "marks_min": [
+      35.15,
+      52.42,
+      80.59
+     ],
+     "leg_min": [
+      35.15,
+      17.27,
+      28.18
+     ],
+     "leg_avg_sog_kn": [
+      5.7,
+      11.81,
+      5.63
+     ],
+     "leg_kind": [
+      "beat",
+      "run",
+      "beat"
+     ],
+     "beat1": {
+      "duration_min": 35.15,
+      "avg_sog_kn": 5.7,
+      "path_m": 6164.6,
+      "straight_line_m": 4673.6,
+      "extra_distance_m": 1491.0,
+      "path_ratio": 1.319,
+      "tacks": 6
+     },
+     "start": {
+      "distance_to_line_m": 11.1,
+      "along_line_from_pin": 0.93
+     }
+    }
+   ],
+   "along_line_vs_beat1_time_correlation": 0.36,
+   "correlation_meaning": "Positive means boats starting nearer the committee-boat end took longer to the first windward mark.",
+   "team_summary": {
+    "position_at_each_mark": [
+     11,
+     12,
+     12
+    ],
+    "gap_to_leader_min": [
+     2.12,
+     3.65,
+     4.7
+    ],
+    "beat1_avg_sog_vs_fleet_kn": -0.02,
+    "beat1_extra_distance_vs_fleet_m": 140.3,
+    "beat1_tacks_vs_fleet_median": 4
+   }
+  }
+ ]
+}
