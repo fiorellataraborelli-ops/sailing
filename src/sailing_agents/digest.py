@@ -46,9 +46,14 @@ def canonical_boat_name(label: str) -> str:
     return BOAT_NAME_CANONICAL.get(label, label)
 
 
-def build_digest(leg_report: dict, start_metrics: dict | None = None) -> dict:
+def build_digest(
+    leg_report: dict,
+    start_metrics: dict | None = None,
+    start_line: dict | None = None,
+) -> dict:
     """leg_report: reports/<date>_race_comparison_raw.json (our own pipeline).
     start_metrics: the regattaData-shaped dict of per-start numbers, if present.
+    start_line: reports/start_line_analysis.json, if present.
     """
     boats = []
     for label, obj in leg_report.items():
@@ -105,8 +110,11 @@ def build_digest(leg_report: dict, start_metrics: dict | None = None) -> dict:
         },
         "legs": boats,
         "not_in_this_data": [
-            "True wind speed and direction: no wind-instrument rows (VKX 0x0A) in any file.",
-            "True wind angle and true VMG: cannot be computed without wind direction. "
+            "Measured wind: no wind-instrument rows (VKX 0x0A) in any file. Wind DIRECTION is "
+            "estimated from GPS geometry in the 'start_line' section - use those figures, state "
+            "that they are estimates, and never quote a measured wind. Wind SPEED is not available "
+            "by any method here.",
+            "True wind angle and true VMG: only as good as the estimated wind direction above. "
             "The 'vmg_proxy_kn' figures are straight-line progress along each boat's own "
             "track axis per unit time - NOT wind-referenced VMG.",
             "Device-detected tack/gybe events: no shift-angle rows (VKX 0x06) in any file. "
@@ -126,8 +134,33 @@ def build_digest(leg_report: dict, start_metrics: dict | None = None) -> dict:
             "speedAtGunKn": "GPS speed at the start gun, knots.",
             "avgSpeedApproachKn": "Mean speed over the 3 minutes before the gun, knots.",
             "distanceInWindowNm": "Distance sailed from 3 min before to 2 min after the gun, nautical miles.",
+            "distance_to_line_m": "Perpendicular distance to the start line at the gun. Positive = behind the line, negative = over early.",
+            "along_line_from_pin": "Where on the line the boat started: 0.0 = pin end, 1.0 = committee boat end.",
         },
     }
+
+    if start_line:
+        # Drop the raw mark coordinates: the analyser reasons about geometry,
+        # not positions, and they would only pad the prompt.
+        starts = []
+        for s in start_line.get("starts", []):
+            line = dict(s.get("line") or {})
+            line.pop("pin", None)
+            line.pop("committee_boat", None)
+            line.pop("square_wind_both_deg", None)
+            starts.append({
+                "start_number": s["start_number"],
+                "gun_local": s["gun_local"],
+                "was_valid_start": s["was_valid_start"],
+                "line": line,
+                "boats": s["boats"],
+            })
+        digest["start_line"] = {
+            "conventions": start_line.get("conventions"),
+            "wind_direction_estimates_deg_from": start_line.get("wind_direction_estimates_deg_from"),
+            "wind_estimate_caveats": start_line.get("wind_estimate_caveats"),
+            "starts": starts,
+        }
 
     if start_metrics:
         starts = []
@@ -157,12 +190,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("leg_report", help="reports/<date>_race_comparison_raw.json")
     ap.add_argument("--start-metrics", help="JSON file of regattaData-shaped start metrics")
+    ap.add_argument("--start-line", help="reports/start_line_analysis.json")
     ap.add_argument("-o", "--out", help="write digest here instead of stdout")
     args = ap.parse_args(argv)
 
     leg_report = json.load(open(args.leg_report))
     start_metrics = json.load(open(args.start_metrics)) if args.start_metrics else None
-    digest = build_digest(leg_report, start_metrics)
+    start_line = json.load(open(args.start_line)) if args.start_line else None
+    digest = build_digest(leg_report, start_metrics, start_line)
     text = json.dumps(digest, indent=1)
 
     if args.out:

@@ -146,8 +146,8 @@
   }
  ],
  "not_in_this_data": [
-  "True wind speed and direction: no wind-instrument rows (VKX 0x0A) in any file.",
-  "True wind angle and true VMG: cannot be computed without wind direction. The 'vmg_proxy_kn' figures are straight-line progress along each boat's own track axis per unit time - NOT wind-referenced VMG.",
+  "Measured wind: no wind-instrument rows (VKX 0x0A) in any file. Wind DIRECTION is estimated from GPS geometry in the 'start_line' section - use those figures, state that they are estimates, and never quote a measured wind. Wind SPEED is not available by any method here.",
+  "True wind angle and true VMG: only as good as the estimated wind direction above. The 'vmg_proxy_kn' figures are straight-line progress along each boat's own track axis per unit time - NOT wind-referenced VMG.",
   "Device-detected tack/gybe events: no shift-angle rows (VKX 0x06) in any file. Tack counts here are inferred from speed dips in the GPS track.",
   "Heel and pitch: the VKX 0x02 rows DO carry an orientation quaternion, but it has not been converted to heel/pitch yet, so no heel figures exist here.",
   "Finishing positions, elapsed times, points, and penalties: not in telemetry.",
@@ -161,7 +161,253 @@
   "straight_line_m": "Direct distance from leg start to leg end, metres. path_m minus straight_line_m is the extra distance sailed (tacking/gybing and any wandering).",
   "speedAtGunKn": "GPS speed at the start gun, knots.",
   "avgSpeedApproachKn": "Mean speed over the 3 minutes before the gun, knots.",
-  "distanceInWindowNm": "Distance sailed from 3 min before to 2 min after the gun, nautical miles."
+  "distanceInWindowNm": "Distance sailed from 3 min before to 2 min after the gun, nautical miles.",
+  "distance_to_line_m": "Perpendicular distance to the start line at the gun. Positive = behind the line, negative = over early.",
+  "along_line_from_pin": "Where on the line the boat started: 0.0 = pin end, 1.0 = committee boat end."
+ },
+ "start_line": {
+  "conventions": {
+   "distance_to_line_m": "Perpendicular distance from the boat to the start line AT THE GUN. Positive = still behind the line. Negative = over the line early.",
+   "along_line_from_pin": "0.0 = pin (left) end, 1.0 = committee boat (right) end. Values slightly outside 0-1 mean just beyond that end.",
+   "source": "VKX 0x05 Line Position rows (pin = end type 0, committee boat = end type 1), taking the last position logged for each end before the gun. All six boats logged identical line coordinates, so this is the committee's line."
+  },
+  "wind_direction_estimates_deg_from": {
+   "beat_axis_deg": 301.4,
+   "tack_bisector_deg": 311.8,
+   "upwind_cog_modes_deg": [
+    271.6,
+    352.1
+   ],
+   "tacking_angle_deg": 80.5,
+   "line_square_deg_valid_start": 300.4
+  },
+  "wind_estimate_caveats": [
+   "No boat logged a wind instrument; every figure here is inferred from GPS geometry.",
+   "These are leg-average directions, not live shifts, and none of them gives wind SPEED.",
+   "The line bearing rotated from 40 to 30 deg across the four starts, which implies the committee was re-squaring to a shifting wind."
+  ],
+  "starts": [
+   {
+    "start_number": 1,
+    "gun_local": "14:55:00",
+    "was_valid_start": false,
+    "line": {
+     "length_m": 982.2,
+     "length_nm": 0.53,
+     "bearing_deg": 39.6,
+     "square_wind_deg": 309.6
+    },
+    "boats": [
+     {
+      "boat": "Team Sweden (Roman)",
+      "distance_to_line_m": -0.6,
+      "along_line_from_pin": 0.846,
+      "started_on": "boat third",
+      "sog_at_gun_kn": 5.7
+     },
+     {
+      "boat": "Diva-Neu",
+      "distance_to_line_m": 1.0,
+      "along_line_from_pin": 0.004,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 5.2
+     },
+     {
+      "boat": "G-Spot",
+      "distance_to_line_m": 1.0,
+      "along_line_from_pin": 0.359,
+      "started_on": "middle third",
+      "sog_at_gun_kn": 5.9
+     },
+     {
+      "boat": "Noticia",
+      "distance_to_line_m": 1.1,
+      "along_line_from_pin": 0.022,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 5.8
+     },
+     {
+      "boat": "TUR 442",
+      "distance_to_line_m": 2.5,
+      "along_line_from_pin": 0.572,
+      "started_on": "middle third",
+      "sog_at_gun_kn": 5.2
+     },
+     {
+      "boat": "TYRA",
+      "distance_to_line_m": 10.5,
+      "along_line_from_pin": 0.395,
+      "started_on": "middle third",
+      "sog_at_gun_kn": 4.9
+     }
+    ]
+   },
+   {
+    "start_number": 2,
+    "gun_local": "15:10:00",
+    "was_valid_start": false,
+    "line": {
+     "length_m": 976.9,
+     "length_nm": 0.527,
+     "bearing_deg": 38.9,
+     "square_wind_deg": 308.9
+    },
+    "boats": [
+     {
+      "boat": "Noticia",
+      "distance_to_line_m": 0.9,
+      "along_line_from_pin": 0.829,
+      "started_on": "boat third",
+      "sog_at_gun_kn": 5.6
+     },
+     {
+      "boat": "Team Sweden (Roman)",
+      "distance_to_line_m": 2.8,
+      "along_line_from_pin": 0.852,
+      "started_on": "boat third",
+      "sog_at_gun_kn": 5.7
+     },
+     {
+      "boat": "TYRA",
+      "distance_to_line_m": 3.9,
+      "along_line_from_pin": 0.007,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 4.7
+     },
+     {
+      "boat": "G-Spot",
+      "distance_to_line_m": 4.8,
+      "along_line_from_pin": 1.015,
+      "started_on": "boat third",
+      "sog_at_gun_kn": 6.2
+     },
+     {
+      "boat": "Diva-Neu",
+      "distance_to_line_m": 5.5,
+      "along_line_from_pin": -0.004,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 4.5
+     },
+     {
+      "boat": "TUR 442",
+      "distance_to_line_m": 16.0,
+      "along_line_from_pin": 0.333,
+      "started_on": "middle third",
+      "sog_at_gun_kn": 4.9
+     }
+    ]
+   },
+   {
+    "start_number": 3,
+    "gun_local": "15:35:00",
+    "was_valid_start": false,
+    "line": {
+     "length_m": 984.6,
+     "length_nm": 0.532,
+     "bearing_deg": 31.8,
+     "square_wind_deg": 301.8
+    },
+    "boats": [
+     {
+      "boat": "Diva-Neu",
+      "distance_to_line_m": -2.1,
+      "along_line_from_pin": 0.464,
+      "started_on": "middle third",
+      "sog_at_gun_kn": 6.2
+     },
+     {
+      "boat": "Noticia",
+      "distance_to_line_m": 2.2,
+      "along_line_from_pin": 0.331,
+      "started_on": "middle third",
+      "sog_at_gun_kn": 4.9
+     },
+     {
+      "boat": "G-Spot",
+      "distance_to_line_m": 2.9,
+      "along_line_from_pin": 0.052,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 5.8
+     },
+     {
+      "boat": "TUR 442",
+      "distance_to_line_m": 4.0,
+      "along_line_from_pin": 0.024,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 2.7
+     },
+     {
+      "boat": "Team Sweden (Roman)",
+      "distance_to_line_m": 7.8,
+      "along_line_from_pin": 0.991,
+      "started_on": "boat third",
+      "sog_at_gun_kn": 5.2
+     },
+     {
+      "boat": "TYRA",
+      "distance_to_line_m": 21.2,
+      "along_line_from_pin": 0.011,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 2.4
+     }
+    ]
+   },
+   {
+    "start_number": 4,
+    "gun_local": "15:50:00",
+    "was_valid_start": true,
+    "line": {
+     "length_m": 985.6,
+     "length_nm": 0.532,
+     "bearing_deg": 30.4,
+     "square_wind_deg": 300.4
+    },
+    "boats": [
+     {
+      "boat": "TUR 442",
+      "distance_to_line_m": 2.6,
+      "along_line_from_pin": 0.056,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 4.5
+     },
+     {
+      "boat": "Noticia",
+      "distance_to_line_m": 3.3,
+      "along_line_from_pin": 0.026,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 6.4
+     },
+     {
+      "boat": "G-Spot",
+      "distance_to_line_m": 3.6,
+      "along_line_from_pin": 0.911,
+      "started_on": "boat third",
+      "sog_at_gun_kn": 5.6
+     },
+     {
+      "boat": "Team Sweden (Roman)",
+      "distance_to_line_m": 7.5,
+      "along_line_from_pin": 0.941,
+      "started_on": "boat third",
+      "sog_at_gun_kn": 5.2
+     },
+     {
+      "boat": "TYRA",
+      "distance_to_line_m": 8.9,
+      "along_line_from_pin": 0.034,
+      "started_on": "pin third",
+      "sog_at_gun_kn": 5.6
+     },
+     {
+      "boat": "Diva-Neu",
+      "distance_to_line_m": 16.7,
+      "along_line_from_pin": 0.961,
+      "started_on": "boat third",
+      "sog_at_gun_kn": 6.2
+     }
+    ]
+   }
+  ]
  },
  "starts": [
   {

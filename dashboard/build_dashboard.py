@@ -47,7 +47,14 @@ def encode_template(template: str) -> str:
     return json.dumps(template).replace("</", "<\\u002F")
 
 
-def build(export_path: str, template_path: str, panel_path: str, digest_path: str, title: str) -> str:
+def build(
+    export_path: str,
+    template_path: str,
+    panel_path: str,
+    digest_path: str,
+    title: str,
+    section_paths: list[str] | None = None,
+) -> str:
     with open(export_path, encoding="utf-8") as f:
         bundle = f.read()
 
@@ -71,7 +78,15 @@ def build(export_path: str, template_path: str, panel_path: str, digest_path: st
 
     if template.count(BODY_END) != 1:
         raise SystemExit("could not find a unique body close in the template")
-    template = template.replace(BODY_END, "\n" + panel + BODY_END, 1)
+
+    # Static sections first, then the analyser panel last, so the panel stays
+    # at the bottom of the page.
+    blocks = []
+    for path in section_paths or []:
+        with open(path, encoding="utf-8") as f:
+            blocks.append(f.read())
+    blocks.append(panel)
+    template = template.replace(BODY_END, "\n" + "\n".join(blocks) + BODY_END, 1)
 
     encoded = encode_template(template)
     rebuilt = bundle[: match.start(2)] + encoded + bundle[match.end(2) :]
@@ -94,11 +109,14 @@ def main(argv=None):
     ap.add_argument("--template", default="dashboard/dashboard_template.html")
     ap.add_argument("--panel", default="dashboard/analyser_panel.html")
     ap.add_argument("--digest", default="reports/analyser_digest.json")
+    ap.add_argument("--section", action="append", default=None,
+                    help="static HTML section to append before the analyser panel (repeatable)")
     ap.add_argument("--out", default="dashboard/cascais_regatta_dashboard.html")
     ap.add_argument("--title", default="Cascais Regatta Dashboard")
     args = ap.parse_args(argv)
 
-    rebuilt = build(args.export, args.template, args.panel, args.digest, args.title)
+    sections = args.section if args.section is not None else ["dashboard/start_line_section.html"]
+    rebuilt = build(args.export, args.template, args.panel, args.digest, args.title, sections)
     with open(args.out, "w", encoding="utf-8") as f:
         f.write(rebuilt)
     print(f"wrote {args.out} ({len(rebuilt)} bytes)")

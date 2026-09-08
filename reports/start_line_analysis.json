@@ -1,0 +1,296 @@
+{
+ "conventions": {
+  "distance_to_line_m": "Perpendicular distance from the boat to the start line AT THE GUN. Positive = still behind the line. Negative = over the line early.",
+  "along_line_from_pin": "0.0 = pin (left) end, 1.0 = committee boat (right) end. Values slightly outside 0-1 mean just beyond that end.",
+  "source": "VKX 0x05 Line Position rows (pin = end type 0, committee boat = end type 1), taking the last position logged for each end before the gun. All six boats logged identical line coordinates, so this is the committee's line."
+ },
+ "wind_direction_estimates_deg_from": {
+  "beat_axis_deg": 301.4,
+  "tack_bisector_deg": 311.8,
+  "upwind_cog_modes_deg": [
+   271.6,
+   352.1
+  ],
+  "tacking_angle_deg": 80.5,
+  "line_square_deg_valid_start": 300.4
+ },
+ "wind_estimate_caveats": [
+  "No boat logged a wind instrument; every figure here is inferred from GPS geometry.",
+  "These are leg-average directions, not live shifts, and none of them gives wind SPEED.",
+  "The line bearing rotated from 40 to 30 deg across the four starts, which implies the committee was re-squaring to a shifting wind."
+ ],
+ "starts": [
+  {
+   "start_number": 1,
+   "gun_utc": "13:55:00",
+   "gun_local": "14:55:00",
+   "was_valid_start": false,
+   "line": {
+    "length_m": 982.2,
+    "length_nm": 0.53,
+    "bearing_deg": 39.6,
+    "square_wind_deg": 309.6,
+    "square_wind_both_deg": [
+     129.6,
+     309.6
+    ],
+    "pin": {
+     "lat": 38.625160217285156,
+     "lon": -9.389506340026855
+    },
+    "committee_boat": {
+     "lat": 38.63196563720703,
+     "lon": -9.38229751586914
+    }
+   },
+   "boats": [
+    {
+     "boat": "Team Sweden (Roman)",
+     "distance_to_line_m": -0.6,
+     "along_line_from_pin": 0.846,
+     "started_on": "boat third",
+     "sog_at_gun_kn": 5.7
+    },
+    {
+     "boat": "Diva-Neu",
+     "distance_to_line_m": 1.0,
+     "along_line_from_pin": 0.004,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 5.2
+    },
+    {
+     "boat": "G-Spot",
+     "distance_to_line_m": 1.0,
+     "along_line_from_pin": 0.359,
+     "started_on": "middle third",
+     "sog_at_gun_kn": 5.9
+    },
+    {
+     "boat": "Noticia",
+     "distance_to_line_m": 1.1,
+     "along_line_from_pin": 0.022,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 5.8
+    },
+    {
+     "boat": "TUR 442",
+     "distance_to_line_m": 2.5,
+     "along_line_from_pin": 0.572,
+     "started_on": "middle third",
+     "sog_at_gun_kn": 5.2
+    },
+    {
+     "boat": "TYRA",
+     "distance_to_line_m": 10.5,
+     "along_line_from_pin": 0.395,
+     "started_on": "middle third",
+     "sog_at_gun_kn": 4.9
+    }
+   ]
+  },
+  {
+   "start_number": 2,
+   "gun_utc": "14:10:00",
+   "gun_local": "15:10:00",
+   "was_valid_start": false,
+   "line": {
+    "length_m": 976.9,
+    "length_nm": 0.527,
+    "bearing_deg": 38.9,
+    "square_wind_deg": 308.9,
+    "square_wind_both_deg": [
+     128.9,
+     308.9
+    ],
+    "pin": {
+     "lat": 38.62512969970703,
+     "lon": -9.389388084411621
+    },
+    "committee_boat": {
+     "lat": 38.63196563720703,
+     "lon": -9.382325172424316
+    }
+   },
+   "boats": [
+    {
+     "boat": "Noticia",
+     "distance_to_line_m": 0.9,
+     "along_line_from_pin": 0.829,
+     "started_on": "boat third",
+     "sog_at_gun_kn": 5.6
+    },
+    {
+     "boat": "Team Sweden (Roman)",
+     "distance_to_line_m": 2.8,
+     "along_line_from_pin": 0.852,
+     "started_on": "boat third",
+     "sog_at_gun_kn": 5.7
+    },
+    {
+     "boat": "TYRA",
+     "distance_to_line_m": 3.9,
+     "along_line_from_pin": 0.007,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 4.7
+    },
+    {
+     "boat": "G-Spot",
+     "distance_to_line_m": 4.8,
+     "along_line_from_pin": 1.015,
+     "started_on": "boat third",
+     "sog_at_gun_kn": 6.2
+    },
+    {
+     "boat": "Diva-Neu",
+     "distance_to_line_m": 5.5,
+     "along_line_from_pin": -0.004,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 4.5
+    },
+    {
+     "boat": "TUR 442",
+     "distance_to_line_m": 16.0,
+     "along_line_from_pin": 0.333,
+     "started_on": "middle third",
+     "sog_at_gun_kn": 4.9
+    }
+   ]
+  },
+  {
+   "start_number": 3,
+   "gun_utc": "14:35:00",
+   "gun_local": "15:35:00",
+   "was_valid_start": false,
+   "line": {
+    "length_m": 984.6,
+    "length_nm": 0.532,
+    "bearing_deg": 31.8,
+    "square_wind_deg": 301.8,
+    "square_wind_both_deg": [
+     121.8,
+     301.8
+    ],
+    "pin": {
+     "lat": 38.624576568603516,
+     "lon": -9.388396263122559
+    },
+    "committee_boat": {
+     "lat": 38.63209915161133,
+     "lon": -9.382416725158691
+    }
+   },
+   "boats": [
+    {
+     "boat": "Diva-Neu",
+     "distance_to_line_m": -2.1,
+     "along_line_from_pin": 0.464,
+     "started_on": "middle third",
+     "sog_at_gun_kn": 6.2
+    },
+    {
+     "boat": "Noticia",
+     "distance_to_line_m": 2.2,
+     "along_line_from_pin": 0.331,
+     "started_on": "middle third",
+     "sog_at_gun_kn": 4.9
+    },
+    {
+     "boat": "G-Spot",
+     "distance_to_line_m": 2.9,
+     "along_line_from_pin": 0.052,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 5.8
+    },
+    {
+     "boat": "TUR 442",
+     "distance_to_line_m": 4.0,
+     "along_line_from_pin": 0.024,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 2.7
+    },
+    {
+     "boat": "Team Sweden (Roman)",
+     "distance_to_line_m": 7.8,
+     "along_line_from_pin": 0.991,
+     "started_on": "boat third",
+     "sog_at_gun_kn": 5.2
+    },
+    {
+     "boat": "TYRA",
+     "distance_to_line_m": 21.2,
+     "along_line_from_pin": 0.011,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 2.4
+    }
+   ]
+  },
+  {
+   "start_number": 4,
+   "gun_utc": "14:50:00",
+   "gun_local": "15:50:00",
+   "was_valid_start": true,
+   "line": {
+    "length_m": 985.6,
+    "length_nm": 0.532,
+    "bearing_deg": 30.4,
+    "square_wind_deg": 300.4,
+    "square_wind_both_deg": [
+     120.4,
+     300.4
+    ],
+    "pin": {
+     "lat": 38.624610900878906,
+     "lon": -9.38840103149414
+    },
+    "committee_boat": {
+     "lat": 38.63225555419922,
+     "lon": -9.382658004760742
+    }
+   },
+   "boats": [
+    {
+     "boat": "TUR 442",
+     "distance_to_line_m": 2.6,
+     "along_line_from_pin": 0.056,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 4.5
+    },
+    {
+     "boat": "Noticia",
+     "distance_to_line_m": 3.3,
+     "along_line_from_pin": 0.026,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 6.4
+    },
+    {
+     "boat": "G-Spot",
+     "distance_to_line_m": 3.6,
+     "along_line_from_pin": 0.911,
+     "started_on": "boat third",
+     "sog_at_gun_kn": 5.6
+    },
+    {
+     "boat": "Team Sweden (Roman)",
+     "distance_to_line_m": 7.5,
+     "along_line_from_pin": 0.941,
+     "started_on": "boat third",
+     "sog_at_gun_kn": 5.2
+    },
+    {
+     "boat": "TYRA",
+     "distance_to_line_m": 8.9,
+     "along_line_from_pin": 0.034,
+     "started_on": "pin third",
+     "sog_at_gun_kn": 5.6
+    },
+    {
+     "boat": "Diva-Neu",
+     "distance_to_line_m": 16.7,
+     "along_line_from_pin": 0.961,
+     "started_on": "boat third",
+     "sog_at_gun_kn": 6.2
+    }
+   ]
+  }
+ ]
+}
