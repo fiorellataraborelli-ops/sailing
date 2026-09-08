@@ -186,11 +186,91 @@ def build_digest(
     return digest
 
 
+def add_completed_races(digest: dict, fleet_report: dict, label: str) -> dict:
+    """Fold a day of COMPLETED races (fleet_report.py output) into the digest.
+
+    Kept separate from `build_digest` because the two describe different kinds
+    of day: `build_digest` covers a race that was abandoned after two legs,
+    this covers races sailed to a finish. The per-boat rows are trimmed to what
+    the analyser reasons about, since the full report carries more per-leg
+    detail than fits comfortably in the prompt.
+    """
+    races = []
+    for r in fleet_report.get("races", []):
+        races.append({
+            "race_number": r["race_number"],
+            "gun_local": r["gun_local"],
+            "boats_tracked": r["boats_tracked"],
+            "wind": r.get("wind"),
+            "order_at_last_mark": r.get("order_at_last_mark"),
+            "along_line_vs_beat1_time_correlation": r.get("along_line_vs_beat1_time_correlation"),
+            "correlation_meaning": r.get("correlation_meaning"),
+            "team_summary": r.get("team_summary"),
+            "boats": [{
+                "boat": x["boat"],
+                "marks_min": x["marks_min"],
+                "leg_min": x["leg_min"],
+                "leg_avg_sog_kn": x["leg_avg_sog_kn"],
+                "beat1_extra_distance_m": x["beat1"]["extra_distance_m"],
+                "beat1_tacks": x["beat1"]["tacks"],
+                "start_distance_to_line_m": (x["start"] or {}).get("distance_to_line_m"),
+                "start_along_line_from_pin": (x["start"] or {}).get("along_line_from_pin"),
+            } for x in r.get("rows", [])],
+        })
+
+    digest[label] = {
+        "summary": "Races sailed to a FINISH, so all legs are analysed (unlike the "
+                   "abandoned race in the sections above, where only the first two are).",
+        "method_notes": fleet_report.get("method_notes"),
+        "races": races,
+    }
+    digest["session"]["scope_note"] += (
+        f" NOTE: the 'legs', 'starts' and 'start_line' sections are the abandoned race. "
+        f"The '{label}' section covers completed races and supersedes them for questions "
+        f"about that day."
+    )
+    return digest
+
+
+def add_wind(digest: dict, wind: dict, label: str) -> dict:
+    """Attach decoded GRIB wind, and correct the 'no wind speed' gap it fills."""
+    target = digest.get(label)
+    if target is None:
+        target = digest[label] = {}
+    mv = wind.get("model_vs_observed", {})
+    target["wind"] = {
+        "source": "GRIB2 decoded at the race area: DWD ICON-EU (~7 km) and, where present, "
+                  "ECMWF IFS open data (0.25 deg).",
+        "icon_forecast_by_hour": wind.get("forecast"),
+        "ecmwf_forecast": (wind.get("ecmwf") or {}).get("forecast"),
+        "model_vs_observed": mv,
+        "headline": (
+            "The GRIB sat ~{} deg to the RIGHT of the wind the fleet actually raced in. The two "
+            "observed measures (committee line square, fleet beat bearing) are independent of the "
+            "model and of each other, so this is a real local bend, not error. Practical rule: "
+            "subtract that offset from the GRIB for this racecourse. The models DO get the trend "
+            "right even when the absolute bearing is wrong."
+        ).format(mv.get("mean_forecast_minus_observed_deg", "?")),
+    }
+    digest["not_in_this_data"] = [
+        x for x in digest.get("not_in_this_data", []) if not x.startswith("Measured wind")
+    ]
+    digest["not_in_this_data"].insert(0,
+        "Measured wind ON THE BOAT: none (no VKX 0x0A rows on any boat). Where a "
+        f"'{label}.wind' section exists there IS forecast wind including SPEED - use it, call it "
+        "a forecast, and apply the offset noted there. Otherwise no wind speed exists by any method.")
+    return digest
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("leg_report", help="reports/<date>_race_comparison_raw.json")
     ap.add_argument("--start-metrics", help="JSON file of regattaData-shaped start metrics")
     ap.add_argument("--start-line", help="reports/start_line_analysis.json")
+    ap.add_argument("--fleet-report", help="reports/<date>_fleet_report.json (completed races)")
+    ap.add_argument("--wind", help="reports/<date>_wind.json (decoded GRIB)")
+    ap.add_argument("--day-label", default="completed_races",
+                    help="key the completed-race day is stored under, e.g. today_2026_09_08")
     ap.add_argument("-o", "--out", help="write digest here instead of stdout")
     args = ap.parse_args(argv)
 
@@ -198,6 +278,10 @@ def main(argv=None):
     start_metrics = json.load(open(args.start_metrics)) if args.start_metrics else None
     start_line = json.load(open(args.start_line)) if args.start_line else None
     digest = build_digest(leg_report, start_metrics, start_line)
+    if args.fleet_report:
+        digest = add_completed_races(digest, json.load(open(args.fleet_report)), args.day_label)
+    if args.wind:
+        digest = add_wind(digest, json.load(open(args.wind)), args.day_label)
     text = json.dumps(digest, indent=1)
 
     if args.out:

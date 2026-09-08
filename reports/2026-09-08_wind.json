@@ -85,26 +85,30 @@
   "races": [
    {
     "race_number": 1,
-    "mid_utc_hour": 13,
-    "forecast_direction_deg": 333.7,
-    "forecast_speed_kn": 11.42,
-    "forecast_gust_kn": 22.11,
-    "observed_direction_deg": 324.5,
-    "observed_basis": "committee line square 324.0 and first-beat bearing 324.9",
-    "forecast_minus_observed_deg": 9.2
+    "compared_at_utc_hour": 12.35,
+    "forecast_direction_deg": 336.6,
+    "forecast_speed_kn": 11.48,
+    "forecast_gust_kn": 22.34,
+    "observed_direction_deg": 324.4,
+    "observed_basis": "mean of the committee line square (324.0) and the fleet's first-beat bearing (324.9), compared at the midpoint of the first beat",
+    "forecast_minus_observed_deg": 12.2
    },
    {
     "race_number": 2,
-    "mid_utc_hour": 14,
-    "forecast_direction_deg": 332.4,
-    "forecast_speed_kn": 11.32,
-    "forecast_gust_kn": 21.98,
+    "compared_at_utc_hour": 14.19,
+    "forecast_direction_deg": 331.5,
+    "forecast_speed_kn": 11.25,
+    "forecast_gust_kn": 21.91,
     "observed_direction_deg": 321.6,
-    "observed_basis": "committee line square 324.8 and first-beat bearing 318.5",
-    "forecast_minus_observed_deg": 10.8
+    "observed_basis": "mean of the committee line square (324.8) and the fleet's first-beat bearing (318.5), compared at the midpoint of the first beat",
+    "forecast_minus_observed_deg": 9.9
    }
   ],
-  "mean_forecast_minus_observed_deg": 10.0,
-  "interpretation": "A positive mean means the forecast sits to the RIGHT of the wind the fleet actually sailed, i.e. on the water the breeze was further left than the model. Both the committee's line and the fleet's beat bearing are independent of the model, so a consistent offset is a real local bend, not measurement error."
+  "mean_forecast_minus_observed_deg": 11.0,
+  "offset_range_deg": [
+   9.9,
+   12.2
+  ],
+  "interpretation": "A positive mean means the forecast sits to the RIGHT of the wind the fleet actually sailed, i.e. on the water the breeze was further left than the model. Both the committee's line and the fleet's beat bearing are independent of the model, so a consistent offset is a real local bend, not measurement error. The sign and rough size are solid; the exact figure moves a few degrees with how the forecast is aligned in time, which is why the range is given too."
  }
 }

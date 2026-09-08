@@ -146,31 +146,100 @@ def ecmwf_series(directory: str, lat: float, lon: float, cycle_hour: int = 6) ->
     return rows
 
 
+def _interp_direction(rows: list[dict], hour: float) -> tuple[float, float, float | None]:
+    """Forecast direction/speed/gust interpolated to a fractional UTC hour.
+
+    Snapping to the nearest whole forecast hour moved the computed offset by
+    several degrees depending on which side of the hour a race fell, which is
+    an artefact of the sampling rather than anything about the wind. Angles are
+    interpolated the short way round the circle.
+    """
+    rows = sorted(rows, key=lambda r: r["valid_utc_hour"])
+    if hour <= rows[0]["valid_utc_hour"]:
+        r = rows[0]
+        return r["direction_deg"], r["speed_kn"], r.get("gust_kn")
+    if hour >= rows[-1]["valid_utc_hour"]:
+        r = rows[-1]
+        return r["direction_deg"], r["speed_kn"], r.get("gust_kn")
+    for a, b in zip(rows, rows[1:]):
+        if a["valid_utc_hour"] <= hour <= b["valid_utc_hour"]:
+            span = b["valid_utc_hour"] - a["valid_utc_hour"]
+            f = (hour - a["valid_utc_hour"]) / span if span else 0.0
+            delta = (b["direction_deg"] - a["direction_deg"] + 180) % 360 - 180
+            direction = (a["direction_deg"] + f * delta) % 360
+            speed = a["speed_kn"] + f * (b["speed_kn"] - a["speed_kn"])
+            gust = None
+            if a.get("gust_kn") is not None and b.get("gust_kn") is not None:
+                gust = a["gust_kn"] + f * (b["gust_kn"] - a["gust_kn"])
+            return direction, speed, gust
+    r = rows[-1]
+    return r["direction_deg"], r["speed_kn"], r.get("gust_kn")
+
+
+def observed_from_fleet_report(fleet_report: dict, utc_offset_h: int = 1) -> list[dict]:
+    """Derive the observed wind and its time window from a fleet report.
+
+    Both observed measures come from the start and the first beat - the
+    committee squares the line at the gun, and the beat bearing is sailed over
+    the first leg - so the forecast is compared at the MIDPOINT OF THE FIRST
+    BEAT, not the middle of the whole race. Aligning to the race midpoint would
+    compare a start-of-race measurement against a late-race forecast.
+    """
+    out = []
+    for r in fleet_report.get("races", []):
+        wind = r.get("wind") or {}
+        parts = [wind.get("line_square_deg"), wind.get("first_beat_bearing_deg")]
+        parts = [p for p in parts if p is not None]
+        if not parts:
+            continue
+        hh, mm = (r["gun_local"].split(":") + ["0"])[:2]
+        gun_utc = int(hh) - utc_offset_h + int(mm) / 60.0
+
+        beat1_min = None
+        for row in r.get("rows", []):
+            if row.get("leg_min"):
+                beat1_min = row["leg_min"][0]
+                break
+
+        out.append({
+            "race_number": r["race_number"],
+            "mid_utc_hour": gun_utc + (beat1_min / 2 / 60.0 if beat1_min else 0.4),
+            "observed_deg": round(sum(parts) / len(parts), 1),
+            "basis": "mean of the committee line square ({}) and the fleet's first-beat "
+                     "bearing ({}), compared at the midpoint of the first beat".format(
+                         wind.get("line_square_deg"), wind.get("first_beat_bearing_deg")),
+        })
+    return out
+
+
 def compare(forecast_rows: list[dict], observed: list[dict]) -> dict:
     """Offset between the forecast and what the fleet sailed."""
     out = {"races": []}
     offsets = []
     for obs in observed:
-        near = min(forecast_rows, key=lambda r: abs(r["valid_utc_hour"] - obs["mid_utc_hour"]))
-        off = (near["direction_deg"] - obs["observed_deg"] + 180) % 360 - 180
+        direction, speed, gust = _interp_direction(forecast_rows, obs["mid_utc_hour"])
+        off = (direction - obs["observed_deg"] + 180) % 360 - 180
         offsets.append(off)
         out["races"].append({
             "race_number": obs["race_number"],
-            "mid_utc_hour": obs["mid_utc_hour"],
-            "forecast_direction_deg": near["direction_deg"],
-            "forecast_speed_kn": near["speed_kn"],
-            "forecast_gust_kn": near["gust_kn"],
+            "compared_at_utc_hour": round(obs["mid_utc_hour"], 2),
+            "forecast_direction_deg": round(direction, 1),
+            "forecast_speed_kn": round(speed, 2),
+            "forecast_gust_kn": round(gust, 2) if gust is not None else None,
             "observed_direction_deg": obs["observed_deg"],
             "observed_basis": obs.get("basis", ""),
             "forecast_minus_observed_deg": round(off, 1),
         })
     if offsets:
         out["mean_forecast_minus_observed_deg"] = round(sum(offsets) / len(offsets), 1)
+        out["offset_range_deg"] = [round(min(offsets), 1), round(max(offsets), 1)]
         out["interpretation"] = (
             "A positive mean means the forecast sits to the RIGHT of the wind the fleet "
             "actually sailed, i.e. on the water the breeze was further left than the model. "
             "Both the committee's line and the fleet's beat bearing are independent of the "
-            "model, so a consistent offset is a real local bend, not measurement error."
+            "model, so a consistent offset is a real local bend, not measurement error. The "
+            "sign and rough size are solid; the exact figure moves a few degrees with how the "
+            "forecast is aligned in time, which is why the range is given too."
         )
     return out
 
@@ -272,6 +341,8 @@ def main(argv=None):
     ap.add_argument("--lat", type=float, default=38.68)
     ap.add_argument("--lon", type=float, default=-9.42)
     ap.add_argument("--observed", help="JSON list of {race_number, mid_utc_hour, observed_deg, basis}")
+    ap.add_argument("--fleet-report", help="derive the observed wind from this fleet report "
+                                          "instead of passing --observed by hand")
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--html-out", help="also write a dashboard section here")
     args = ap.parse_args(argv)
@@ -287,8 +358,13 @@ def main(argv=None):
             "model": "ECMWF IFS 06z open data, 0.25 deg, 10 m wind + MSLP",
             "forecast": ecmwf_series(args.ecmwf_dir, args.lat, args.lon),
         }
-    if args.observed:
-        result["model_vs_observed"] = compare(rows, json.loads(args.observed))
+    observed = None
+    if args.fleet_report:
+        observed = observed_from_fleet_report(json.load(open(args.fleet_report)))
+    elif args.observed:
+        observed = json.loads(args.observed)
+    if observed:
+        result["model_vs_observed"] = compare(rows, observed)
 
     with open(args.out, "w") as f:
         json.dump(result, f, indent=1)

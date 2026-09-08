@@ -5,7 +5,7 @@
   "local_time_offset_from_utc_h": 1,
   "fleet_size_reported_by_user": 103,
   "team_result_reported_by_user": "3rd of 103 (user-provided, NOT derived from telemetry)",
-  "scope_note": "The race was not sailed to a finish (per the team). Only the FIRST UPWIND and FIRST DOWNWIND leg are analysed; later legs are excluded. NOTE: the 'legs', 'starts' and 'start_line' sections above are 7 Sept. The 'today_2026_09_08' section is 8 Sept and supersedes them for questions about today."
+  "scope_note": "The race was not sailed to a finish (per the team). Only the FIRST UPWIND and FIRST DOWNWIND leg are analysed; later legs are excluded. NOTE: the 'legs', 'starts' and 'start_line' sections are the abandoned race. The 'day_2026_09_08' section covers completed races and supersedes them for questions about that day."
  },
  "start_sequence": {
   "race_start_events_utc": [
@@ -146,7 +146,7 @@
   }
  ],
  "not_in_this_data": [
-  "Measured wind ON THE BOAT: still none (no VKX 0x0A rows). For 8 Sept there IS forecast wind from GRIB, including SPEED, in today_2026_09_08.wind - use it, but call it a forecast, and apply the ~10 deg left correction noted there. For 7 Sept there is no wind speed by any method.",
+  "Measured wind ON THE BOAT: none (no VKX 0x0A rows on any boat). Where a 'day_2026_09_08.wind' section exists there IS forecast wind including SPEED - use it, call it a forecast, and apply the offset noted there. Otherwise no wind speed exists by any method.",
   "True wind angle and true VMG: only as good as the estimated wind direction above. The 'vmg_proxy_kn' figures are straight-line progress along each boat's own track axis per unit time - NOT wind-referenced VMG.",
   "Device-detected tack/gybe events: no shift-angle rows (VKX 0x06) in any file. Tack counts here are inferred from speed dips in the GPS track.",
   "Heel and pitch: the VKX 0x02 rows DO carry an orientation quaternion, but it has not been converted to heel/pitch yet, so no heel figures exist here.",
@@ -409,150 +409,8 @@
    }
   ]
  },
- "starts": [
-  {
-   "start_number": 1,
-   "gun_utc": "13:55:00",
-   "gun_local": "14:55:00",
-   "boats": [
-    {
-     "boat": "Team Sweden (Roman)",
-     "speed_at_gun_kn": 5.5,
-     "max_speed_first_60s_kn": 7,
-     "avg_speed_approach_kn": 4.7,
-     "distance_in_window_nm": 0.42
-    },
-    {
-     "boat": "G-Spot",
-     "speed_at_gun_kn": 5.3,
-     "max_speed_first_60s_kn": 7.2,
-     "avg_speed_approach_kn": 3.9,
-     "distance_in_window_nm": 0.37
-    },
-    {
-     "boat": "Diva-Neu",
-     "speed_at_gun_kn": 5.1,
-     "max_speed_first_60s_kn": 7.3,
-     "avg_speed_approach_kn": 4.7,
-     "distance_in_window_nm": 0.42
-    },
-    {
-     "boat": "Noticia",
-     "speed_at_gun_kn": 6.2,
-     "max_speed_first_60s_kn": 7.1,
-     "avg_speed_approach_kn": 4.6,
-     "distance_in_window_nm": 0.43
-    }
-   ]
-  },
-  {
-   "start_number": 2,
-   "gun_utc": "14:10:00",
-   "gun_local": "15:10:00",
-   "boats": [
-    {
-     "boat": "Team Sweden (Roman)",
-     "speed_at_gun_kn": 5.9,
-     "max_speed_first_60s_kn": 6.7,
-     "avg_speed_approach_kn": 4.2,
-     "distance_in_window_nm": 0.38
-    },
-    {
-     "boat": "G-Spot",
-     "speed_at_gun_kn": 5.7,
-     "max_speed_first_60s_kn": 7.1,
-     "avg_speed_approach_kn": 4.8,
-     "distance_in_window_nm": 0.41
-    },
-    {
-     "boat": "Diva-Neu",
-     "speed_at_gun_kn": 4.7,
-     "max_speed_first_60s_kn": 6.9,
-     "avg_speed_approach_kn": 3.6,
-     "distance_in_window_nm": 0.35
-    },
-    {
-     "boat": "Noticia",
-     "speed_at_gun_kn": 5.8,
-     "max_speed_first_60s_kn": 7,
-     "avg_speed_approach_kn": 3.1,
-     "distance_in_window_nm": 0.32
-    }
-   ]
-  },
-  {
-   "start_number": 3,
-   "gun_utc": "14:35:00",
-   "gun_local": "15:35:00",
-   "boats": [
-    {
-     "boat": "Team Sweden (Roman)",
-     "speed_at_gun_kn": 5.9,
-     "max_speed_first_60s_kn": 6.9,
-     "avg_speed_approach_kn": 4.5,
-     "distance_in_window_nm": 0.42
-    },
-    {
-     "boat": "G-Spot",
-     "speed_at_gun_kn": 5.1,
-     "max_speed_first_60s_kn": 7.9,
-     "avg_speed_approach_kn": 3.7,
-     "distance_in_window_nm": 0.37
-    },
-    {
-     "boat": "Diva-Neu",
-     "speed_at_gun_kn": 5.5,
-     "max_speed_first_60s_kn": 7.3,
-     "avg_speed_approach_kn": 4.6,
-     "distance_in_window_nm": 0.42
-    },
-    {
-     "boat": "Noticia",
-     "speed_at_gun_kn": 4.6,
-     "max_speed_first_60s_kn": 7.7,
-     "avg_speed_approach_kn": 3.2,
-     "distance_in_window_nm": 0.31
-    }
-   ]
-  },
-  {
-   "start_number": 4,
-   "gun_utc": "14:50:00",
-   "gun_local": "15:50:00",
-   "boats": [
-    {
-     "boat": "Team Sweden (Roman)",
-     "speed_at_gun_kn": 6.2,
-     "max_speed_first_60s_kn": 6.7,
-     "avg_speed_approach_kn": 4.7,
-     "distance_in_window_nm": 0.39
-    },
-    {
-     "boat": "G-Spot",
-     "speed_at_gun_kn": 5.4,
-     "max_speed_first_60s_kn": 6.9,
-     "avg_speed_approach_kn": 3.7,
-     "distance_in_window_nm": 0.37
-    },
-    {
-     "boat": "Diva-Neu",
-     "speed_at_gun_kn": 5.2,
-     "max_speed_first_60s_kn": 6.5,
-     "avg_speed_approach_kn": 4.8,
-     "distance_in_window_nm": 0.41
-    },
-    {
-     "boat": "Noticia",
-     "speed_at_gun_kn": 6.1,
-     "max_speed_first_60s_kn": 7.6,
-     "avg_speed_approach_kn": 3.4,
-     "distance_in_window_nm": 0.36
-    }
-   ]
-  }
- ],
- "today_2026_09_08": {
-  "summary": "Two COMPLETED four-leg windward/leewards, 13 boats tracked. Unlike 7 Sept, these races were sailed to a finish, so all legs are analysed.",
+ "day_2026_09_08": {
+  "summary": "Races sailed to a FINISH, so all legs are analysed (unlike the abandoned race in the sections above, where only the first two are).",
   "method_notes": [
    "Positions are taken at mark roundings detected from each boat's own track.",
    "RACE_END is synced across the fleet (all boats within ~1 s), so it is not a finish time and is never used for ranking. The final leg is excluded.",
@@ -1201,9 +1059,8 @@
    }
   ],
   "wind": {
-   "source": "DWD ICON-EU 06z GRIB2 (~7 km) at 38.68N 9.42W, decoded from data/wind/2026-09-08/. ECMWF IFS 06z also in the repo and agrees within a few degrees.",
-   "speed_kn": "11.0-12.0 mean, gusting ~22, steady across the racing window",
-   "forecast_by_hour": [
+   "source": "GRIB2 decoded at the race area: DWD ICON-EU (~7 km) and, where present, ECMWF IFS open data (0.25 deg).",
+   "icon_forecast_by_hour": [
     {
      "forecast_hour": 5,
      "valid_utc_hour": 11,
@@ -1254,33 +1111,6 @@
      "gust_kn": 22.42
     }
    ],
-   "model_vs_observed": {
-    "races": [
-     {
-      "race_number": 1,
-      "mid_utc_hour": 13,
-      "forecast_direction_deg": 333.7,
-      "forecast_speed_kn": 11.42,
-      "forecast_gust_kn": 22.11,
-      "observed_direction_deg": 324.5,
-      "observed_basis": "committee line square 324.0 and first-beat bearing 324.9",
-      "forecast_minus_observed_deg": 9.2
-     },
-     {
-      "race_number": 2,
-      "mid_utc_hour": 14,
-      "forecast_direction_deg": 332.4,
-      "forecast_speed_kn": 11.32,
-      "forecast_gust_kn": 21.98,
-      "observed_direction_deg": 321.6,
-      "observed_basis": "committee line square 324.8 and first-beat bearing 318.5",
-      "forecast_minus_observed_deg": 10.8
-     }
-    ],
-    "mean_forecast_minus_observed_deg": 10.0,
-    "interpretation": "A positive mean means the forecast sits to the RIGHT of the wind the fleet actually sailed, i.e. on the water the breeze was further left than the model. Both the committee's line and the fleet's beat bearing are independent of the model, so a consistent offset is a real local bend, not measurement error."
-   },
-   "headline": "The GRIB sat ~10 deg RIGHT of the wind the fleet actually raced in, in both races (+9.2 and +10.8). The two observed measures (committee line square, fleet beat bearing) are independent of the model and agree with each other, so this is a real local left-bend of the Nortada into Cascais Bay. Practical rule: subtract ~10 deg from the GRIB for this racecourse. The models DO get the trend right - ICON backs 5.7 deg between races, the fleet backs 6.4 deg.",
    "ecmwf_forecast": [
     {
      "forecast_hour": 6,
@@ -1304,7 +1134,37 @@
      "mslp_hpa": 1020.5
     }
    ],
-   "model_skill_note": "ICON-EU (7 km) is off by +9.2/+10.8 deg; ECMWF IFS (0.25 deg) by +20.4/+21.2 deg. The finer grid is about half as wrong, so prefer ICON for this venue and still subtract ~10 deg. ECMWF also carries mean sea-level pressure: 1022.8 -> 1020.5 hPa across the day, a gentle fall."
+   "model_vs_observed": {
+    "races": [
+     {
+      "race_number": 1,
+      "compared_at_utc_hour": 12.35,
+      "forecast_direction_deg": 336.6,
+      "forecast_speed_kn": 11.48,
+      "forecast_gust_kn": 22.34,
+      "observed_direction_deg": 324.4,
+      "observed_basis": "mean of the committee line square (324.0) and the fleet's first-beat bearing (324.9), compared at the midpoint of the first beat",
+      "forecast_minus_observed_deg": 12.2
+     },
+     {
+      "race_number": 2,
+      "compared_at_utc_hour": 14.19,
+      "forecast_direction_deg": 331.5,
+      "forecast_speed_kn": 11.25,
+      "forecast_gust_kn": 21.91,
+      "observed_direction_deg": 321.6,
+      "observed_basis": "mean of the committee line square (324.8) and the fleet's first-beat bearing (318.5), compared at the midpoint of the first beat",
+      "forecast_minus_observed_deg": 9.9
+     }
+    ],
+    "mean_forecast_minus_observed_deg": 11.0,
+    "offset_range_deg": [
+     9.9,
+     12.2
+    ],
+    "interpretation": "A positive mean means the forecast sits to the RIGHT of the wind the fleet actually sailed, i.e. on the water the breeze was further left than the model. Both the committee's line and the fleet's beat bearing are independent of the model, so a consistent offset is a real local bend, not measurement error. The sign and rough size are solid; the exact figure moves a few degrees with how the forecast is aligned in time, which is why the range is given too."
+   },
+   "headline": "The GRIB sat ~11.0 deg to the RIGHT of the wind the fleet actually raced in. The two observed measures (committee line square, fleet beat bearing) are independent of the model and of each other, so this is a real local bend, not error. Practical rule: subtract that offset from the GRIB for this racecourse. The models DO get the trend right even when the absolute bearing is wrong."
   }
  }
 }

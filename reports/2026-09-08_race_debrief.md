@@ -86,28 +86,37 @@ mark 3. Note run 1 was still fast in absolute terms (11.81 kn, quicker than Race
 — but it was the slowest run in the fleet by elapsed time because of where the boat was
 positioned in the fleet, in dirty air.
 
-## Wind — the GRIB was 10° right of the racecourse
+## Wind — the GRIB was 11° right of the racecourse
 
 With the ICON-EU and ECMWF GRIBs now in the repo (`data/wind/2026-09-08/`) there are two
 independent readings of the breeze, and they disagree in a useful way. Model figures below
 are my own decode of the GRIB2 at 38.68 N, 9.42 W, which reproduces the committed README
 table exactly (338.1°/11.51 kn at 12Z vs its 338°/11.5 kn).
 
-| | Race 1 (mid ~13Z) | Race 2 (mid ~14Z) |
+| | Race 1 | Race 2 |
 |---|---|---|
-| ICON-EU forecast | 333.7° | 332.4° |
-| Committee line squared to | 324.0° | 324.8° |
+| ICON-EU forecast, at the first beat | 336.6° | 331.5° |
+| Committee squared line to | 324.0° | 324.8° |
 | Fleet's actual beat bearing | 324.9° | 318.5° |
-| **Forecast minus observed** | **+9.2°** | **+10.8°** |
+| **Forecast minus observed** | **+12.2°** | **+9.9°** |
 
-**The forecast sat about 10° right of the wind the fleet actually raced in, in both races.**
+**The forecast sat about 11° right of the wind the fleet actually raced in, in both races**
+(mean +11.0°, range +9.9 to +12.2).
+
+The forecast is interpolated to the midpoint of the **first beat**, not the middle of the
+race, because both observed measures come from the start and first leg — the committee
+squares the line at the gun, and the beat bearing is sailed over the first leg. Comparing a
+start-of-race measurement against a late-race forecast would be inconsistent. The sign and
+rough size of the offset are solid; the exact figure moves a couple of degrees with how the
+forecast is aligned in time, which is why the range is quoted.
+
 The two observed measures — where the committee laid the line, and where the boats pointed
 on the beat — are independent of the model and of each other, and they agree with each
 other far more closely than either agrees with the GRIB. That makes this a real local
 effect, not measurement error: the Nortada bends left as it comes into Cascais Bay, and a
 7 km grid cell cannot see it.
 
-**Practical rule for tomorrow: take the GRIB direction and subtract ~10°.**
+**Practical rule for tomorrow: take the GRIB direction and subtract ~10–12°.**
 
 What the models *do* get right is the trend. ICON-EU backs 338° → 332° between the two
 races (−5.7°); the fleet's beat bearing backs 324.9° → 318.5° (−6.4°). Near-identical rate
@@ -126,8 +135,9 @@ overnight.
 - **Actual finishing positions and points.** RACE_END is a synced signal — every boat's
   lands within a second of every other's — so it is not a finish time. All positions above
   are at mark roundings, among the 13 tracked boats only, not the full 103-boat fleet.
-- **Wind speed.** No boat logged a wind instrument. Direction is estimated from geometry;
-  speed is unavailable by any method here.
+- **Measured wind on the boat.** No boat logged a wind instrument, so direction is
+  estimated from geometry. Wind SPEED does come from the GRIBs (11–11.5 kn gusting 22),
+  but that is a 7 km-grid forecast, not a measurement at the racecourse.
 - **Why** the extra distance was sailed — whether it was a tactical call, traffic, or being
   forced onto a bad lane off the start. The track shows the cost, not the intent.
 - **Downwind gybe counts** are unreliable: the manoeuvre detector keys on speed dips and
