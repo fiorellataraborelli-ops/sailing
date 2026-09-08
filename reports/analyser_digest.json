@@ -1280,7 +1280,31 @@
     "mean_forecast_minus_observed_deg": 10.0,
     "interpretation": "A positive mean means the forecast sits to the RIGHT of the wind the fleet actually sailed, i.e. on the water the breeze was further left than the model. Both the committee's line and the fleet's beat bearing are independent of the model, so a consistent offset is a real local bend, not measurement error."
    },
-   "headline": "The GRIB sat ~10 deg RIGHT of the wind the fleet actually raced in, in both races (+9.2 and +10.8). The two observed measures (committee line square, fleet beat bearing) are independent of the model and agree with each other, so this is a real local left-bend of the Nortada into Cascais Bay. Practical rule: subtract ~10 deg from the GRIB for this racecourse. The models DO get the trend right - ICON backs 5.7 deg between races, the fleet backs 6.4 deg."
+   "headline": "The GRIB sat ~10 deg RIGHT of the wind the fleet actually raced in, in both races (+9.2 and +10.8). The two observed measures (committee line square, fleet beat bearing) are independent of the model and agree with each other, so this is a real local left-bend of the Nortada into Cascais Bay. Practical rule: subtract ~10 deg from the GRIB for this racecourse. The models DO get the trend right - ICON backs 5.7 deg between races, the fleet backs 6.4 deg.",
+   "ecmwf_forecast": [
+    {
+     "forecast_hour": 6,
+     "valid_utc_hour": 12,
+     "direction_deg": 344.9,
+     "speed_kn": 12.17,
+     "mslp_hpa": 1022.8
+    },
+    {
+     "forecast_hour": 9,
+     "valid_utc_hour": 15,
+     "direction_deg": 342.8,
+     "speed_kn": 11.89,
+     "mslp_hpa": 1021.2
+    },
+    {
+     "forecast_hour": 12,
+     "valid_utc_hour": 18,
+     "direction_deg": 341.6,
+     "speed_kn": 11.26,
+     "mslp_hpa": 1020.5
+    }
+   ],
+   "model_skill_note": "ICON-EU (7 km) is off by +9.2/+10.8 deg; ECMWF IFS (0.25 deg) by +20.4/+21.2 deg. The finer grid is about half as wrong, so prefer ICON for this venue and still subtract ~10 deg. ECMWF also carries mean sea-level pressure: 1022.8 -> 1020.5 hPa across the day, a gentle fall."
   }
  }
 }

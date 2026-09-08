@@ -55,6 +55,32 @@
    "gust_kn": 22.42
   }
  ],
+ "ecmwf": {
+  "model": "ECMWF IFS 06z open data, 0.25 deg, 10 m wind + MSLP",
+  "forecast": [
+   {
+    "forecast_hour": 6,
+    "valid_utc_hour": 12,
+    "direction_deg": 344.9,
+    "speed_kn": 12.17,
+    "mslp_hpa": 1022.8
+   },
+   {
+    "forecast_hour": 9,
+    "valid_utc_hour": 15,
+    "direction_deg": 342.8,
+    "speed_kn": 11.89,
+    "mslp_hpa": 1021.2
+   },
+   {
+    "forecast_hour": 12,
+    "valid_utc_hour": 18,
+    "direction_deg": 341.6,
+    "speed_kn": 11.26,
+    "mslp_hpa": 1020.5
+   }
+  ]
+ },
  "model_vs_observed": {
   "races": [
    {
