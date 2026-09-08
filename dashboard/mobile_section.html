@@ -79,8 +79,10 @@
   .sl-m { font-size: 13px !important; }
   .sl-row { font-size: 13.5px !important; padding: 6px 0 !important; }
   .sl-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
-  .sl-w b { font-size: 20px !important; }
-  .sl-w { font-size: 12.5px !important; }
+  /* Each row now carries three figures, which will not fit one phone line
+     beside the boat name; stack the name above them. */
+  .sl-row { flex-wrap: wrap !important; }
+  .sl-row .sl-v { flex: 1 1 100% !important; }
   #sl-foot, #sa-foot, #wx-note { font-size: 12.5px !important; line-height: 1.6 !important; }
 
   .wx-t { font-size: 12.5px !important; }

@@ -961,8 +961,8 @@ a:hover{color:var(--bh-night-blue)}
     </div>
 
     <div style="margin:28px 20px 0;">
-      <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Maneuver efficiency — full session</div>
-      <div style="font-size:11px;color:var(--bh-grey-700);margin-bottom:14px;">Tacks/gybes detected from heading changes &gt;70°, with speed lost per maneuver</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Maneuver efficiency — racing window</div>
+      <div style="font-size:11px;color:var(--bh-grey-700);margin-bottom:14px;">First gun to last finish signal. Maneuvers are detected as speed dips below half the boat&rsquo;s average for that point of sail, 15 s apart; loss is the drop from the speed 10 s before the dip. Upwind counts are reliable; downwind counts over-count, because a surfing boat oscillates through the same threshold.</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--bh-grey-line);border:1px solid var(--bh-grey-line);">
         <sc-for list="{{ maneuverBoats }}" as="m" hint-placeholder-count="4">
           <div style="background:var(--bh-white);padding:12px 14px;border-top:3px solid {{ m.color }};">
@@ -980,7 +980,7 @@ a:hover{color:var(--bh-night-blue)}
 
     <div style="margin:28px 20px 0;">
       <div style="font-size:13px;font-weight:600;margin-bottom:2px;">Point of sail — upwind vs. downwind</div>
-      <div style="font-size:11px;color:var(--bh-grey-700);margin-bottom:14px;">True wind direction estimated at {{ estimatedTWD }}° from fleet tacking-angle clustering (no wind instrument in the GPS units) · VMG = speed made good toward/away from the wind</div>
+      <div style="font-size:11px;color:var(--bh-grey-700);margin-bottom:14px;">True wind direction estimated at {{ estimatedTWD }}° from the fleet&rsquo;s own first-beat bearing, averaged over the day&rsquo;s races (no wind instrument in the GPS units) · VMG = speed made good toward/away from the wind</div>
       <div style="overflow-x:auto;">
         <sc-raw-table style="width:100%;border-collapse:collapse;font-size:13px;min-width:560px;">
           <sc-raw-thead>
@@ -1014,7 +1014,7 @@ a:hover{color:var(--bh-night-blue)}
           </sc-raw-tbody>
         </sc-raw-table>
       </div>
-      <div style="font-size:10.5px;color:var(--bh-grey-700);margin-top:8px;">Heel angle not available — the GPS trackers used log position, speed and heading only, no inclinometer</div>
+      <div style="font-size:10.5px;color:var(--bh-grey-700);margin-top:8px;">Heel angle is not shown here yet, but it is in the data: every position row carries an orientation quaternion and these units are configured fixed to the body frame, so heel is derivable from the log without an inclinometer</div>
     </div>
 
     <div style="margin:28px 20px 0;">
@@ -1040,31 +1040,8 @@ a:hover{color:var(--bh-night-blue)}
       </div>
     </div>
 
-    <div style="margin:28px 20px 0;border:1px solid var(--bh-grey-line);padding:20px;">
-      <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Wind strategy — GRIB overlay</div>
-      <div style="font-size:11px;color:var(--bh-grey-700);margin-bottom:16px;max-width:640px;">Upload a GRIB wind file for the session to overlay forecast wind shifts and pressure against the fleet's tracks, and get a recommended favored side / layline strategy. Parsing wire-up is pending a sample file — this is the panel layout.</div>
-      <div style="border:1px dashed var(--bh-grey-line);padding:28px 20px;text-align:center;color:var(--bh-grey-700);font-size:12px;">
-        <input type="file" accept=".grb,.grb2,.grib,.grib2" disabled="" style="font-size:12px;color:var(--bh-grey-700);">
-        <div style="margin-top:10px;">Drop a .grb2 file here (coming soon)</div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:16px;opacity:0.4;">
-        <div style="border:1px solid var(--bh-grey-line);padding:12px;">
-          <div style="font-size:10.5px;color:var(--bh-grey-700);margin-bottom:4px;">Favored side</div>
-          <div style="font-size:16px;font-weight:700;color:var(--bh-black);">—</div>
-        </div>
-        <div style="border:1px solid var(--bh-grey-line);padding:12px;">
-          <div style="font-size:10.5px;color:var(--bh-grey-700);margin-bottom:4px;">Next shift</div>
-          <div style="font-size:16px;font-weight:700;color:var(--bh-black);">—</div>
-        </div>
-        <div style="border:1px solid var(--bh-grey-line);padding:12px;">
-          <div style="font-size:10.5px;color:var(--bh-grey-700);margin-bottom:4px;">Pressure trend</div>
-          <div style="font-size:16px;font-weight:700;color:var(--bh-black);">—</div>
-        </div>
-      </div>
-    </div>
-
     <div style="background:var(--bh-black);color:var(--bh-grey-100);padding:18px 20px;margin-top:32px;font-size:12px;">
-      Source: Vakaros Atlas GPS telemetry, 0.5s samples; (1) Team Sweden, G-Spot, Diva-Neu, Noticia; (2) Cascais, Portugal, 07-Sep-26
+      {{ sourceLine }}
     </div>
 
   </sc-if>
@@ -1075,7 +1052,7 @@ a:hover{color:var(--bh-night-blue)}
   &quot;$preview&quot;: {},
   &quot;speedUnit&quot;: {&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;knots&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;knots&quot;,&quot;mps&quot;],&quot;section&quot;:&quot;Display&quot;},
   &quot;showSpeedMarkers&quot;: {&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Display&quot;},
-  &quot;focusRival&quot;: {&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;all&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;gspot&quot;,&quot;divaneu&quot;,&quot;noticia&quot;],&quot;section&quot;:&quot;Display&quot;}
+  &quot;focusRival&quot;: {&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;all&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;rival1&quot;,&quot;rival2&quot;,&quot;rival3&quot;],&quot;section&quot;:&quot;Display&quot;}
 }">
 
 class Component extends DCLogic {
@@ -1092,14 +1069,28 @@ class Component extends DCLogic {
     this.setState({ data: mod.DATA });
   }
 
+  // Colours are assigned by position in data.boats, not by boat name: the
+  // fleet changes from day to day, and a name-keyed map silently returns
+  // undefined - an invisible series - for any boat it has not heard of.
+  // data.boats[0] is always the team, which keeps the house ultramarine.
   boatColor(key) {
-    return { roman: 'var(--bh-ultramarine)', gspot: 'var(--bh-opal-green)', divaneu: 'var(--bh-pastel-blue)', noticia: 'var(--bh-night-blue)' }[key];
+    const palette = ['var(--bh-ultramarine)', 'var(--bh-opal-green)', 'var(--bh-pastel-blue)', 'var(--bh-night-blue)'];
+    const boats = (this.state.data && this.state.data.boats) || [];
+    const i = boats.findIndex(b => b.key === key);
+    return palette[(i < 0 ? 0 : i) % palette.length];
   }
 
+  // focusRival is positional for the same reason: 'rival1'..'rival3' mean the
+  // 2nd..4th boat in the data, whoever they are today.
   seriesOpacity(key) {
     const focus = this.props.focusRival || 'all';
-    if (focus === 'all' || key === 'roman' || key === focus) return 1;
-    return 0.2;
+    if (focus === 'all') return 1;
+    const boats = (this.state.data && this.state.data.boats) || [];
+    const teamKey = boats.length ? boats[0].key : null;
+    if (key === teamKey) return 1;
+    const m = /^rival([123])$/.exec(focus);
+    const focusKey = m && boats[+m[1]] ? boats[+m[1]].key : focus;
+    return key === focusKey ? 1 : 0.2;
   }
 
   convertSpeed(kn) {
@@ -1112,6 +1103,16 @@ class Component extends DCLogic {
   }
 
   setStart(idx) { this.setState({ selectedStart: idx }); }
+
+  // '2026-09-08' -> '08-Sep-26'. Parsed field by field rather than through
+  // Date(), which would shift the day in negative-offset time zones.
+  dateLabel() {
+    const iso = (this.state.data && this.state.data.session && this.state.data.session.date) || '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+    if (!m) return iso;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return m[3] + '-' + months[+m[2] - 1] + '-' + m[1].slice(2);
+  }
 
   buildChart(startEntry) {
     const W = 900, H = 260, ML = 40, MR = 12, MT = 12, MB = 26;
@@ -1160,7 +1161,6 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const boatNames = { roman: 'Team Sweden (Roman)', gspot: 'G-Spot', divaneu: 'Diva-Neu', noticia: 'Noticia' };
     if (!this.state.data) return { loaded: false, notLoaded: true };
     const data = this.state.data;
     const unitLabel = this.speedUnitLabel();
@@ -1227,7 +1227,9 @@ class Component extends DCLogic {
 
     return {
       loaded: true, notLoaded: false,
-      sessionLabel: 'Cascais, Portugal \u2014 07-Sep-26',
+      sessionLabel: data.session.venue + ' \u2014 ' + this.dateLabel(),
+      sourceLine: 'Source: Vakaros Atlas GPS telemetry, 2 Hz samples; (1) '
+        + data.boats.map(b => b.name).join(', ') + '; (2) ' + data.session.venue + ', ' + this.dateLabel(),
       kpiBoats, startTabs, chart, trackMap, tableRows, legend, maneuverBoats, pointOfSailRows, tackGybeBoats,
       estimatedTWD: data.session.estimatedTWD,
       startNumber: this.state.selectedStart + 1,

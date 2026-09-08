@@ -197,6 +197,94 @@ def build(fleet, min_legs: int = 3) -> dict:
     return report
 
 
+TEAM_NAME = "Team Sweden (Roman)"
+
+
+def _esc(text: str) -> str:
+    return (str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+
+
+def render_start_line_section(report: dict) -> str:
+    """The dashboard's start-line panel, one card per completed race.
+
+    Rendered from this report rather than recomputed, so the page and the JSON
+    can never disagree: every number below is read straight out of the dict
+    that was just written to disk.
+
+    The panel it replaces described 7 September, whose four starts were all
+    general recalls. The interesting column there was "were we over early". Here
+    both starts were valid and sailed to a finish, so the interesting column is
+    where along the line each boat started against how long its first beat then
+    took - which is the day's one clear finding.
+    """
+    races = report.get("races") or []
+    cards = []
+    for race in races:
+        wind = race["wind"]
+        rows = sorted(race["rows"], key=lambda r: r["start"]["distance_to_line_m"])
+        beat1_by_boat = {r["boat"]: r["beat1"]["duration_min"] for r in race["rows"]}
+        lines = []
+        for row in rows:
+            st = row["start"]
+            is_team = row["boat"] == TEAM_NAME
+            dist = st["distance_to_line_m"]
+            cls = "sl-row sl-team" if is_team else "sl-row"
+            val_cls = "sl-v sl-over" if dist < 0 else "sl-v"
+            sign = "+" if dist >= 0 else "\u2212"
+            beat = beat1_by_boat.get(row["boat"])
+            lines.append(
+                f'        <div class="{cls}"><span class="sl-b">{_esc(row["boat"])}</span>'
+                f'<span class="{val_cls}">{sign}{abs(dist):.1f} m &middot; {st["along_line_from_pin"]:.2f}'
+                f' &middot; {beat:.1f} min</span></div>'
+            )
+        corr = race["along_line_vs_beat1_time_correlation"]
+        cards.append(
+            '      <div class="sl-card">\n'
+            f'        <div class="sl-t">Race {race["race_number"]} &mdash; gun {race["gun_local"]} local'
+            f' &middot; {race["boats_tracked"]} boats tracked</div>\n'
+            f'        <div class="sl-m">Line {wind["line_length_m"]:.0f} m, bearing '
+            f'{wind["line_bearing_deg"]:.0f}&deg;, square to {wind["line_square_deg"]:.0f}&deg;. '
+            f'Correlation between start position along the line and time to the first windward '
+            f'mark: <b>{corr:+.2f}</b> &mdash; positive means the committee-boat end was slower.</div>\n'
+            + "\n".join(lines) + "\n      </div>"
+        )
+
+    return """<!-- ===== Start line: distance at the gun (static, build-time) ===== -->
+<style>
+#sl-wrap{margin:28px 40px 0;border:1px solid var(--bh-grey-line);}
+#sl-head{background:var(--bh-black);color:var(--bh-white);padding:16px 20px;}
+#sl-body{padding:20px;}
+.sl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;}
+.sl-card{border:1px solid var(--bh-grey-line);padding:14px 16px;}
+.sl-t{font-size:12px;font-weight:600;color:var(--bh-black);margin-bottom:2px;}
+.sl-m{font-size:10.5px;color:var(--bh-grey-700);margin-bottom:10px;line-height:1.45;}
+.sl-row{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;padding:3px 0;border-top:1px solid var(--bh-grey-100);}
+.sl-b{color:var(--bh-grey-700);}
+.sl-v{font-variant-numeric:tabular-nums;color:var(--bh-black);font-weight:600;white-space:nowrap;}
+.sl-team .sl-b,.sl-team .sl-v{color:var(--bh-ultramarine);}
+.sl-over{color:var(--bh-traffic-red);}
+#sl-foot{font-size:10.5px;color:var(--bh-grey-400);margin-top:14px;line-height:1.5;}
+</style>
+<div id="sl-wrap">
+  <div id="sl-head">
+    <div style="font-size:13px;font-weight:600;">Start line &mdash; position at the gun, and what it cost</div>
+    <div style="font-size:11px;color:var(--bh-grey-100);margin-top:4px;">Distance to line (positive = behind, negative = over early) &middot; position along the line (pin 0.00 &rarr; committee boat 1.00) &middot; first beat elapsed. Sorted by distance to the line.</div>
+  </div>
+  <div id="sl-body">
+    <div class="sl-grid">
+%s
+    </div>
+    <div id="sl-foot">%s</div>
+  </div>
+</div>
+""" % ("\n".join(cards), _esc(
+        "Line ends from the boats' own VKX line-position rows (last logged before each gun); "
+        "every boat recorded identical coordinates, so this is the committee's line. Positions and "
+        "beat times are measured from each boat's own track. No boat logged a wind instrument, so "
+        "the square-to figures are geometry, not measurement — see the forecast panel for wind speed."
+    ))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--team", required=True)
@@ -204,6 +292,8 @@ def main(argv=None):
     ap.add_argument("--wind-deg", type=float, default=None,
                     help="estimated wind direction, used to label legs beat/run")
     ap.add_argument("-o", "--out", required=True)
+    ap.add_argument("--html-out", default=None,
+                    help="also render the dashboard's start-line section from this report")
     args = ap.parse_args(argv)
 
     fleet = load_fleet(args.team, args.competitors, args.wind_deg)
@@ -212,6 +302,10 @@ def main(argv=None):
         json.dump(report, f, indent=1)
     print(f"wrote {args.out}: {len(report['races'])} races, "
           f"{report['races'][0]['boats_tracked'] if report['races'] else 0} boats")
+    if args.html_out:
+        with open(args.html_out, "w") as f:
+            f.write(render_start_line_section(report))
+        print(f"wrote {args.html_out}")
     for r in report["races"]:
         ts = r.get("team_summary")
         if ts:

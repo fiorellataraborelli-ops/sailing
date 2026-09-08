@@ -421,7 +421,7 @@
    {
     "race_number": 1,
     "gun_local": "13:05",
-    "boats_tracked": 13,
+    "boats_tracked": 14,
     "wind": {
      "line_length_m": 1003.7,
      "line_bearing_deg": 54.0,
@@ -431,6 +431,7 @@
     "order_at_last_mark": [
      "Patakin 3",
      "Team Sweden (Roman)",
+     "To Nessa 1527",
      "GTG New 2026",
      "Lady in red 2",
      "noticia",
@@ -443,7 +444,7 @@
      "Mag",
      "Dime Piece"
     ],
-    "along_line_vs_beat1_time_correlation": 0.55,
+    "along_line_vs_beat1_time_correlation": 0.48,
     "correlation_meaning": "Positive means boats starting nearer the committee-boat end took longer to the first windward mark.",
     "team_summary": {
      "position_at_each_mark": [
@@ -457,8 +458,8 @@
       1.01
      ],
      "beat1_avg_sog_vs_fleet_kn": -0.08,
-     "beat1_extra_distance_vs_fleet_m": -113.8,
-     "beat1_tacks_vs_fleet_median": 0
+     "beat1_extra_distance_vs_fleet_m": -106.0,
+     "beat1_tacks_vs_fleet_median": 1
     },
     "boats": [
      {
@@ -504,6 +505,28 @@
       "beat1_tacks": 2,
       "start_distance_to_line_m": 5.2,
       "start_along_line_from_pin": 0.453
+     },
+     {
+      "boat": "To Nessa 1527",
+      "marks_min": [
+       32.92,
+       49.61,
+       76.09
+      ],
+      "leg_min": [
+       32.92,
+       16.69,
+       26.48
+      ],
+      "leg_avg_sog_kn": [
+       5.9,
+       11.78,
+       5.85
+      ],
+      "beat1_extra_distance_m": 1260.2,
+      "beat1_tacks": 1,
+      "start_distance_to_line_m": 10.8,
+      "start_along_line_from_pin": 1.023
      },
      {
       "boat": "GTG New 2026",
@@ -752,7 +775,7 @@
    {
     "race_number": 2,
     "gun_local": "14:55",
-    "boats_tracked": 12,
+    "boats_tracked": 13,
     "wind": {
      "line_length_m": 1005.6,
      "line_bearing_deg": 54.8,
@@ -765,6 +788,7 @@
      "joust70",
      "Patakin 3",
      "noticia",
+     "To Nessa 1527",
      "Mag",
      "Phantom7",
      "Florida 65",
@@ -773,21 +797,21 @@
      "Dime Piece",
      "Team Sweden (Roman)"
     ],
-    "along_line_vs_beat1_time_correlation": 0.36,
+    "along_line_vs_beat1_time_correlation": 0.35,
     "correlation_meaning": "Positive means boats starting nearer the committee-boat end took longer to the first windward mark.",
     "team_summary": {
      "position_at_each_mark": [
-      11,
       12,
-      12
+      13,
+      13
      ],
      "gap_to_leader_min": [
       2.12,
       3.65,
       4.7
      ],
-     "beat1_avg_sog_vs_fleet_kn": -0.02,
-     "beat1_extra_distance_vs_fleet_m": 140.3,
+     "beat1_avg_sog_vs_fleet_kn": -0.01,
+     "beat1_extra_distance_vs_fleet_m": 142.7,
      "beat1_tacks_vs_fleet_median": 4
     },
     "boats": [
@@ -900,6 +924,28 @@
       "beat1_tacks": 0,
       "start_distance_to_line_m": 3.5,
       "start_along_line_from_pin": 0.255
+     },
+     {
+      "boat": "To Nessa 1527",
+      "marks_min": [
+       34.29,
+       50.96,
+       78.31
+      ],
+      "leg_min": [
+       34.29,
+       16.67,
+       27.35
+      ],
+      "leg_avg_sog_kn": [
+       5.67,
+       12.11,
+       5.75
+      ],
+      "beat1_extra_distance_m": 1321.0,
+      "beat1_tacks": 1,
+      "start_distance_to_line_m": 19.4,
+      "start_along_line_from_pin": 0.102
      },
      {
       "boat": "Mag",

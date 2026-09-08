@@ -3,9 +3,8 @@
 #sl-wrap{margin:28px 40px 0;border:1px solid var(--bh-grey-line);}
 #sl-head{background:var(--bh-black);color:var(--bh-white);padding:16px 20px;}
 #sl-body{padding:20px;}
-.sl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+.sl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;}
 .sl-card{border:1px solid var(--bh-grey-line);padding:14px 16px;}
-.sl-card.valid{border-color:var(--bh-ultramarine);border-width:2px;}
 .sl-t{font-size:12px;font-weight:600;color:var(--bh-black);margin-bottom:2px;}
 .sl-m{font-size:10.5px;color:var(--bh-grey-700);margin-bottom:10px;line-height:1.45;}
 .sl-row{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;padding:3px 0;border-top:1px solid var(--bh-grey-100);}
@@ -13,65 +12,51 @@
 .sl-v{font-variant-numeric:tabular-nums;color:var(--bh-black);font-weight:600;white-space:nowrap;}
 .sl-team .sl-b,.sl-team .sl-v{color:var(--bh-ultramarine);}
 .sl-over{color:var(--bh-traffic-red);}
-#sl-wind{display:flex;gap:26px;flex-wrap:wrap;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--bh-grey-line);}
-.sl-w{font-size:11px;color:var(--bh-grey-700);}
-.sl-w b{display:block;font-size:19px;color:var(--bh-black);font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px;}
 #sl-foot{font-size:10.5px;color:var(--bh-grey-400);margin-top:14px;line-height:1.5;}
 </style>
 <div id="sl-wrap">
   <div id="sl-head">
-    <div style="font-size:13px;font-weight:600;">Start line &mdash; distance at the gun</div>
-    <div style="font-size:11px;color:var(--bh-grey-100);margin-top:4px;">Positive = behind the line; negative = over early. Pin end 0.00 &rarr; committee boat 1.00</div>
+    <div style="font-size:13px;font-weight:600;">Start line &mdash; position at the gun, and what it cost</div>
+    <div style="font-size:11px;color:var(--bh-grey-100);margin-top:4px;">Distance to line (positive = behind, negative = over early) &middot; position along the line (pin 0.00 &rarr; committee boat 1.00) &middot; first beat elapsed. Sorted by distance to the line.</div>
   </div>
   <div id="sl-body">
-    <div id="sl-wind">
-      <div class="sl-w">Line square (committee)<b>300&deg;</b></div>
-      <div class="sl-w">Beat axis to mark<b>301&deg;</b></div>
-      <div class="sl-w">Tack bisector<b>312&deg;</b></div>
-      <div class="sl-w">Wind speed<b>n/a</b></div>
-    </div>
     <div class="sl-grid">
       <div class="sl-card">
-        <div class="sl-t">Start 1 &mdash; gun 14:55:00 local &middot; recalled</div>
-        <div class="sl-m">Line 982 m (0.53 nm), bearing 40&deg;, square to 310&deg;</div>
-        <div class="sl-row sl-team"><span class="sl-b">Team Sweden (Roman)</span><span class="sl-v sl-over">-0.6 m &middot; 0.85</span></div>
-        <div class="sl-row"><span class="sl-b">Diva-Neu</span><span class="sl-v">+1.0 m &middot; 0.00</span></div>
-        <div class="sl-row"><span class="sl-b">G-Spot</span><span class="sl-v">+1.0 m &middot; 0.36</span></div>
-        <div class="sl-row"><span class="sl-b">Noticia</span><span class="sl-v">+1.1 m &middot; 0.02</span></div>
-        <div class="sl-row"><span class="sl-b">TUR 442</span><span class="sl-v">+2.5 m &middot; 0.57</span></div>
-        <div class="sl-row"><span class="sl-b">TYRA</span><span class="sl-v">+10.5 m &middot; 0.40</span></div>
+        <div class="sl-t">Race 1 &mdash; gun 13:05 local &middot; 14 boats tracked</div>
+        <div class="sl-m">Line 1004 m, bearing 54&deg;, square to 324&deg;. Correlation between start position along the line and time to the first windward mark: <b>+0.48</b> &mdash; positive means the committee-boat end was slower.</div>
+        <div class="sl-row"><span class="sl-b">J70 Let it be</span><span class="sl-v">+2.2 m &middot; 0.89 &middot; 32.9 min</span></div>
+        <div class="sl-row"><span class="sl-b">noticia</span><span class="sl-v">+4.3 m &middot; 0.91 &middot; 33.3 min</span></div>
+        <div class="sl-row"><span class="sl-b">Dime Piece</span><span class="sl-v">+4.3 m &middot; 0.98 &middot; 33.1 min</span></div>
+        <div class="sl-row"><span class="sl-b">Florida 65</span><span class="sl-v">+4.8 m &middot; 0.44 &middot; 32.9 min</span></div>
+        <div class="sl-row"><span class="sl-b">joust70</span><span class="sl-v">+4.9 m &middot; 0.87 &middot; 33.4 min</span></div>
+        <div class="sl-row sl-team"><span class="sl-b">Team Sweden (Roman)</span><span class="sl-v">+5.2 m &middot; 0.45 &middot; 32.7 min</span></div>
+        <div class="sl-row"><span class="sl-b">GTG New 2026</span><span class="sl-v">+5.8 m &middot; 0.65 &middot; 32.5 min</span></div>
+        <div class="sl-row"><span class="sl-b">Lady in red 2</span><span class="sl-v">+5.9 m &middot; 0.36 &middot; 33.5 min</span></div>
+        <div class="sl-row"><span class="sl-b">Patakin 3</span><span class="sl-v">+6.5 m &middot; 0.28 &middot; 32.0 min</span></div>
+        <div class="sl-row"><span class="sl-b">Ba ba</span><span class="sl-v">+7.4 m &middot; 0.59 &middot; 32.7 min</span></div>
+        <div class="sl-row"><span class="sl-b">To Nessa 1527</span><span class="sl-v">+10.8 m &middot; 1.02 &middot; 32.9 min</span></div>
+        <div class="sl-row"><span class="sl-b">Phantom7</span><span class="sl-v">+13.0 m &middot; 0.91 &middot; 34.3 min</span></div>
+        <div class="sl-row"><span class="sl-b">Mag</span><span class="sl-v">+14.0 m &middot; 0.71 &middot; 34.0 min</span></div>
+        <div class="sl-row"><span class="sl-b">Yupi</span><span class="sl-v">+17.2 m &middot; 0.94 &middot; 33.7 min</span></div>
       </div>
       <div class="sl-card">
-        <div class="sl-t">Start 2 &mdash; gun 15:10:00 local &middot; recalled</div>
-        <div class="sl-m">Line 977 m (0.53 nm), bearing 39&deg;, square to 309&deg;</div>
-        <div class="sl-row"><span class="sl-b">Noticia</span><span class="sl-v">+0.9 m &middot; 0.83</span></div>
-        <div class="sl-row sl-team"><span class="sl-b">Team Sweden (Roman)</span><span class="sl-v">+2.8 m &middot; 0.85</span></div>
-        <div class="sl-row"><span class="sl-b">TYRA</span><span class="sl-v">+3.9 m &middot; 0.01</span></div>
-        <div class="sl-row"><span class="sl-b">G-Spot</span><span class="sl-v">+4.8 m &middot; 1.01</span></div>
-        <div class="sl-row"><span class="sl-b">Diva-Neu</span><span class="sl-v">+5.5 m &middot; -0.00</span></div>
-        <div class="sl-row"><span class="sl-b">TUR 442</span><span class="sl-v">+16.0 m &middot; 0.33</span></div>
-      </div>
-      <div class="sl-card">
-        <div class="sl-t">Start 3 &mdash; gun 15:35:00 local &middot; recalled</div>
-        <div class="sl-m">Line 985 m (0.53 nm), bearing 32&deg;, square to 302&deg;</div>
-        <div class="sl-row"><span class="sl-b">Diva-Neu</span><span class="sl-v sl-over">-2.1 m &middot; 0.46</span></div>
-        <div class="sl-row"><span class="sl-b">Noticia</span><span class="sl-v">+2.2 m &middot; 0.33</span></div>
-        <div class="sl-row"><span class="sl-b">G-Spot</span><span class="sl-v">+2.9 m &middot; 0.05</span></div>
-        <div class="sl-row"><span class="sl-b">TUR 442</span><span class="sl-v">+4.0 m &middot; 0.02</span></div>
-        <div class="sl-row sl-team"><span class="sl-b">Team Sweden (Roman)</span><span class="sl-v">+7.8 m &middot; 0.99</span></div>
-        <div class="sl-row"><span class="sl-b">TYRA</span><span class="sl-v">+21.2 m &middot; 0.01</span></div>
-      </div>
-      <div class="sl-card valid">
-        <div class="sl-t">Start 4 &mdash; gun 15:50:00 local &middot; VALID START</div>
-        <div class="sl-m">Line 986 m (0.53 nm), bearing 30&deg;, square to 300&deg;</div>
-        <div class="sl-row"><span class="sl-b">TUR 442</span><span class="sl-v">+2.6 m &middot; 0.06</span></div>
-        <div class="sl-row"><span class="sl-b">Noticia</span><span class="sl-v">+3.3 m &middot; 0.03</span></div>
-        <div class="sl-row"><span class="sl-b">G-Spot</span><span class="sl-v">+3.6 m &middot; 0.91</span></div>
-        <div class="sl-row sl-team"><span class="sl-b">Team Sweden (Roman)</span><span class="sl-v">+7.5 m &middot; 0.94</span></div>
-        <div class="sl-row"><span class="sl-b">TYRA</span><span class="sl-v">+8.9 m &middot; 0.03</span></div>
-        <div class="sl-row"><span class="sl-b">Diva-Neu</span><span class="sl-v">+16.7 m &middot; 0.96</span></div>
+        <div class="sl-t">Race 2 &mdash; gun 14:55 local &middot; 13 boats tracked</div>
+        <div class="sl-m">Line 1006 m, bearing 55&deg;, square to 325&deg;. Correlation between start position along the line and time to the first windward mark: <b>+0.35</b> &mdash; positive means the committee-boat end was slower.</div>
+        <div class="sl-row"><span class="sl-b">Lady in red 2</span><span class="sl-v">+3.1 m &middot; 0.30 &middot; 34.5 min</span></div>
+        <div class="sl-row"><span class="sl-b">noticia</span><span class="sl-v">+3.5 m &middot; 0.26 &middot; 33.3 min</span></div>
+        <div class="sl-row"><span class="sl-b">joust70</span><span class="sl-v">+4.3 m &middot; 0.13 &middot; 34.5 min</span></div>
+        <div class="sl-row"><span class="sl-b">Ba ba</span><span class="sl-v">+5.2 m &middot; 0.47 &middot; 33.0 min</span></div>
+        <div class="sl-row"><span class="sl-b">Yupi</span><span class="sl-v">+6.7 m &middot; 0.36 &middot; 33.4 min</span></div>
+        <div class="sl-row"><span class="sl-b">J70 Let it be</span><span class="sl-v">+10.8 m &middot; 0.91 &middot; 35.3 min</span></div>
+        <div class="sl-row"><span class="sl-b">Dime Piece</span><span class="sl-v">+10.9 m &middot; 0.51 &middot; 34.2 min</span></div>
+        <div class="sl-row sl-team"><span class="sl-b">Team Sweden (Roman)</span><span class="sl-v">+11.1 m &middot; 0.93 &middot; 35.1 min</span></div>
+        <div class="sl-row"><span class="sl-b">Patakin 3</span><span class="sl-v">+13.6 m &middot; 0.08 &middot; 33.9 min</span></div>
+        <div class="sl-row"><span class="sl-b">Florida 65</span><span class="sl-v">+13.7 m &middot; 0.38 &middot; 35.1 min</span></div>
+        <div class="sl-row"><span class="sl-b">Mag</span><span class="sl-v">+15.5 m &middot; 0.09 &middot; 34.9 min</span></div>
+        <div class="sl-row"><span class="sl-b">Phantom7</span><span class="sl-v">+18.3 m &middot; 0.35 &middot; 35.0 min</span></div>
+        <div class="sl-row"><span class="sl-b">To Nessa 1527</span><span class="sl-v">+19.4 m &middot; 0.10 &middot; 34.3 min</span></div>
       </div>
     </div>
-    <div id="sl-foot">Line ends from the boats' own VKX line-position rows (last logged before each gun); all six boats recorded identical coordinates. No boat logged a wind instrument, so the wind directions above are inferred from geometry and no wind speed is available.</div>
+    <div id="sl-foot">Line ends from the boats' own VKX line-position rows (last logged before each gun); every boat recorded identical coordinates, so this is the committee's line. Positions and beat times are measured from each boat's own track. No boat logged a wind instrument, so the square-to figures are geometry, not measurement — see the forecast panel for wind speed.</div>
   </div>
 </div>
