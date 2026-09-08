@@ -1,0 +1,308 @@
+{
+ "session": {
+  "date": "2026-09-07",
+  "venue": "Cascais, Portugal (approx 38.68N, 9.42W from GPS fixes)",
+  "local_time_offset_from_utc_h": 1,
+  "fleet_size_reported_by_user": 103,
+  "team_result_reported_by_user": "3rd of 103 (user-provided, NOT derived from telemetry)",
+  "scope_note": "The race was not sailed to a finish (per the team). Only the FIRST UPWIND and FIRST DOWNWIND leg are analysed; later legs are excluded."
+ },
+ "start_sequence": {
+  "race_start_events_utc": [
+   "13:55:00",
+   "14:10:00",
+   "14:35:00",
+   "14:50:00"
+  ],
+  "observed": "All 6 devices logged the same four RACE_START timer events within ~20ms of each other. Each of the first three was followed ~2 min later by a RACE_END+RESET pair; the 14:50 start had no RESET after it.",
+  "interpretation_inference": "Consistent with three general recalls/abandoned starts and a valid final start at 14:50:00 UTC (15:50 local). This is an INFERENCE from timer events, not a recorded race-committee signal."
+ },
+ "legs": [
+  {
+   "boat": "Team Sweden (Roman)",
+   "first_upwind": {
+    "duration_min": 29.49,
+    "avg_sog_kn": 5.23,
+    "max_sog_kn": 7.5,
+    "straight_line_m": 3645.1,
+    "path_m": 4745.1,
+    "vmg_proxy_kn": 4.0,
+    "tacks_detected": 6
+   },
+   "first_downwind": {
+    "duration_min": 14.55,
+    "avg_sog_kn": 10.34,
+    "max_sog_kn": 15.8,
+    "straight_line_m": 3270.0,
+    "path_m": 4645.7,
+    "vmg_proxy_kn": 7.28,
+    "gybes_detected": 4
+   }
+  },
+  {
+   "boat": "TYRA",
+   "first_upwind": {
+    "duration_min": 31.83,
+    "avg_sog_kn": 5.53,
+    "max_sog_kn": 8.5,
+    "straight_line_m": 3770.0,
+    "path_m": 5360.1,
+    "vmg_proxy_kn": 3.84,
+    "tacks_detected": 2
+   },
+   "first_downwind": {
+    "duration_min": 12.31,
+    "avg_sog_kn": 10.8,
+    "max_sog_kn": 16.0,
+    "straight_line_m": 2804.2,
+    "path_m": 4099.4,
+    "vmg_proxy_kn": 7.38,
+    "gybes_detected": 3
+   }
+  },
+  {
+   "boat": "TUR 442",
+   "first_upwind": {
+    "duration_min": 32.05,
+    "avg_sog_kn": 5.43,
+    "max_sog_kn": 7.8,
+    "straight_line_m": 3722.4,
+    "path_m": 5338.9,
+    "vmg_proxy_kn": 3.76,
+    "tacks_detected": 1
+   },
+   "first_downwind": {
+    "duration_min": 11.14,
+    "avg_sog_kn": 11.16,
+    "max_sog_kn": 16.3,
+    "straight_line_m": 2547.8,
+    "path_m": 3834.4,
+    "vmg_proxy_kn": 7.41,
+    "gybes_detected": 1
+   }
+  },
+  {
+   "boat": "G-Spot",
+   "first_upwind": {
+    "duration_min": 29.16,
+    "avg_sog_kn": 5.49,
+    "max_sog_kn": 8.2,
+    "straight_line_m": 3653.5,
+    "path_m": 4880.5,
+    "vmg_proxy_kn": 4.06,
+    "tacks_detected": 2
+   },
+   "first_downwind": {
+    "duration_min": 14.63,
+    "avg_sog_kn": 10.12,
+    "max_sog_kn": 16.7,
+    "straight_line_m": 3279.3,
+    "path_m": 4563.6,
+    "vmg_proxy_kn": 7.26,
+    "gybes_detected": 2
+   }
+  },
+  {
+   "boat": "Diva-Neu",
+   "first_upwind": {
+    "duration_min": 30.16,
+    "avg_sog_kn": 5.53,
+    "max_sog_kn": 7.7,
+    "straight_line_m": 3652.6,
+    "path_m": 5121.7,
+    "vmg_proxy_kn": 3.92,
+    "tacks_detected": 3
+   },
+   "first_downwind": {
+    "duration_min": 15.04,
+    "avg_sog_kn": 9.93,
+    "max_sog_kn": 16.6,
+    "straight_line_m": 3258.4,
+    "path_m": 4613.2,
+    "vmg_proxy_kn": 7.02,
+    "gybes_detected": 3
+   }
+  },
+  {
+   "boat": "Noticia",
+   "first_upwind": {
+    "duration_min": 31.78,
+    "avg_sog_kn": 5.45,
+    "max_sog_kn": 7.9,
+    "straight_line_m": 3764.0,
+    "path_m": 5315.4,
+    "vmg_proxy_kn": 3.84,
+    "tacks_detected": 2
+   },
+   "first_downwind": {
+    "duration_min": 16.57,
+    "avg_sog_kn": 9.38,
+    "max_sog_kn": 15.6,
+    "straight_line_m": 3257.8,
+    "path_m": 4787.2,
+    "vmg_proxy_kn": 6.37,
+    "gybes_detected": 8
+   }
+  }
+ ],
+ "not_in_this_data": [
+  "True wind speed and direction: no wind-instrument rows (VKX 0x0A) in any file.",
+  "True wind angle and true VMG: cannot be computed without wind direction. The 'vmg_proxy_kn' figures are straight-line progress along each boat's own track axis per unit time - NOT wind-referenced VMG.",
+  "Device-detected tack/gybe events: no shift-angle rows (VKX 0x06) in any file. Tack counts here are inferred from speed dips in the GPS track.",
+  "Heel and pitch: the VKX 0x02 rows DO carry an orientation quaternion, but it has not been converted to heel/pitch yet, so no heel figures exist here.",
+  "Finishing positions, elapsed times, points, and penalties: not in telemetry.",
+  "Mark positions: no reliable mark/line rows; leg boundaries are inferred from each boat's own track reversal.",
+  "Current/tide, waves, and wind shifts during the legs."
+ ],
+ "metric_definitions": {
+  "avg_sog_kn": "Mean GPS speed over ground across the leg, knots. Includes time lost in manoeuvres.",
+  "vmg_proxy_kn": "Straight-line start-to-end distance of the leg divided by leg time, in knots. A course-made-good rate, not wind-referenced VMG.",
+  "path_m": "Total distance sailed through the water track, metres.",
+  "straight_line_m": "Direct distance from leg start to leg end, metres. path_m minus straight_line_m is the extra distance sailed (tacking/gybing and any wandering).",
+  "speedAtGunKn": "GPS speed at the start gun, knots.",
+  "avgSpeedApproachKn": "Mean speed over the 3 minutes before the gun, knots.",
+  "distanceInWindowNm": "Distance sailed from 3 min before to 2 min after the gun, nautical miles."
+ },
+ "starts": [
+  {
+   "start_number": 1,
+   "gun_utc": "13:55:00",
+   "gun_local": "14:55:00",
+   "boats": [
+    {
+     "boat": "Team Sweden (Roman)",
+     "speed_at_gun_kn": 5.5,
+     "max_speed_first_60s_kn": 7,
+     "avg_speed_approach_kn": 4.7,
+     "distance_in_window_nm": 0.42
+    },
+    {
+     "boat": "G-Spot",
+     "speed_at_gun_kn": 5.3,
+     "max_speed_first_60s_kn": 7.2,
+     "avg_speed_approach_kn": 3.9,
+     "distance_in_window_nm": 0.37
+    },
+    {
+     "boat": "Diva-Neu",
+     "speed_at_gun_kn": 5.1,
+     "max_speed_first_60s_kn": 7.3,
+     "avg_speed_approach_kn": 4.7,
+     "distance_in_window_nm": 0.42
+    },
+    {
+     "boat": "Noticia",
+     "speed_at_gun_kn": 6.2,
+     "max_speed_first_60s_kn": 7.1,
+     "avg_speed_approach_kn": 4.6,
+     "distance_in_window_nm": 0.43
+    }
+   ]
+  },
+  {
+   "start_number": 2,
+   "gun_utc": "14:10:00",
+   "gun_local": "15:10:00",
+   "boats": [
+    {
+     "boat": "Team Sweden (Roman)",
+     "speed_at_gun_kn": 5.9,
+     "max_speed_first_60s_kn": 6.7,
+     "avg_speed_approach_kn": 4.2,
+     "distance_in_window_nm": 0.38
+    },
+    {
+     "boat": "G-Spot",
+     "speed_at_gun_kn": 5.7,
+     "max_speed_first_60s_kn": 7.1,
+     "avg_speed_approach_kn": 4.8,
+     "distance_in_window_nm": 0.41
+    },
+    {
+     "boat": "Diva-Neu",
+     "speed_at_gun_kn": 4.7,
+     "max_speed_first_60s_kn": 6.9,
+     "avg_speed_approach_kn": 3.6,
+     "distance_in_window_nm": 0.35
+    },
+    {
+     "boat": "Noticia",
+     "speed_at_gun_kn": 5.8,
+     "max_speed_first_60s_kn": 7,
+     "avg_speed_approach_kn": 3.1,
+     "distance_in_window_nm": 0.32
+    }
+   ]
+  },
+  {
+   "start_number": 3,
+   "gun_utc": "14:35:00",
+   "gun_local": "15:35:00",
+   "boats": [
+    {
+     "boat": "Team Sweden (Roman)",
+     "speed_at_gun_kn": 5.9,
+     "max_speed_first_60s_kn": 6.9,
+     "avg_speed_approach_kn": 4.5,
+     "distance_in_window_nm": 0.42
+    },
+    {
+     "boat": "G-Spot",
+     "speed_at_gun_kn": 5.1,
+     "max_speed_first_60s_kn": 7.9,
+     "avg_speed_approach_kn": 3.7,
+     "distance_in_window_nm": 0.37
+    },
+    {
+     "boat": "Diva-Neu",
+     "speed_at_gun_kn": 5.5,
+     "max_speed_first_60s_kn": 7.3,
+     "avg_speed_approach_kn": 4.6,
+     "distance_in_window_nm": 0.42
+    },
+    {
+     "boat": "Noticia",
+     "speed_at_gun_kn": 4.6,
+     "max_speed_first_60s_kn": 7.7,
+     "avg_speed_approach_kn": 3.2,
+     "distance_in_window_nm": 0.31
+    }
+   ]
+  },
+  {
+   "start_number": 4,
+   "gun_utc": "14:50:00",
+   "gun_local": "15:50:00",
+   "boats": [
+    {
+     "boat": "Team Sweden (Roman)",
+     "speed_at_gun_kn": 6.2,
+     "max_speed_first_60s_kn": 6.7,
+     "avg_speed_approach_kn": 4.7,
+     "distance_in_window_nm": 0.39
+    },
+    {
+     "boat": "G-Spot",
+     "speed_at_gun_kn": 5.4,
+     "max_speed_first_60s_kn": 6.9,
+     "avg_speed_approach_kn": 3.7,
+     "distance_in_window_nm": 0.37
+    },
+    {
+     "boat": "Diva-Neu",
+     "speed_at_gun_kn": 5.2,
+     "max_speed_first_60s_kn": 6.5,
+     "avg_speed_approach_kn": 4.8,
+     "distance_in_window_nm": 0.41
+    },
+    {
+     "boat": "Noticia",
+     "speed_at_gun_kn": 6.1,
+     "max_speed_first_60s_kn": 7.6,
+     "avg_speed_approach_kn": 3.4,
+     "distance_in_window_nm": 0.36
+    }
+   ]
+  }
+ ]
+}
