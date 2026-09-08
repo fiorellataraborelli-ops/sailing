@@ -67,14 +67,15 @@ def build(
     with open(template_path, encoding="utf-8") as f:
         template = f.read()
 
-    with open(panel_path, encoding="utf-8") as f:
-        panel = f.read()
-    with open(digest_path, encoding="utf-8") as f:
-        digest = json.load(f)
-
-    if PLACEHOLDER not in panel:
-        raise SystemExit(f"panel is missing the {PLACEHOLDER} placeholder")
-    panel = panel.replace(PLACEHOLDER, json.dumps(digest, separators=(",", ":")))
+    panel = ""
+    if panel_path:
+        with open(panel_path, encoding="utf-8") as f:
+            panel = f.read()
+        with open(digest_path, encoding="utf-8") as f:
+            digest = json.load(f)
+        if PLACEHOLDER not in panel:
+            raise SystemExit(f"panel is missing the {PLACEHOLDER} placeholder")
+        panel = panel.replace(PLACEHOLDER, json.dumps(digest, separators=(",", ":")))
 
     if template.count(BODY_END) != 1:
         raise SystemExit("could not find a unique body close in the template")
@@ -85,7 +86,8 @@ def build(
     for path in section_paths or []:
         with open(path, encoding="utf-8") as f:
             blocks.append(f.read())
-    blocks.append(panel)
+    if panel:
+        blocks.append(panel)
     template = template.replace(BODY_END, "\n" + "\n".join(blocks) + BODY_END, 1)
 
     encoded = encode_template(template)
@@ -108,6 +110,9 @@ def main(argv=None):
     ap.add_argument("--export", required=True, help="Claude Design standalone .html export (shell only)")
     ap.add_argument("--template", default="dashboard/dashboard_template.html")
     ap.add_argument("--panel", default="dashboard/analyser_panel.html")
+    ap.add_argument("--no-panel", action="store_true",
+                    help="omit the Claude analyser panel (for static hosting, where "
+                         "window.claude does not exist and it could never work)")
     ap.add_argument("--digest", default="reports/analyser_digest.json")
     ap.add_argument("--section", action="append", default=None,
                     help="static HTML section to append before the analyser panel (repeatable)")
@@ -116,7 +121,8 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     sections = args.section if args.section is not None else ["dashboard/start_line_section.html"]
-    rebuilt = build(args.export, args.template, args.panel, args.digest, args.title, sections)
+    panel = None if args.no_panel else args.panel
+    rebuilt = build(args.export, args.template, panel, args.digest, args.title, sections)
     with open(args.out, "w", encoding="utf-8") as f:
         f.write(rebuilt)
     print(f"wrote {args.out} ({len(rebuilt)} bytes)")
