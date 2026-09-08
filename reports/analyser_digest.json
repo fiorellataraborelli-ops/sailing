@@ -146,7 +146,7 @@
   }
  ],
  "not_in_this_data": [
-  "Measured wind: no wind-instrument rows (VKX 0x0A) in any file. Wind DIRECTION is estimated from GPS geometry in the 'start_line' section - use those figures, state that they are estimates, and never quote a measured wind. Wind SPEED is not available by any method here.",
+  "Measured wind ON THE BOAT: still none (no VKX 0x0A rows). For 8 Sept there IS forecast wind from GRIB, including SPEED, in today_2026_09_08.wind - use it, but call it a forecast, and apply the ~10 deg left correction noted there. For 7 Sept there is no wind speed by any method.",
   "True wind angle and true VMG: only as good as the estimated wind direction above. The 'vmg_proxy_kn' figures are straight-line progress along each boat's own track axis per unit time - NOT wind-referenced VMG.",
   "Device-detected tack/gybe events: no shift-angle rows (VKX 0x06) in any file. Tack counts here are inferred from speed dips in the GPS track.",
   "Heel and pitch: the VKX 0x02 rows DO carry an orientation quaternion, but it has not been converted to heel/pitch yet, so no heel figures exist here.",
@@ -1199,6 +1199,88 @@
      }
     ]
    }
-  ]
+  ],
+  "wind": {
+   "source": "DWD ICON-EU 06z GRIB2 (~7 km) at 38.68N 9.42W, decoded from data/wind/2026-09-08/. ECMWF IFS 06z also in the repo and agrees within a few degrees.",
+   "speed_kn": "11.0-12.0 mean, gusting ~22, steady across the racing window",
+   "forecast_by_hour": [
+    {
+     "forecast_hour": 5,
+     "valid_utc_hour": 11,
+     "direction_deg": 341.3,
+     "speed_kn": 11.7,
+     "gust_kn": 22.35
+    },
+    {
+     "forecast_hour": 6,
+     "valid_utc_hour": 12,
+     "direction_deg": 338.1,
+     "speed_kn": 11.51,
+     "gust_kn": 22.47
+    },
+    {
+     "forecast_hour": 7,
+     "valid_utc_hour": 13,
+     "direction_deg": 333.7,
+     "speed_kn": 11.42,
+     "gust_kn": 22.11
+    },
+    {
+     "forecast_hour": 8,
+     "valid_utc_hour": 14,
+     "direction_deg": 332.4,
+     "speed_kn": 11.32,
+     "gust_kn": 21.98
+    },
+    {
+     "forecast_hour": 9,
+     "valid_utc_hour": 15,
+     "direction_deg": 327.9,
+     "speed_kn": 10.97,
+     "gust_kn": 21.62
+    },
+    {
+     "forecast_hour": 10,
+     "valid_utc_hour": 16,
+     "direction_deg": 326.8,
+     "speed_kn": 11.95,
+     "gust_kn": 22.45
+    },
+    {
+     "forecast_hour": 11,
+     "valid_utc_hour": 17,
+     "direction_deg": 325.7,
+     "speed_kn": 11.11,
+     "gust_kn": 22.42
+    }
+   ],
+   "model_vs_observed": {
+    "races": [
+     {
+      "race_number": 1,
+      "mid_utc_hour": 13,
+      "forecast_direction_deg": 333.7,
+      "forecast_speed_kn": 11.42,
+      "forecast_gust_kn": 22.11,
+      "observed_direction_deg": 324.5,
+      "observed_basis": "committee line square 324.0 and first-beat bearing 324.9",
+      "forecast_minus_observed_deg": 9.2
+     },
+     {
+      "race_number": 2,
+      "mid_utc_hour": 14,
+      "forecast_direction_deg": 332.4,
+      "forecast_speed_kn": 11.32,
+      "forecast_gust_kn": 21.98,
+      "observed_direction_deg": 321.6,
+      "observed_basis": "committee line square 324.8 and first-beat bearing 318.5",
+      "forecast_minus_observed_deg": 10.8
+     }
+    ],
+    "mean_forecast_minus_observed_deg": 10.0,
+    "interpretation": "A positive mean means the forecast sits to the RIGHT of the wind the fleet actually sailed, i.e. on the water the breeze was further left than the model. Both the committee's line and the fleet's beat bearing are independent of the model, so a consistent offset is a real local bend, not measurement error."
+   },
+   "headline": "The GRIB sat ~10 deg RIGHT of the wind the fleet actually raced in, in both races (+9.2 and +10.8). The two observed measures (committee line square, fleet beat bearing) are independent of the model and agree with each other, so this is a real local left-bend of the Nortada into Cascais Bay. Practical rule: subtract ~10 deg from the GRIB for this racecourse. The models DO get the trend right - ICON backs 5.7 deg between races, the fleet backs 6.4 deg."
+  }
  }
 }

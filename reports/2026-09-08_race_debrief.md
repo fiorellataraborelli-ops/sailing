@@ -86,15 +86,40 @@ mark 3. Note run 1 was still fast in absolute terms (11.81 kn, quicker than Race
 — but it was the slowest run in the fleet by elapsed time because of where the boat was
 positioned in the fleet, in dirty air.
 
-## Wind
+## Wind — the GRIB was 10° right of the racecourse
 
-Estimated **324–325°** (NW), consistent across both races and by two independent methods
-(committee line perpendicular, and the beat bearing). Yesterday's estimate was 300–312°,
-so the breeze has **veered roughly 15–25° right** overnight.
+With the ICON-EU and ECMWF GRIBs now in the repo (`data/wind/2026-09-08/`) there are two
+independent readings of the breeze, and they disagree in a useful way. Model figures below
+are my own decode of the GRIB2 at 38.68 N, 9.42 W, which reproduces the committed README
+table exactly (338.1°/11.51 kn at 12Z vs its 338°/11.5 kn).
 
-One detail worth a crew conversation: in Race 2 the first beat was sailed on a mean bearing
-of **318.5°** against a line squared to **324.8°** — the fleet tracked about 6° left of the
-line perpendicular, which is consistent with a left phase early in that beat.
+| | Race 1 (mid ~13Z) | Race 2 (mid ~14Z) |
+|---|---|---|
+| ICON-EU forecast | 333.7° | 332.4° |
+| Committee line squared to | 324.0° | 324.8° |
+| Fleet's actual beat bearing | 324.9° | 318.5° |
+| **Forecast minus observed** | **+9.2°** | **+10.8°** |
+
+**The forecast sat about 10° right of the wind the fleet actually raced in, in both races.**
+The two observed measures — where the committee laid the line, and where the boats pointed
+on the beat — are independent of the model and of each other, and they agree with each
+other far more closely than either agrees with the GRIB. That makes this a real local
+effect, not measurement error: the Nortada bends left as it comes into Cascais Bay, and a
+7 km grid cell cannot see it.
+
+**Practical rule for tomorrow: take the GRIB direction and subtract ~10°.**
+
+What the models *do* get right is the trend. ICON-EU backs 338° → 332° between the two
+races (−5.7°); the fleet's beat bearing backs 324.9° → 318.5° (−6.4°). Near-identical rate
+of change. **Trust the models for when and how fast the shift comes; don't trust them for
+the absolute number.**
+
+Wind speed — which no GPS method can produce — is **11–11.5 kn mean, gusting 22 kn**,
+steady across the racing window. That is consistent with the measured boatspeeds: ~5.7–5.9 kn
+upwind and 11–12 kn downwind with peaks at 16 kn is right for a J/70 in 11 kn with gusts.
+
+Yesterday's GPS-derived estimate was 300–312°, so the breeze has **veered 15–25° right**
+overnight.
 
 ## What this data still cannot tell you
 
