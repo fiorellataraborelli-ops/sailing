@@ -343,52 +343,40 @@ function drawBench(){
 }
 
 /* ---------------- wind ---------------- */
-let wDay = 'tue', wRace = 0, wHour = 4;
+let wDay = 0, wRace = 0;
 function drawWind(){
-  seg($('wind-days'), [{key:'tue',label:'Tue 8 Sep'},{key:'wed',label:'Wed 9 Sep'}], wDay,
-      k => { wDay = k; drawWind(); });
-  if (wDay === 'tue'){
-    const R = D.wind.tue, r = R[Math.min(wRace, R.length - 1)];
-    seg($('wind-pick'), R.map((x, i) => ({key: i, label: 'R' + x.n})), wRace, k => { wRace = k; drawWind(); });
-    $('wind-sub').textContent = 'Measured by the fleet, per race';
-    $('n-raw').style.transform = `rotate(${r.forecast}deg)`;
-    $('n-cor').style.transform = `rotate(${r.measured}deg)`;
-    $('wind-kv').innerHTML =
-      `<div class="kv"><span>Forecast</span><b>${dg(r.forecast)}</b></div>` +
-      `<div class="kv hi"><span>Measured</span><b>${dg(r.measured)}</b></div>` +
-      `<div class="kv"><span>Error</span><b>${sign(r.bias.toFixed(1))}&deg;</b></div>`;
-    const L = r.legs;
-    tiles('wind-tiles', [
-      {k:'Line set to', v: r.setting + '&deg;'}, {k:'Gun', v: r.gun || NIL},
-      {k:'1st upwind', v: L.uw1 == null ? NIL : L.uw1 + '&deg;'},
-      {k:'1st downwind', v: L.dw1 == null ? NIL : L.dw1 + '&deg;'},
-      {k:'2nd upwind', v: L.uw2 == null ? NIL : L.uw2 + '&deg;'},
-      {k:'2nd downwind', v: L.dw2 == null ? NIL : L.dw2 + '&deg;'},
-    ]);
-    const drift = L.dw1 == null ? null : L.dw1 - L.uw1;
-    read('wind-r', `<b>Forecast ${sign(r.bias.toFixed(1))}&deg; right of the water.</b>` +
-      (drift == null ? '' : ` Downwind legs read ${Math.abs(drift)}&deg; right of upwind — same sign every race.`));
-  } else {
-    const rows = D.wind.wed, i = Math.min(wHour, rows.length - 1), r = rows[i];
-    seg($('wind-pick'), rows.map((x, j) => ({key: j, label: x.hr + 'h'})), i, k => { wHour = k; drawWind(); });
-    $('wind-sub').textContent = 'Three-model consensus, UTC';
-    $('n-raw').style.transform = `rotate(${r.raw}deg)`;
-    $('n-cor').style.transform = `rotate(${r.cor == null ? r.raw : r.cor}deg)`;
-    $('wind-kv').innerHTML =
-      `<div class="kv"><span>Raw model</span><b>${dg(r.raw)}</b></div>` +
-      `<div class="kv"><span>Corrected</span><b>${r.cor == null ? '—' : dg(r.cor)}</b></div>` +
-      `<div class="kv hi"><span>Race 4 measured</span><b>${D.race4.wind_uw1}&deg;</b></div>`;
-    tiles('wind-tiles', [
-      {k:'Speed', v: n1(r.kn), s:'kn'}, {k:'Gust', v: n1(r.gust), s:'kn'},
-      {k:'Model spread', v: n1(r.sp) + '&deg;'},
-      {k:'Starboard', v: Math.round((D.race4.wind_uw1 - D.meta.tack / 2 + 360) % 360) + '&deg;'},
-      {k:'Port', v: Math.round((D.race4.wind_uw1 + D.meta.tack / 2) % 360) + '&deg;'},
-      {k:'Tacking angle', v: D.meta.tack + '&deg;'},
-    ]);
-    const b4 = D.bias.rows[D.bias.rows.length - 1];
-    read('wind-r', `<b>Race 4 sailed at ${D.race4.wind_uw1}&deg;.</b> Forecast ${b4.forecast}&deg; — ` +
-      `error ${sign(b4.bias.toFixed(1))}&deg;, a third of Tuesday's.`);
-  }
+  const days = D.wind.days;
+  wDay = Math.min(wDay, days.length - 1);
+  seg($('wind-days'), days.map((d, i) => ({key: i, label: d.label})), wDay,
+      k => { wDay = k; wRace = 0; drawWind(); });
+  const R = days[wDay].races;
+  wRace = Math.min(wRace, R.length - 1);
+  seg($('wind-pick'), R.map((x, i) => ({key: i, label: 'Race ' + x.n})), wRace,
+      k => { wRace = k; drawWind(); });
+  const r = R[wRace];
+  $('wind-sub').textContent = 'Measured by the fleet, per race';
+  $('n-raw').style.transform = `rotate(${r.forecast}deg)`;
+  $('n-cor').style.transform = `rotate(${r.measured}deg)`;
+  $('wind-kv').innerHTML =
+    `<div class="kv"><span>Forecast</span><b>${dg(r.forecast)}</b></div>` +
+    `<div class="kv hi"><span>Measured</span><b>${dg(r.measured)}</b></div>` +
+    `<div class="kv"><span>Error</span><b>${sign(r.bias.toFixed(1))}&deg;</b></div>`;
+  const L = r.legs;
+  tiles('wind-tiles', [
+    {k:'Line set to', v: r.setting + '&deg;'},
+    {k:'Gun', v: r.gun || NIL},
+    {k:'Starboard', v: Math.round((r.measured - D.meta.tack / 2 + 360) % 360) + '&deg;'},
+    {k:'Port', v: Math.round((r.measured + D.meta.tack / 2) % 360) + '&deg;'},
+    {k:'1st upwind', v: L.uw1 == null ? NIL : L.uw1 + '&deg;'},
+    {k:'1st downwind', v: L.dw1 == null ? NIL : L.dw1 + '&deg;'},
+    {k:'2nd upwind', v: L.uw2 == null ? NIL : L.uw2 + '&deg;'},
+    {k:'2nd downwind', v: L.dw2 == null ? NIL : L.dw2 + '&deg;'},
+  ]);
+  const drift = L.dw1 == null ? null : L.dw1 - L.uw1;
+  read('wind-r', `<b>Forecast ${sign(r.bias.toFixed(1))}&deg; right of the water.</b>` +
+    (drift == null
+      ? ' Only the first upwind is published for this race.'
+      : ` Downwind legs read ${Math.abs(drift)}&deg; right of upwind — same sign every race.`));
 }
 
 /* ---------------- model error ---------------- */

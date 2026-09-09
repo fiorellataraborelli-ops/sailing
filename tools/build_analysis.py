@@ -129,25 +129,27 @@ def main():
               'team': f['file'].startswith('Team Sweden') or f['file'] == 'vakaros'}
              for f in D['fleet'] if f['day'] in RACED]
 
-    # Wind, restricted to the two days that have actually been raced.
+    # Wind, measured, grouped by the day it was actually sailed.
     #
-    # wind.json runs four days forward because the refresh job forecasts to the end of the
-    # regatta, and the page was showing all four — Thursday and Friday included, neither of
-    # which has been sailed. Tuesday is better served by what the fleet measured than by
-    # what any model said, so the two days are built from different sources on purpose:
-    # Tuesday from the event's measured wind per race, Wednesday from today's forecast.
+    # This used to mix the event's measured wind for Tuesday with wind.json's hourly
+    # forecast for Wednesday. Two things broke that: the 23:03 refresh rolled wind.json
+    # forward to 10-12 September and dropped the 9th entirely, leaving the Wednesday tab
+    # empty; and race 4 is a Wednesday race that was being listed under Tuesday, because
+    # the races were taken in order rather than by date. Both are gone now — every figure
+    # here is measured, and each race sits under the day it was sailed.
     guns = {r['n']: r['gun'] for r in D['races']}
     bias_by_race = {b['race']: b for b in D['ib']['bias_rows']}
-    tue = []
+    wind_days = {}
     for r in D['ib']['races']:
         b = bias_by_race.get(r['n'], {})
-        tue.append({'n': r['n'], 'date': r['date'], 'gun': guns.get(r['n']),
-                    'forecast': b.get('forecast'), 'measured': b.get('measured'),
-                    'bias': b.get('bias'), 'setting': r['setting'], 'legs': r['legs']})
-
-    wed = next((d for d in D['wind']['days'] if d['date'] == '2026-09-09'), None)
-    wed_rows = [{k: r[k] for k in ('hr', 'raw', 'cor', 'sp', 'kn', 'gust')}
-                for r in wed['rows']] if wed else []
+        wind_days.setdefault(r['date'], []).append({
+            # the loggers' gun, not the event's published one: race 1's report says
+            # 13:34:52, which puts every tracked boat mid-race
+            'n': r['n'], 'gun': guns.get(r['n']) or r.get('start_local'),
+            'forecast': b.get('forecast'), 'measured': b.get('measured'),
+            'bias': b.get('bias'), 'setting': r['setting'], 'legs': r['legs']})
+    wind = [{'date': d, 'label': DAY_LABEL.get(d, d), 'races': rs}
+            for d, rs in sorted(wind_days.items())]
 
     # start line, from the event's published geometry
     startline = [{'race': r['n'], 'setting': r['setting'], 'line_m': r['line_m'],
@@ -218,8 +220,7 @@ def main():
                    'team': {'pos': t['pos'], 'sail': t['sail'], 'boat': t['boat'],
                             'skipper': t['skipper'], 'pts': t['pts'], 'gain': t['gain_total'],
                             'races': [t['r1'], t['r2'], t['r3'], t['r4']]}},
-      'wind': {'tue': tue, 'wed': wed_rows, 'note': D['coach']['mechanism'],
-               'tueDate': '2026-09-08', 'wedDate': '2026-09-09'},
+      'wind': {'days': wind},
       'fleet': fleet,
       'dayLabel': DAY_LABEL, 'dayNote': DAY_NOTE,
       'startline': startline,
@@ -252,6 +253,7 @@ def main():
       'no placeholder standings': '38th' not in html and '>75<' not in html,
       'the real fleet size': str(D['official']['fleet_scored']) in html,
       'no unfilled bindings': '{{' not in html and '__' not in html.replace('__DATA__', ''),
+      'wind days all raced': all(d['date'] in RACED and d['races'] for d in wind),
       'no unraced days': '2026-09-10' not in html and '2026-09-11' not in html
                          and '2026-09-12' not in html and '2026-09-07' not in html,
       'the hero inlined': html.count('data:image/jpeg;base64,') == 1,
