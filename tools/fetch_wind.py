@@ -16,7 +16,7 @@ BIAS = 16.1          # deg; mean of three measured races (+19.1, +18.0, +11.2).
 TACK = 80.5          # deg; the fleet's own measured tacking angle
 MIN_KN_FOR_BIAS = 8  # below this the correction is not valid (see README)
 HOURS = range(11, 19)
-LAST_DAY = '2026-09-11'   # regatta ends Friday
+LAST_DAY = '2026-09-12'   # regatta runs 4-12 Sep; last racing day is Saturday
 
 URL = (f"https://api.open-meteo.com/v1/forecast?latitude={LAT}&longitude={LON}"
        "&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl"

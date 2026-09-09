@@ -15,7 +15,7 @@ const MODELS = 'icon_eu,ecmwf_ifs025,gfs_seamless';
 const OM = 'https://api.open-meteo.com/v1/forecast?latitude=38.68&longitude=-9.42'
   + '&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl'
   + '&wind_speed_unit=kn&timezone=Europe%2FLisbon&forecast_days=5&models=' + MODELS;
-const LAST_DAY = '2026-09-11';        // the regatta ends Friday
+const LAST_DAY = '2026-09-12';        // the regatta runs 4-12 Sep, ending Saturday
 const MIN_KN = 8;                     // below this the bias correction is invalid
 
 let DAYS = [], dayIdx = 0, hrIdx = 0, timer = null, STAMP = '';
@@ -399,7 +399,8 @@ function drawCov(){
   const have = D.fleet.filter(f => f.day === '2026-09-08').length;
   const IB = D.ib;
   $('cov').innerHTML =
-    `<b>${IB.fleet} boats raced; ${have} logs are in hand.</b> The event reports name the full fleet: ` +
+    `<b>The championship is a ${D.official.event.entries} boat fleet.</b> The event publishes race analysis for ${IB.fleet} of them, and ${have} of those decode here. Everything fleet-relative above is measured against that ${IB.fleet}-boat set, not the whole championship. ` +
+    `${D.official.event.entries_note} The ${IB.fleet} are: ` +
     `${IB.names.join(', ')}. Two of those resolve puzzles in the folder — <b>MidlifeCrisis</b> is the ` +
     `<code>MLC USA 26 primary</code> file, which logs at roughly 10 Hz against everyone else's 2 Hz, and ` +
     `<b>ToNessa</b> is the one file that sits in the GitHub repo but never reached the Drive folder. ` +
@@ -484,7 +485,8 @@ function drawStrategy(){
 }
 
 /* ---------------- boot ---------------- */
-$('s-fleet').textContent = D.fleet.length + ' boats';
+$('s-fleet').textContent = D.official.fleet_scored + ' entries';
+$('s-logs').textContent  = D.fleet.length + ' logs';
 $('s-bias').textContent  = '+' + BIAS.toFixed(1) + '°';
 $('s-tack').textContent  = TACK.toFixed(1) + '°';
 $('foot').innerHTML = `Vakaros Atlas VKX telemetry decoded from the Sailing drive folder at 0.5 s — ` +
