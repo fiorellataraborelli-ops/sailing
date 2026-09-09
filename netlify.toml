@@ -14,6 +14,24 @@
   [headers.values]
     Cache-Control = "no-cache, must-revalidate"
 
+# Race Day fetches these three live on every load (see dashboard/race_day.html) —
+# regatta_data.js and payload.json can be regenerated independently of an HTML
+# deploy, so a CDN-cached copy would silently go stale.
+[[headers]]
+  for = "/dashboard/race_day.html"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
+[[headers]]
+  for = "/dashboard/regatta_data.js"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
+[[headers]]
+  for = "/site/payload.json"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
 # The brief carries client race data. Keep it out of search results.
 [[headers]]
   for = "/*"

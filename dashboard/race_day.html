@@ -187,7 +187,7 @@ a{color:var(--color-accent)}
   </div>
 
   <div class="masthead">
-    <div class="kicker">SWE 1121 &middot; Garm &middot; Per Roman &middot; J/70 Worlds</div>
+    <div class="kicker" id="kicker">SWE 1121 &middot; Garm &middot; Per Roman &middot; J/70 Worlds</div>
     <h1>Cascais — Races 1 &amp; 2</h1>
     <p class="dek">Decoded from the fleet's own VKX logs and the ICON-EU wind model, with bearings corrected for the bias the fleet itself measured on the water.</p>
   </div>
@@ -195,10 +195,10 @@ a{color:var(--color-accent)}
   <div class="section" style="padding-top:0">
     <h6>Official result</h6>
     <div class="card">
-      <div class="startline-top"><span>Overall, after 2 races</span><b>38th of 100</b></div>
-      <div class="startline-meta" style="flex-wrap:wrap"><span>Race 1: 16th</span><span>Race 2: 59th</span><span>75 net pts</span></div>
+      <div class="startline-top"><span>Overall, after 2 races</span><b id="officialHeadline">38th of 100</b></div>
+      <div class="startline-meta" style="flex-wrap:wrap" id="officialMeta"><span>Race 1: 16th</span><span>Race 2: 59th</span><span>75 net pts</span></div>
       <div class="hr" style="margin:2px 0"></div>
-      <p class="note">cncascais.com official results, updated 9 Sep 09:25 local.</p>
+      <p class="note" id="officialNote">cncascais.com official results, updated 9 Sep 09:25 local.</p>
     </div>
   </div>
 
@@ -212,25 +212,25 @@ a{color:var(--color-accent)}
           <g font-family="Lora, serif" font-size="9" fill="var(--color-neutral-600)" text-anchor="middle">
             <text x="60" y="12">N</text><text x="112" y="63">E</text><text x="60" y="116">S</text><text x="8" y="63">W</text>
           </g>
-          <g style="transform:rotate(331.5deg);transform-origin:60px 60px">
+          <g id="windRawArrow" style="transform:rotate(331.5deg);transform-origin:60px 60px">
             <line x1="60" y1="20" x2="60" y2="86" stroke="var(--color-neutral-400)" stroke-width="1.5"></line>
             <polygon points="60,90 55,80 65,80" fill="var(--color-neutral-400)"></polygon>
           </g>
-          <g style="transform:rotate(321.6deg);transform-origin:60px 60px">
+          <g id="windCorArrow" style="transform:rotate(321.6deg);transform-origin:60px 60px">
             <line x1="60" y1="17" x2="60" y2="89" stroke="var(--color-accent)" stroke-width="2.5"></line>
             <polygon points="60,95 52,78 68,78" fill="var(--color-accent)"></polygon>
           </g>
           <circle cx="60" cy="60" r="3" fill="var(--color-text)"></circle>
         </svg>
         <div class="wind-stats">
-          <div class="wind-stat"><span>Forecast (Race 2 gun)</span><b>332&deg;</b></div>
-          <div class="wind-stat hero"><span>Observed TWD</span><b>322&deg;</b></div>
+          <div class="wind-stat"><span>Forecast (Race 2 gun)</span><b id="windRawLabel">332&deg;</b></div>
+          <div class="wind-stat hero"><span>Observed TWD</span><b id="windCorLabel">322&deg;</b></div>
           <div class="wind-stat"><span>Speed</span><b id="windSpeed">11.3 kn</b></div>
           <div class="wind-stat"><span>Gust</span><b id="windGust">21.9 kn</b></div>
         </div>
       </div>
       <div class="hr"></div>
-      <p class="note">The ICON-EU forecast ran 331.5&deg;/11.3 kn at the Race 2 gun; the committee's line-square and the fleet's own first-beat bearing put the true wind at 321.6&deg; &mdash; a 9.9&deg; right-side model error, in line with both of Sept 8's races (9.9&ndash;12.2&deg;, mean 11.0&deg;).</p>
+      <p class="note" id="windNote">The ICON-EU forecast ran 331.5&deg;/11.3 kn at the Race 2 gun; the committee's line-square and the fleet's own first-beat bearing put the true wind at 321.6&deg; &mdash; a 9.9&deg; right-side model error, in line with both of Sept 8's races (9.9&ndash;12.2&deg;, mean 11.0&deg;).</p>
     </div>
   </div>
 
@@ -295,34 +295,23 @@ a{color:var(--color-accent)}
 
 </div>
 
-<script>
-(function(){
-  "use strict";
+<script type="module">
+import { DATA as REGATTA } from './regatta_data.js';
 
-  var BOATS = [
-    { key:'roman', name:'Team Sweden', short:'SWE', isTeam:true, maxKn:16.3, avgKn:7.4, distNm:25.8,
-      up:{ avgKn:5.6, vmgKn:4.3, pct:63.1 }, down:{ avgKn:11.82, vmgKn:8.8, pct:30.4 },
-      tackCount:51, tackLossKn:1.02, gybeCount:35, gybeLossKn:2.35 },
-    { key:'patakin', name:'Patakin 3', short:'PAT', isTeam:false, maxKn:16.2, avgKn:7.5, distNm:26.0,
-      up:{ avgKn:5.65, vmgKn:4.37, pct:63.6 }, down:{ avgKn:11.83, vmgKn:8.95, pct:30.3 },
-      tackCount:33, tackLossKn:1.31, gybeCount:32, gybeLossKn:1.53 },
-    { key:'baba', name:'Ba ba', short:'BAB', isTeam:false, maxKn:15.9, avgKn:7.5, distNm:26.0,
-      up:{ avgKn:5.66, vmgKn:4.33, pct:65.0 }, down:{ avgKn:11.79, vmgKn:8.87, pct:30.4 },
-      tackCount:37, tackLossKn:1.02, gybeCount:26, gybeLossKn:2.86 },
-    { key:'tonessa', name:'To Nessa 1527', short:'TON', isTeam:false, maxKn:16.5, avgKn:7.5, distNm:25.9,
-      up:{ avgKn:5.57, vmgKn:4.32, pct:65.0 }, down:{ avgKn:11.9, vmgKn:8.9, pct:29.9 },
-      tackCount:37, tackLossKn:0.98, gybeCount:27, gybeLossKn:2.58 }
-  ];
+  // Last-known-good figures: what to show if the live fetches below fail
+  // (offline, opened via file://, or the source files move). Keeps the page
+  // usable at rest even without a network round-trip.
+  var FALLBACK_OFFICIAL = { pos:38, sail:'SWE 1121', boat:'Garm', skipper:'Per Roman',
+    r1:16, r2:59, pts:75, fleetScored:100,
+    source:'cncascais.com official results', updated:'9 Sep 09:25 local' };
+  var FALLBACK_WIND = { forecastDeg:331.5, forecastKn:11.25, gustKn:21.91,
+    observedDeg:321.6, errorDeg:9.9, rangeLo:9.9, rangeHi:12.2, meanDeg:11.0 };
 
-  var QA = [
-    { label:"How did we finish?", q:"How did we finish?", a:"16th in Race 1, 59th in Race 2 — 75 net points, 38th of 100 overall (cncascais.com official results, updated 9 Sep 09:25 local)." },
-    { label:"Upwind VMG vs Patakin?", q:"How's our upwind VMG vs Patakin?", a:"Team Sweden's upwind VMG is 4.3 kn, just under Patakin 3's 4.37 kn — a 0.07 kn gap held over 63% of the beat." },
-    { label:"Tack loss trend?", q:"What's our tack loss trend?", a:"86 maneuvers logged: 51 tacks averaging 1.02 kn lost, 35 gybes averaging 2.35 kn lost — gybe losses are the bigger lever right now." },
-    { label:"Wind bias right now?", q:"Where's the wind bias right now?", a:"At the Race 2 gun the forecast ran 331.5° against an observed 321.6° — a 9.9° right-side model error, consistent with both of Sept 8's races (9.9–12.2°). Right side has been paying all session." }
-  ];
-
-  var state = { selectedBoatKey:'roman', speedUnit:'knots', messages:[] };
-
+  function ordinal(n){
+    var s = ['th','st','nd','rd'], v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+  function round1(n){ return Math.round(n * 10) / 10; }
   function knToUnit(kn, unit){
     return unit === 'mps' ? (kn * 0.514444).toFixed(1) + ' m/s' : kn.toFixed(1) + ' kn';
   }
@@ -330,6 +319,69 @@ a{color:var(--color-accent)}
     var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
   }
 
+  // dashboard/regatta_data.js is the same file the desktop dashboard reads —
+  // importing it here (instead of copying numbers into this page) means a
+  // regenerated regatta_data.js updates both pages the moment it's deployed.
+  function boatsFromRegatta(regatta){
+    return regatta.boats.map(function(b){
+      return {
+        key: b.key,
+        name: b.key === 'roman' ? 'Team Sweden' : b.name,
+        short: b.short,
+        isTeam: b.key === 'roman',
+        maxKn: b.maxSpeedKn,
+        avgKn: b.avgSpeedKn,
+        distNm: b.totalDistanceNm,
+        up: { avgKn: b.pointOfSail.upwind.avgSpeedKn, vmgKn: b.pointOfSail.upwind.avgVmgKn, pct: b.pointOfSail.upwind.pctTime },
+        down: { avgKn: b.pointOfSail.downwind.avgSpeedKn, vmgKn: b.pointOfSail.downwind.avgVmgKn, pct: b.pointOfSail.downwind.pctTime },
+        tackCount: b.pointOfSail.tacks.count,
+        tackLossKn: b.pointOfSail.tacks.avgLossKn,
+        gybeCount: b.pointOfSail.gybes.count,
+        gybeLossKn: b.pointOfSail.gybes.avgLossKn
+      };
+    });
+  }
+
+  function buildQA(boats, official, wind){
+    var roman = boats.find(function(b){ return b.key === 'roman'; });
+    var patakin = boats.find(function(b){ return b.key === 'patakin'; });
+    var vmgGap = patakin.up.vmgKn - roman.up.vmgKn;
+    return [
+      { label:"How did we finish?", q:"How did we finish?",
+        a: ordinal(official.r1) + " in Race 1, " + ordinal(official.r2) + " in Race 2 — " + official.pts +
+           " net points, " + ordinal(official.pos) + " of " + official.fleetScored + " overall (" +
+           official.source + ", updated " + official.updated + ")." },
+      { label:"Upwind VMG vs Patakin?", q:"How's our upwind VMG vs Patakin?",
+        a: "Team Sweden's upwind VMG is " + roman.up.vmgKn.toFixed(2) + " kn, " + (vmgGap > 0 ? "just under" : "just over") +
+           " Patakin 3's " + patakin.up.vmgKn.toFixed(2) + " kn — a " + Math.abs(vmgGap).toFixed(2) +
+           " kn gap held over " + roman.up.pct.toFixed(0) + "% of the beat." },
+      { label:"Tack loss trend?", q:"What's our tack loss trend?",
+        a: (roman.tackCount + roman.gybeCount) + " maneuvers logged: " + roman.tackCount + " tacks averaging " +
+           roman.tackLossKn.toFixed(2) + " kn lost, " + roman.gybeCount + " gybes averaging " +
+           roman.gybeLossKn.toFixed(2) + " kn lost — gybe losses are the bigger lever right now." },
+      { label:"Wind bias right now?", q:"Where's the wind bias right now?",
+        a: "At the Race 2 gun the forecast ran " + round1(wind.forecastDeg) + "° against an observed " +
+           round1(wind.observedDeg) + "° — a " + round1(wind.errorDeg) + "° right-side model error, consistent with both of Sept 8's races (" +
+           wind.rangeLo + "–" + wind.rangeHi + "°). Right side has been paying all session." }
+    ];
+  }
+
+  var BOATS = boatsFromRegatta(REGATTA);
+  var OFFICIAL = FALLBACK_OFFICIAL;
+  var WIND = FALLBACK_WIND;
+  var QA = buildQA(BOATS, OFFICIAL, WIND);
+
+  var state = { selectedBoatKey:'roman', speedUnit:'knots', messages:[] };
+
+  var kickerEl = document.getElementById('kicker');
+  var officialHeadlineEl = document.getElementById('officialHeadline');
+  var officialMetaEl = document.getElementById('officialMeta');
+  var officialNoteEl = document.getElementById('officialNote');
+  var windRawArrowEl = document.getElementById('windRawArrow');
+  var windCorArrowEl = document.getElementById('windCorArrow');
+  var windRawLabelEl = document.getElementById('windRawLabel');
+  var windCorLabelEl = document.getElementById('windCorLabel');
+  var windNoteEl = document.getElementById('windNote');
   var fleetGrid = document.getElementById('fleetGrid');
   var unitSeg = document.getElementById('unitSeg');
   var boatSeg = document.getElementById('boatSeg');
@@ -340,19 +392,59 @@ a{color:var(--color-accent)}
   var windSpeedEl = document.getElementById('windSpeed');
   var windGustEl = document.getElementById('windGust');
 
-  boatSeg.innerHTML = BOATS.map(function(b){
-    return '<button class="seg-opt" data-boat="' + b.key + '">' + b.short + '</button>';
-  }).join('');
+  function renderBoatSeg(){
+    boatSeg.innerHTML = BOATS.map(function(b){
+      return '<button class="seg-opt" data-boat="' + b.key + '">' + b.short + '</button>';
+    }).join('');
+    boatSeg.addEventListener('click', function(e){
+      var btn = e.target.closest('[data-boat]');
+      if (!btn) return;
+      state.selectedBoatKey = btn.dataset.boat;
+      render();
+    });
+  }
 
-  chipsEl.innerHTML = QA.map(function(qa, i){
-    return '<button class="tag-outline" data-qa="' + i + '">' + esc(qa.label) + '</button>';
-  }).join('');
+  function renderChips(){
+    chipsEl.innerHTML = QA.map(function(qa, i){
+      return '<button class="tag-outline" data-qa="' + i + '">' + esc(qa.label) + '</button>';
+    }).join('');
+  }
+  chipsEl.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-qa]');
+    if (!btn) return;
+    var qa = QA[Number(btn.dataset.qa)];
+    state.messages = state.messages.concat([{ text: qa.q, isUser: true }, { text: qa.a, isUser: false }]);
+    render();
+  });
+
+  function renderMasthead(){
+    kickerEl.textContent = OFFICIAL.sail + ' · ' + OFFICIAL.boat + ' · ' + OFFICIAL.skipper + ' · J/70 Worlds';
+    officialHeadlineEl.textContent = ordinal(OFFICIAL.pos) + ' of ' + OFFICIAL.fleetScored;
+    officialMetaEl.innerHTML = '<span>Race 1: ' + ordinal(OFFICIAL.r1) + '</span><span>Race 2: ' + ordinal(OFFICIAL.r2) + '</span><span>' + OFFICIAL.pts + ' net pts</span>';
+    officialNoteEl.textContent = OFFICIAL.source + ', updated ' + OFFICIAL.updated + '.';
+  }
+
+  function renderWind(unit){
+    windRawArrowEl.style.transform = 'rotate(' + WIND.forecastDeg + 'deg)';
+    windCorArrowEl.style.transform = 'rotate(' + WIND.observedDeg + 'deg)';
+    windRawLabelEl.textContent = Math.round(WIND.forecastDeg) + '°';
+    windCorLabelEl.textContent = Math.round(WIND.observedDeg) + '°';
+    windSpeedEl.textContent = knToUnit(WIND.forecastKn, unit);
+    windGustEl.textContent = knToUnit(WIND.gustKn, unit);
+    windNoteEl.textContent = 'The ICON-EU forecast ran ' + round1(WIND.forecastDeg) + '°/' + round1(WIND.forecastKn) +
+      ' kn at the Race 2 gun; the committee’s line-square and the fleet’s own first-beat bearing put the true wind at ' +
+      round1(WIND.observedDeg) + '° — a ' + round1(WIND.errorDeg) + '° right-side model error, in line with both of Sept 8’s races (' +
+      WIND.rangeLo + '–' + WIND.rangeHi + '°, mean ' + WIND.meanDeg + '°).';
+  }
+
+  renderBoatSeg();
+  renderChips();
+  renderMasthead();
 
   function render(){
     var unit = state.speedUnit;
 
-    windSpeedEl.textContent = knToUnit(11.25, unit);
-    windGustEl.textContent = knToUnit(21.91, unit);
+    renderWind(unit);
 
     Array.prototype.forEach.call(unitSeg.querySelectorAll('.seg-opt'), function(el){
       el.classList.toggle('active', el.dataset.unit === unit);
@@ -403,21 +495,6 @@ a{color:var(--color-accent)}
     render();
   });
 
-  boatSeg.addEventListener('click', function(e){
-    var btn = e.target.closest('[data-boat]');
-    if (!btn) return;
-    state.selectedBoatKey = btn.dataset.boat;
-    render();
-  });
-
-  chipsEl.addEventListener('click', function(e){
-    var btn = e.target.closest('[data-qa]');
-    if (!btn) return;
-    var qa = QA[Number(btn.dataset.qa)];
-    state.messages = state.messages.concat([{ text: qa.q, isUser: true }, { text: qa.a, isUser: false }]);
-    render();
-  });
-
   var chatInput = document.getElementById('chatInput');
   var sendBtn = document.getElementById('sendBtn');
 
@@ -436,5 +513,43 @@ a{color:var(--color-accent)}
   });
 
   render();
-})();
+
+  // Both files below are already wired into this repo's own update loop:
+  // site/payload.json is rebuilt by .github/workflows/build-site.yml whenever
+  // site/ changes (official results included), and Netlify redeploys on every
+  // push to main — so fetching them live here, instead of copying numbers
+  // into this page, means this card and the wind card stay current on their
+  // own. reports/2026-09-08_wind.json is a historical record of that race and
+  // is fetched the same way purely to keep one source of truth.
+  Promise.all([
+    fetch('../site/payload.json').then(function(r){ return r.json(); }),
+    fetch('../reports/2026-09-08_wind.json').then(function(r){ return r.json(); })
+  ]).then(function(results){
+    var payload = results[0], windReport = results[1];
+    if (payload && payload.official && payload.official.team) {
+      var t = payload.official.team;
+      OFFICIAL = {
+        pos: t.pos, sail: t.sail, boat: t.boat, skipper: t.skipper,
+        r1: t.r1, r2: t.r2, pts: t.pts, fleetScored: payload.official.fleet_scored,
+        source: payload.official.source, updated: payload.official.updated
+      };
+    }
+    if (windReport && windReport.model_vs_observed) {
+      var mvo = windReport.model_vs_observed;
+      var r2 = mvo.races.find(function(r){ return r.race_number === 2; });
+      if (r2) {
+        WIND = {
+          forecastDeg: r2.forecast_direction_deg, forecastKn: r2.forecast_speed_kn, gustKn: r2.forecast_gust_kn,
+          observedDeg: r2.observed_direction_deg, errorDeg: r2.forecast_minus_observed_deg,
+          rangeLo: mvo.offset_range_deg[0], rangeHi: mvo.offset_range_deg[1], meanDeg: mvo.mean_forecast_minus_observed_deg
+        };
+      }
+    }
+    QA = buildQA(BOATS, OFFICIAL, WIND);
+    renderMasthead();
+    renderChips();
+    render();
+  }).catch(function(err){
+    console.warn('Race Day: live data fetch failed, showing last-known-good figures.', err);
+  });
 </script>
