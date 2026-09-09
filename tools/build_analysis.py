@@ -47,6 +47,75 @@ def leg_tacks(D, race_n, boat):
     return None
 
 
+def canon(s):
+    """One key per boat across three sources that name them three different ways."""
+    t = ud.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
+    t = re.sub(r'\b\d{1,2}[.\-]\d{1,2}[.\-]\d{4}\b', '', t)
+    t = re.sub(r'\bvakaros\d*\b', '', t)
+    t = re.sub(r'[^a-z0-9]', '', t)
+    return re.sub(r'\d+$', '', t) or t
+
+
+ALIAS = {'teamswedenroman': 'garm', 'teamsweden': 'garm', 'dimepiece': 'dime',
+         'j70letitbe': 'letitbe', 'mag': 'magatron', 'gtgnew': 'goodtogo'}
+key = lambda s: ALIAS.get(canon(s), canon(s))
+
+DISPLAY = {'garm': 'Garm', 'dime': 'Dime Piece', 'letitbe': 'Let It Be', 'magatron': 'Mag',
+           'goodtogo': 'GTG', 'arete': 'Areté', 'baba': 'Bábá', 'ladyinred': 'Lady in Red',
+           'mooredrv': 'Moore DRV', 'vtarte': 'V-Tarte', 'tonessa': 'To Nessa',
+           'midlifecrisis': 'MidlifeCrisis', 'relativeobscurity': 'Relative Obscurity',
+           # the download stamped dates into these filenames; the boat is not called that
+           'phantom': 'Phantom7', 'divaneu': 'DIVA-NEU', 'njk': 'NJK', 'tur': 'TUR 442',
+           'tyra': 'TYRA', 'joust': 'Joust70', 'jcurve': 'JCurve', 'mikes': "Mike's"}
+
+
+def build_compare(D):
+    """Every velocity measure this analysis has, one row per boat, joined on `key`.
+
+    Three sources name the same boats differently — the log file, the leg analysis and
+    the event's segment table — so nothing here is joined on a raw string. A boat missing
+    from one source keeps nulls for those columns rather than dropping out of the table.
+    """
+    rows = {}
+
+    def slot(name):
+        k = key(name)
+        return rows.setdefault(k, {'key': k, 'name': DISPLAY.get(k, name), 'team': k == 'garm'})
+
+    for f in D['fleet']:
+        if f['day'] != '2026-09-08':
+            continue
+        r = slot(f['file'])
+        r.update(up=f['upAvg'], dn=f['dnAvg'], avg=f['avg'], mx=f['mx'], nm=f['nm'])
+
+    for rn in ('1', '2'):
+        for boat, L in D['legs']['races'].get(rn, {}).items():
+            r = slot(boat)
+            beat = next((l for l in L if l['kind'] == 'beat'), None)
+            run = next((l for l in L if l['kind'] == 'run'), None)
+            if beat:
+                r['vmg' + rn], r['twa' + rn] = beat['vmg'], beat['twa']
+                r['tacks' + rn], r['extra' + rn] = beat['tacks'], beat['extra']
+            if run:
+                r['run' + rn] = run['vmg']
+
+    for s in D['segments']['rows']:
+        r = slot(s['boat'])
+        r.update(peak=s['s']['0'], s60=s['s']['60'], hold=s['hold'])
+
+    for o in D['official']['top']:
+        k = key(o['boat'])
+        if k in rows:
+            rows[k].update(pos=o['pos'], pts=o['pts'])
+    t = D['official']['team']
+    if 'garm' in rows:
+        rows['garm'].update(pos=t['pos'], pts=t['pts'])
+
+    out = [r for r in rows.values() if r.get('up') or r.get('peak')]
+    out.sort(key=lambda r: -(r.get('up') or 0))
+    return out
+
+
 def main():
     D = json.load(open(os.path.join(ROOT, 'site/payload.json')))
     team = D['meta']['team']
@@ -144,6 +213,7 @@ def main():
       'segments': {'rows': segs, 'caveat': D['segments']['caveat']},
       'kpi': {'rows': D['kpi']['rows'], 'note': D['kpi']['note']},
       'coach': {'start': D['coach']['start'], 'mechanism': D['coach']['mechanism']},
+      'compare': build_compare(D),
       'qa': qa,
     }
 

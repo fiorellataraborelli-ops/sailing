@@ -344,9 +344,27 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="note" id="vmg-note"></p>
   </section>
 
+  <section id="compare" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">07</span><h2>Competitor velocity</h2></div>
+      <div class="seg scroll" id="cmp-metric"></div>
+    </div>
+    <p class="lede">Every boat this analysis has a speed for, on one axis. Each dot is a boat; the
+      lime dot is Garm. Where the dots bunch is where the fleet actually is &mdash; and how far
+      Garm sits from that bunch is the honest measure of a speed problem.</p>
+    <svg id="cmp-plot" viewBox="0 0 640 170" style="width:100%;height:auto;display:block;" role="img"></svg>
+    <div class="tiles" style="margin:16px 0 18px;" id="cmp-tiles"></div>
+    <div class="gridhead" style="grid-template-columns:1.5fr .75fr .8fr .75fr .6fr .75fr .7fr .8fr .7fr;">
+      <span>Boat</span><span>Upwind</span><span>Downwind</span><span>Beat VMG</span><span>TWA</span>
+      <span>Run VMG</span><span>Peak</span><span>Hold</span><span>vs Garm</span>
+    </div>
+    <div class="scroller" id="cmp-rows"></div>
+    <p class="note" id="cmp-note"></p>
+  </section>
+
   <section id="segments" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">07</span><h2>Speed segments, 9 Sep</h2></div>
+      <div class="title"><span class="n">08</span><h2>Speed segments, 9 Sep</h2></div>
       <div class="seg" id="seg-sort"></div>
     </div>
     <p class="lede">Maximum speed held across a rolling window. The columns get harder left to right: anyone can touch 20 knots for an instant, holding it for a minute is a different thing.</p>
@@ -358,7 +376,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="kpi" class="reveal rd-card">
-    <div class="title" style="margin-bottom:6px;"><span class="n">08</span><h2>Top five against Garm</h2></div>
+    <div class="title" style="margin-bottom:6px;"><span class="n">09</span><h2>Top five against Garm</h2></div>
     <p class="lede">The championship leaders on the KPIs that matter, joined from three independent sources &mdash; scored results, the 9 September speed segments, and VMG computed here from the raw logs.</p>
     <div class="gridhead" style="grid-template-columns:1.5fr .5fr .6fr .8fr .7fr .8fr .7fr;">
       <span>Boat</span><span>Pos</span><span>Pts</span><span>Gained</span><span>Peak</span><span>Hold</span><span>VMG</span>
@@ -368,14 +386,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="coach" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">09</span><h2>Coach's read</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">10</span><h2>Coach's read</h2></div>
     <p class="cg" style="font-weight:600;font-style:italic;font-size:22px;line-height:1.35;color:var(--ink);background:var(--mint);border-radius:14px;padding:16px 18px;margin:0 0 16px;">&ldquo;Start at the pin, then get right immediately.&rdquo;</p>
     <div id="coach-points"></div>
     <p class="note" id="coach-mech"></p>
   </section>
 
   <section id="analyser" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">10</span><h2>Ask the analyser</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">11</span><h2>Ask the analyser</h2></div>
     <div id="chatlog" style="margin-bottom:12px;"></div>
     <div class="chips" id="chips"></div>
     <form class="ask" id="askform">
@@ -627,6 +645,106 @@ function drawVmg(){
     `Efficiency (VMG ÷ SOG) correlates at ${dr.r_eff}, but that is definitional and is not treated as a driver.`;
 }
 
+/* ---------------- competitor velocity ---------------- */
+const METRICS = [
+  {k:'up',   label:'Upwind SOG',   low:'upwind speed',  unit:'kn', dp:2, blurb:'average speed below 8 knots, 8 September'},
+  {k:'dn',   label:'Downwind SOG', low:'downwind speed',unit:'kn', dp:2, blurb:'average speed at or above 8 knots, 8 September'},
+  {k:'vmg1', label:'Beat VMG',     low:'beat VMG',      unit:'kn', dp:2, blurb:'speed made good up the wind axis, first beat of race 1'},
+  {k:'run1', label:'Run VMG',      low:'run VMG',       unit:'kn', dp:2, blurb:'speed made good down the wind axis, first run of race 1'},
+  {k:'peak', label:'Peak speed',   low:'peak speed',    unit:'kn', dp:2, blurb:'highest instantaneous speed, 9 September'},
+  {k:'hold', label:'Speed held 60 s', low:'speed held for a full minute', unit:'', dp:3, blurb:'share of that peak still held over a full minute'},
+];
+let cmpKey = 'up';
+function drawCompare(){
+  const M = METRICS.find(m => m.k === cmpKey);
+  seg($('cmp-metric'), METRICS.map(m => ({key: m.k, label: m.label})), cmpKey,
+      k => { cmpKey = k; drawCompare(); });
+  const have = D.compare.filter(b => b[M.k] != null).sort((a, b) => b[M.k] - a[M.k]);
+  const us = have.find(b => b.team);
+  const vals = have.map(b => b[M.k]);
+  const lo = Math.min(...vals), hi = Math.max(...vals), span = (hi - lo) || 1;
+  const med = vals.slice().sort((a, b) => a - b)[Math.floor(vals.length / 2)];
+  const fmt = v => v == null ? '—' : v.toFixed(M.dp) + (M.unit ? ' ' + M.unit : '');
+
+  // beeswarm: walk the sorted values, drop to a new row when the last dot is too close
+  const X0 = 46, X1 = 610, Y0 = 34, STEP = 17, R = 5.5;
+  const x = v => X0 + (v - lo) / span * (X1 - X0);
+  const lanes = [];
+  const placed = have.map(b => {
+    const px = x(b[M.k]);
+    let i = 0;
+    while (lanes[i] != null && Math.abs(px - lanes[i]) < R * 2 + 1) i++;
+    lanes[i] = px;
+    return {b, px, py: Y0 + i * STEP};
+  });
+  const depth = Math.max(...placed.map(p => p.py)) + 42;
+  const mx = x(med);
+  let svg = `<line x1="${X0}" y1="${depth - 22}" x2="${X1}" y2="${depth - 22}" stroke="#e4e6e1"/>`;
+  [lo, med, hi].forEach((v, i) => {
+    const px = x(v);
+    svg += `<line x1="${px.toFixed(1)}" y1="${depth - 26}" x2="${px.toFixed(1)}" y2="${depth - 18}" stroke="#c7cbc1"/>` +
+           `<text x="${px.toFixed(1)}" y="${depth - 5}" font-family="Lora,serif" font-size="11" fill="#8a9080" ` +
+           `text-anchor="${i === 0 ? 'start' : i === 2 ? 'end' : 'middle'}">${v.toFixed(M.dp)}${i === 1 ? ' median' : ''}</text>`;
+  });
+  svg += `<line x1="${mx.toFixed(1)}" y1="20" x2="${mx.toFixed(1)}" y2="${depth - 26}" stroke="#c7cbc1" stroke-dasharray="3 4"/>`;
+  placed.forEach(p => {
+    svg += `<circle cx="${p.px.toFixed(1)}" cy="${p.py}" r="${R}" fill="${p.b.team ? '#8bc63f' : '#c7cbc1'}" ` +
+           `stroke="${p.b.team ? '#2f6522' : 'none'}" stroke-width="${p.b.team ? 2 : 0}"><title>${esc(p.b.name)} — ${fmt(p.b[M.k])}</title></circle>`;
+  });
+  if (us){
+    const p = placed.find(q => q.b.team);
+    const right = p.px < 520;
+    svg += `<text x="${(p.px + (right ? 12 : -12)).toFixed(1)}" y="${p.py + 4}" font-family="Lora,serif" ` +
+           `font-size="12" font-weight="700" fill="#171a16" text-anchor="${right ? 'start' : 'end'}">Garm ${fmt(us[M.k])}</text>`;
+  }
+  svg += `<text x="${X0}" y="14" font-family="Lora,serif" font-size="11" font-weight="700" fill="#8a9080">` +
+         `${M.label} — ${M.blurb}, ${have.length} boats</text>`;
+  $('cmp-plot').innerHTML = svg;
+  $('cmp-plot').setAttribute('viewBox', `0 0 640 ${depth}`);
+  $('cmp-plot').setAttribute('aria-label', `${M.label} for ${have.length} boats, Garm marked`);
+
+  const rank = us ? have.findIndex(b => b.team) + 1 : null;
+  const best = have[0];
+  $('cmp-tiles').innerHTML = [
+    ['Garm', us ? fmt(us[M.k]) : 'no data', us ? M.label : ''],
+    ['Fleet best', fmt(best[M.k]), best.name],
+    ['Fleet median', fmt(med), have.length + ' boats'],
+    ['Garm rank', rank ? rank + ' of ' + have.length : '—', us ? (rank <= have.length / 3 ? 'top third' : rank <= have.length * 2 / 3 ? 'middle third' : 'bottom third') : ''],
+  ].map(([k, v, sub]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${esc(v)}</div>` +
+    (sub ? `<div style="font-size:11.5px;color:var(--faint);margin-top:3px;">${esc(sub)}</div>` : '') + `</div>`).join('');
+
+  const dash = v => v == null ? '<span style="color:var(--faint);">—</span>' : v;
+  $('cmp-rows').innerHTML = have.map(b => {
+    const d = us ? b[M.k] - us[M.k] : null;
+    return `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.5fr .75fr .8fr .75fr .6fr .75fr .7fr .8fr .7fr;">
+      <span>${esc(b.name)}</span>
+      <span class="tnum">${dash(b.up && b.up.toFixed(2))}</span>
+      <span class="tnum">${dash(b.dn && b.dn.toFixed(2))}</span>
+      <span class="tnum">${dash(b.vmg1 && b.vmg1.toFixed(2))}</span>
+      <span class="tnum">${dash(b.twa1 && b.twa1.toFixed(0) + '°')}</span>
+      <span class="tnum">${dash(b.run1 && b.run1.toFixed(2))}</span>
+      <span class="tnum">${dash(b.peak && b.peak.toFixed(2))}</span>
+      <span class="tnum">${dash(b.hold && b.hold.toFixed(3))}</span>
+      <span class="tnum" style="color:${b.team ? 'inherit' : d > 0 ? 'var(--red)' : 'var(--deep)'};font-weight:600;">${
+        b.team ? '—' : (d > 0 ? '+' : '') + d.toFixed(M.dp)}</span></div>`;
+  }).join('');
+
+  const spread = ((hi - lo) / med * 100).toFixed(1);
+  const off = us ? ((us[M.k] - med) / med * 100) : null;
+  const where = off == null ? '' : Math.abs(off) < 0.05 ? 'exactly on the fleet median'
+              : `${Math.abs(off).toFixed(1)}% ${off > 0 ? 'above' : 'below'} the median`;
+  $('cmp-note').innerHTML =
+    `<b>Top to bottom, the fleet spans ${spread}% on ${M.low}.</b> ` +
+    (us ? `Garm sits ${where}, ${rank} of ${have.length}. ` : '') +
+    `Hold that against the ${D.official.team.gain} places Garm wins back after the first windward ` +
+    `mark: a boat that was genuinely slow could not make those places up.<br><br>` +
+    `<span style="color:var(--faint);">Joined across three sources that name the same boats three ` +
+    `different ways — the log file, the leg analysis and the event's segment table. A boat missing ` +
+    `from one source keeps a dash in those columns rather than dropping out of the comparison. ` +
+    `Upwind and downwind averages come from 8 September; peak and hold from the 9 September segment ` +
+    `table; VMG from the raw logs.</span>`;
+}
+
 /* ---------------- speed segments ---------------- */
 let segKey = 's0';
 function drawSeg(){
@@ -713,7 +831,7 @@ function say(q, a){
 
 /* ---------------- nav + reveal ---------------- */
 const SECTIONS = [['wind','Wind'],['gap','Perf. gap'],['start','Start line'],['fleet','Fleet'],
-                  ['maneuvers','Manoeuvres'],['vmg','VMG'],['segments','Segments'],['kpi','Top 5'],
+                  ['maneuvers','Manoeuvres'],['vmg','VMG'],['compare','Compare'],['segments','Segments'],['kpi','Top 5'],
                   ['coach','Coach'],['analyser','Analyser']];
 function drawNav(){
   $('nav').innerHTML = SECTIONS.map(([id, l]) => `<a href="#${id}" data-s="${id}">${l}</a>`).join('');
@@ -737,7 +855,7 @@ function drawNav(){
 
 function drawAll(){
   drawSummary(); drawWind(); drawGap(); drawStart(); drawFleet();
-  drawMan(); drawVmg(); drawSeg(); drawKpi(); drawCoach();
+  drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
 drawAll(); drawChat(); drawNav();
 </script>
