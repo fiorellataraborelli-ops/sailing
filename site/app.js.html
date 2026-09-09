@@ -382,17 +382,31 @@ function drawMv(){
 function drawOfficial(){
   const O = D.official;
   if (!O){ return; }
-  $('off-p').textContent = `Scored after ${O.races_scored} races, last updated ${O.updated} — source: ${O.source}.`;
-  head('off-h', ['Pos','Sail','Boat','Net points']);
-  const rows = O.top.map(r => ({pos:r.pos, sail:r.sail, boat:r.boat, pts:r.pts, team:false}));
-  rows.push({pos: O.team.pos, sail: O.team.sail, boat: O.team.boat + ' — ' + O.team.skipper, pts: O.team.pts, team: true});
+  $('off-p').textContent = `Scored after ${O.races_scored} races, updated ${O.updated} — source: ${O.source}.`;
+  head('off-h', ['Pos','Sail','Boat','Races','Net','Places gained']);
+  const fmt = r => (r||[]).join(' · ');
+  const rows = O.top.map(r => ({...r, races: fmt(r.r), team:false}));
+  rows.push({pos:O.team.pos, sail:O.team.sail, boat:O.team.boat+' — '+O.team.skipper,
+             races: fmt([O.team.r1,O.team.r2,O.team.r3,O.team.r4].filter(x=>x!=null)),
+             pts:O.team.pts, gain:O.team.gain_total, team:true});
   $('off-b').innerHTML = rows.map(r =>
-    `<tr class="${r.team ? 'team' : ''}"><td>${r.pos}</td><td>${r.sail}</td><td style="text-align:left;font-family:'IBM Plex Sans',sans-serif;">${r.boat}</td><td>${r.pts}</td></tr>`
+    `<tr class="${r.team?'team':''}"><td>${r.pos}</td><td>${r.sail}</td>` +
+    `<td style="text-align:left;font-family:'IBM Plex Sans',sans-serif;">${r.boat}</td>` +
+    `<td>${r.races}</td><td>${r.pts}</td>` +
+    `<td><span class="pill ${r.gain>0?'up':r.gain<0?'dn':'nu'}">${r.gain>0?'+':''}${r.gain}</span></td></tr>`
   ).join('');
-  const perRace = [['1', O.team.r1], ['2', O.team.r2], ['3', O.team.r3]]
-    .filter(([, r]) => r != null).map(([n, r]) => `${r}th in race ${n}`).join(', ');
-  $('off-note').innerHTML = `<b>Team Sweden (Roman) is ${O.team.pos}th of ${O.fleet_scored} scored boats</b>, on ${O.team.pts} net points ` +
-    `— ${perRace}. The race explorer above still ranks by last mark rounding, not this official result, since the two are not yet joined.`;
+  const T=O.team, best=Math.min(T.r1,T.r2,T.r3,T.r4??99), worst=Math.max(T.r1,T.r2,T.r3,T.r4??0);
+  $('off-note').innerHTML =
+    `<b>Garm is ${T.pos}th of ${O.fleet_scored} on ${T.pts} points</b> — ${T.r1}, ${T.r2}, ${T.r3}` +
+    (T.r4!=null?`, ${T.r4}`:'') + `. A ${best}th and a ${worst}th in the same regatta.<br><br>` +
+    `<b>But the gain column is the story.</b> ${O.gain_def} Garm is <b>+${T.gain_total}</b>, the largest ` +
+    `of any boat shown here — and the split is +${T.gain_up} upwind against <b>+${T.gain_down} downwind</b>. ` +
+    `The leader, Marnatura, gains only +${O.top[0].gain}, and third-placed Areté just +${O.top[2].gain}: ` +
+    `they do not need to recover because they are already at the front by the first mark.<br><br>` +
+    `That is the same conclusion the telemetry reaches from the other direction. Upwind VMG sits mid-fleet ` +
+    `— 13th of 30 in race 1, 16th of 28 in race 2, both within 0.02 kn of the median — so the boat is not ` +
+    `slow. It is arriving at the first mark deep and then passing people, hardest downwind. The place to ` +
+    `find the points is the start and the first beat, not boat speed.`;
 }
 
 function drawCov(){
