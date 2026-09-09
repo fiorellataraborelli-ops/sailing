@@ -5,10 +5,13 @@
 
 # The client's design is the site now. A 200 rewrite serves it at the root without
 # changing the URL, and leaves the earlier brief reachable rather than overwritten.
+# force is required: without it an index.html that actually exists wins over the rule,
+# which is exactly what happened on the first deploy.
 [[redirects]]
   from = "/"
   to = "/race-analysis.html"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/brief"
