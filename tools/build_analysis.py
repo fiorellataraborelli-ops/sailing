@@ -127,6 +127,9 @@ def main():
     # Races 1 and 2 are the only ones with decoded telemetry. Race 3 has no logs at all
     # and race 4 only the event's start and first upwind, so neither is shown.
     TRACKED = (1, 2)
+    # The wind card also carries Wednesday, whose only race is 4. It shows the day's
+    # measured wind, not a race enumeration, so no race number reaches the screen.
+    WIND_RACES = (1, 2, 4)
     fleet = [{'name': f['file'], 'day': f['day'], 'avg': f['avg'], 'up': f['upAvg'],
               'dn': f['dnAvg'], 'mx': f['mx'], 'nm': f['nm'],
               'team': f['file'].startswith('Team Sweden') or f['file'] == 'vakaros'}
@@ -142,7 +145,7 @@ def main():
     bias_by_race = {b['race']: b for b in D['ib']['bias_rows']}
     by_day = {}
     for r in D['ib']['races']:
-        if r['n'] not in TRACKED:
+        if r['n'] not in WIND_RACES:
             continue
         b = bias_by_race.get(r['n'], {})
         by_day.setdefault(r['date'], []).append({
@@ -249,7 +252,7 @@ def main():
       'no placeholder standings': '38th' not in html and '>75<' not in html,
       'the real fleet size': str(D['official']['fleet_scored']) in html,
       'no unfilled bindings': '{{' not in html and '__' not in html.replace('__DATA__', ''),
-      'only tracked races': all(r['n'] in TRACKED for d in wind_days for r in d['races'])
+      'only tracked races': all(r['n'] in WIND_RACES for d in wind_days for r in d['races'])
                             and all(r['race'] in TRACKED for r in startline),
       'wind days all raced': all(d['date'] in RACED and d['races'] for d in wind_days),
       'no race 3 or 4 on the page': 'Race 3' not in html and 'Race 4' not in html,

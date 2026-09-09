@@ -614,8 +614,12 @@ function drawWind(){
   $('w-gu').textContent = r.setting + '°';
   $('w-sp').textContent = r.gun || '—';
 
-  seg($('wind-sub'), R.map((x, i) => ({key: i, label: 'Race ' + x.n})), wRace,
-      k => { wRace = k; drawWind(); });
+  // a day with one race needs no race picker — the day tab already names it
+  if (R.length > 1)
+    seg($('wind-sub'), R.map((x, i) => ({key: i, label: 'Race ' + x.n})), wRace,
+        k => { wRace = k; drawWind(); });
+  else
+    $('wind-sub').innerHTML = '';
 
   const L = r.legs;
   const legs = [['1st upwind', L.uw1], ['1st downwind', L.dw1],
@@ -629,7 +633,7 @@ function drawWind(){
   const drift = L.dw1 == null ? null : L.dw1 - L.uw1;
   $('w-note').innerHTML =
     `<b>The model was ${r.bias.toFixed(1)}° right of the water at the gun.</b> ` +
-    `Across the ${B.length === 2 ? 'two' : B.length} races shown it ran ${B.join(' then ')}` +
+    `Across the ${['','one','two','three','four','five'][B.length] || B.length} races shown it ran ${B.join(' then ')}` +
     `${B.length > 1 ? ', falling each time' : ''} — the correction is a centre, not a fixed offset. ` +
     `${D.wind.note}<br><br>` +
     (drift == null
