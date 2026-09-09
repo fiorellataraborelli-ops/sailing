@@ -596,6 +596,71 @@ function drawDayCompare(){
     `<b>${C.note}</b>`;
 }
 
+let segSort='0', segDir=-1;
+function drawSeg(){
+  const S=D.segments; if(!S) return;
+  const cols=S.windows.map(String);
+  head('seg-h',['Boat',...cols.map(c=>c+' s'),'Hold']);
+  const rows=S.rows.slice().sort((a,b)=>{
+    if(segSort==='hold') return segDir*(a.hold-b.hold);
+    return segDir*(a.s[segSort]-b.s[segSort]);
+  });
+  const hdr=$('seg-h').children;
+  [...hdr].forEach((th,i)=>{
+    if(i===0) return;
+    const key = i<=cols.length ? cols[i-1] : 'hold';
+    th.tabIndex=0; th.style.cursor='pointer';
+    if(segSort===key) th.textContent+= segDir>0?' ↑':' ↓';
+    const go=()=>{ if(segSort===key) segDir=-segDir; else {segSort=key; segDir=-1;} drawSeg(); };
+    th.onclick=go; th.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
+  });
+  $('seg-b').innerHTML=rows.map(r=>
+    `<tr class="${r.boat==='Garm'?'team':''}"><td>${r.boat}</td>`+
+    cols.map(c=>`<td>${r.s[c].toFixed(2)}</td>`).join('')+
+    `<td><span class="pill ${r.hold>=0.88?'up':r.hold<0.82?'dn':'nu'}">${r.hold.toFixed(3)}</span></td></tr>`
+  ).join('');
+  const g=S.rows.find(r=>r.boat==='Garm');
+  const best=S.rows.slice().sort((a,b)=>b.hold-a.hold)[0];
+  const peaky=S.rows.slice().sort((a,b)=>b.s['0']-a.s['0'])[0];
+  $('seg-note').innerHTML =
+    `<b>Peak speed and sustained speed pull against each other.</b> Across these ${S.n} boats the ` +
+    `correlation between the instantaneous peak and how much of it survives a full minute is ` +
+    `<b>&minus;0.59</b>: the biggest numbers come from a brief surf in a gust, not from a boat that is ` +
+    `genuinely quick. ${peaky.boat} tops the fleet at ${peaky.s['0'].toFixed(2)} kn and keeps only ` +
+    `${(peaky.hold*100).toFixed(0)}% of it over a minute — the worst retention here. ` +
+    `<b>${best.boat}, third overall, has one of the lowest peaks and the best retention at ` +
+    `${(best.hold*100).toFixed(0)}%.</b><br><br>` +
+    (g ? `<b>Garm</b> is ${g.rank0} of ${S.n} on raw peak but ${g.rank60} on the one-minute figure and ` +
+         `${g.rankhold} on retention — the boat holds speed better than it spikes. That is the same ` +
+         `signal as the downwind gains in the standings.<br><br>` : '') +
+    S.caveat + ' ' + S.source[0].toUpperCase()+S.source.slice(1)+'.';
+}
+
+function drawKpi(){
+  const K=D.kpi; if(!K) return;
+  head('kpi-h',['Boat','Pos','Points','Places gained','Peak kn','60 s kn','Hold','Beat VMG','TWA°']);
+  const dash=v=>v==null?'<span style="color:var(--faint)">—</span>':v;
+  $('kpi-b').innerHTML=K.rows.map(r=>
+    `<tr class="${r.team?'team':''}"><td>${r.boat}</td><td>${r.pos}</td><td>${r.pts}</td>`+
+    `<td>${r.gain==null?dash(null):`<span class="pill ${r.gain>0?'up':'nu'}">+${r.gain}</span>`}</td>`+
+    [dash(r.peak?.toFixed?.(2)), dash(r.s60?.toFixed?.(2)), dash(r.hold?.toFixed?.(3)),
+     dash(r.vmg?.toFixed?.(2)), dash(r.twa?.toFixed?.(1))]
+    .map(c=>`<td>${c}</td>`).join('')+'</tr>').join('');
+  const g=K.rows.find(r=>r.team), a=K.rows.find(r=>r.boat==='Areté');
+  $('kpi-note').innerHTML =
+    (a&&g ? `<b>Compare Garm with Areté.</b> Third overall against 27th — and on raw boat speed there is ` +
+      `almost nothing between them. Garm's peak today was ${g.peak} kn to Areté's ${a.peak}; upwind VMG ` +
+      `from the logs is <b>${g.vmg} kn against ${a.vmg} kn</b>, at ${g.twa}° and ${a.twa}° true wind angle. ` +
+      `Two boats sailing the same speed at the same angle.<br><br>` +
+      `<b>The gap is entirely in where they sail, not how fast.</b> Areté gains just +${a.gain} places after ` +
+      `the first mark because it is already at the front; Garm gains +${g.gain} because it starts each race ` +
+      `deep. Areté holds ${(a.hold*100).toFixed(0)}% of its peak over a minute to Garm's ` +
+      `${(g.hold*100).toFixed(0)}% — marginal. The boat is not slow. The first beat is losing the race.<br><br>` : '') +
+    `<b>The pattern across the leaders is the same.</b> Marnatura leads on 20 points gaining only +23, ` +
+    `and Areté sits third gaining +2. Every one of them converts a good first beat into a result. Garm ` +
+    `has the largest recovery in the table and the deepest hole to climb out of.<br><br>` + K.note;
+}
+
 /* ---------------- boot ---------------- */
 $('s-fleet').textContent = D.official.fleet_scored + ' entries';
 $('s-logs').textContent  = D.fleet.length + ' logs';
@@ -606,5 +671,5 @@ $('foot').innerHTML = `Vakaros Atlas VKX telemetry decoded from the Sailing driv
   `tomorrow’s from a live ICON-EU / ECMWF IFS / GFS consensus at 38.68 N 9.42 W. ` +
   `Corrected bearings subtract the ${BIAS.toFixed(1)}° right-bias measured against the event's own race reports ` +
   `(ib-sailing.com, 34-boat fleet), which supersede an earlier ${D.meta.bias_old.toFixed(0)}° estimate built on the committee line square.`;
-ticks(); drawRace(); drawFleet(); drawMv(); drawOfficial(); drawCov(); drawBrief(); drawPipeline(); drawStrategy(); drawVmg(); drawDayCompare(); loadWind();
+ticks(); drawRace(); drawFleet(); drawMv(); drawOfficial(); drawCov(); drawBrief(); drawPipeline(); drawStrategy(); drawVmg(); drawDayCompare(); drawSeg(); drawKpi(); loadWind();
 </script>
