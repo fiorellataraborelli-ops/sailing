@@ -236,8 +236,6 @@ def main():
         'start_cols': D['race4']['start_cols'], 'start': D['race4']['start'],
         'uw1_cols': D['race4']['uw1_cols'], 'uw1': D['race4']['uw1'],
       },
-      'bias': {'rows': D['ib']['bias_rows'], 'trend': D['ib']['bias_trend'],
-               'note': D['ib']['bias_note']},
       'compare': build_compare(D),
       'qa': qa,
     }

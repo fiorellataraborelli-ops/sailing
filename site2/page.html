@@ -192,23 +192,15 @@ footer{padding:24px var(--pad) 0;font:500 10.5px/1.7 'DM Sans',sans-serif;color:
     <p class="read" id="wind-r"></p>
   </section>
 
-  <section class="card" id="bias">
-    <div class="ch"><span class="n">03</span><h2>Model error</h2>
-      <span class="sub">Forecast against wind measured on the water</span></div>
-    <div class="rail"><table id="bias-t"></table></div>
-    <svg class="plot" id="bias-plot" viewBox="0 0 320 130" role="img"></svg>
-    <p class="read" id="bias-r"></p>
-  </section>
-
   <section class="card" id="start">
-    <div class="ch"><span class="n">04</span><h2>Start line</h2>
+    <div class="ch"><span class="n">03</span><h2>Start line</h2>
       <span class="sub">Geometry per race</span></div>
     <div class="rail"><table id="start-t"></table></div>
     <p class="read" id="start-r"></p>
   </section>
 
   <section class="card" id="race4">
-    <div class="ch"><span class="n">05</span><h2>Race 4</h2><span class="sub" id="r4-sub"></span></div>
+    <div class="ch"><span class="n">04</span><h2>Race 4</h2><span class="sub" id="r4-sub"></span></div>
     <div class="segwrap"><div class="seg" id="r4-view"></div></div>
     <div class="tiles" style="margin-bottom:12px;" id="r4-tiles"></div>
     <div class="rail tall"><table id="r4-t"></table></div>
@@ -217,7 +209,7 @@ footer{padding:24px var(--pad) 0;font:500 10.5px/1.7 'DM Sans',sans-serif;color:
   </section>
 
   <section class="card" id="vmg">
-    <div class="ch"><span class="n">06</span><h2>Leg VMG</h2><span class="sub" id="vmg-sub"></span></div>
+    <div class="ch"><span class="n">05</span><h2>Leg VMG</h2><span class="sub" id="vmg-sub"></span></div>
     <div class="segwrap"><div class="seg" id="vmg-races"></div></div>
     <div class="tiles" style="margin-bottom:12px;" id="vmg-tiles"></div>
     <div class="rail tall"><table id="vmg-t"></table></div>
@@ -227,7 +219,7 @@ footer{padding:24px var(--pad) 0;font:500 10.5px/1.7 'DM Sans',sans-serif;color:
   </section>
 
   <section class="card" id="spread">
-    <div class="ch"><span class="n">07</span><h2>Velocity spread</h2>
+    <div class="ch"><span class="n">06</span><h2>Velocity spread</h2>
       <span class="sub">Every tracked boat on one axis</span></div>
     <div class="segwrap"><div class="seg" id="cmp-metric"></div></div>
     <div class="tiles" style="margin-bottom:12px;" id="cmp-tiles"></div>
@@ -237,7 +229,7 @@ footer{padding:24px var(--pad) 0;font:500 10.5px/1.7 'DM Sans',sans-serif;color:
   </section>
 
   <section class="card" id="segments">
-    <div class="ch"><span class="n">08</span><h2>Speed segments</h2>
+    <div class="ch"><span class="n">07</span><h2>Speed segments</h2>
       <span class="sub">9 Sep &middot; max speed held over a rolling window</span></div>
     <div class="segwrap"><div class="seg" id="seg-sort"></div></div>
     <div class="tiles" style="margin-bottom:12px;" id="seg-tiles"></div>
@@ -246,14 +238,14 @@ footer{padding:24px var(--pad) 0;font:500 10.5px/1.7 'DM Sans',sans-serif;color:
   </section>
 
   <section class="card" id="top5">
-    <div class="ch"><span class="n">09</span><h2>Top five</h2>
+    <div class="ch"><span class="n">08</span><h2>Top five</h2>
       <span class="sub">Championship leaders against Garm</span></div>
     <div class="rail"><table id="kpi-t"></table></div>
     <p class="read" id="kpi-r"></p>
   </section>
 
   <section class="card" id="fleet">
-    <div class="ch"><span class="n">10</span><h2>Fleet telemetry</h2><span class="sub" id="fleet-sub"></span></div>
+    <div class="ch"><span class="n">09</span><h2>Fleet telemetry</h2><span class="sub" id="fleet-sub"></span></div>
     <div class="segwrap"><div class="seg" id="fleet-days"></div></div>
     <div class="rail tall"><table id="fleet-t"></table></div>
     <p class="read" id="fleet-r"></p>
@@ -377,34 +369,6 @@ function drawWind(){
     (drift == null
       ? ' Only the first upwind is published for this race.'
       : ` Downwind legs read ${Math.abs(drift)}&deg; right of upwind — same sign every race.`));
-}
-
-/* ---------------- model error ---------------- */
-function drawBias(){
-  const R = D.bias.rows;
-  table('bias-t', ['Race', 'Forecast', 'Measured', 'Error'],
-    R.map(r => ({c: [`Race ${r.race}`, dg(r.forecast), dg(r.measured),
-                     `<span class="dn">${sign(r.bias.toFixed(1))}&deg;</span>`]})));
-  const W = 320, H = 130, L = 34, Rt = 14, T = 14, B = 26;
-  const max = Math.ceil(Math.max(...R.map(r => r.bias)) / 5) * 5;
-  const x = i => L + (W - L - Rt) * (i / (R.length - 1 || 1));
-  const y = v => T + (H - T - B) * (1 - v / max);
-  let s = '';
-  for (let g = 0; g <= max; g += 5)
-    s += `<line x1="${L}" y1="${y(g).toFixed(1)}" x2="${W - Rt}" y2="${y(g).toFixed(1)}" stroke="#e4e6e1"/>` +
-         `<text x="${L - 6}" y="${(y(g) + 3.5).toFixed(1)}" font-family="DM Sans,sans-serif" font-size="9" fill="#8a9080" text-anchor="end">${g}&#176;</text>`;
-  s += `<polyline fill="none" stroke="#8bc63f" stroke-width="2.5" points="${
-        R.map((r, i) => `${x(i).toFixed(1)},${y(r.bias).toFixed(1)}`).join(' ')}"/>`;
-  R.forEach((r, i) => {
-    s += `<circle cx="${x(i).toFixed(1)}" cy="${y(r.bias).toFixed(1)}" r="4.5" fill="#8bc63f" stroke="#fff" stroke-width="1.5"/>` +
-         `<text x="${x(i).toFixed(1)}" y="${(y(r.bias) - 10).toFixed(1)}" font-family="DM Sans,sans-serif" font-size="10" font-weight="700" fill="#171a16" text-anchor="middle">${r.bias.toFixed(1)}</text>` +
-         `<text x="${x(i).toFixed(1)}" y="${H - 7}" font-family="DM Sans,sans-serif" font-size="9.5" fill="#8a9080" text-anchor="middle">R${r.race}</text>`;
-  });
-  $('bias-plot').innerHTML = s;
-  $('bias-plot').setAttribute('aria-label', 'Model error falling across four races');
-  const f = R[0].bias, l = R[R.length - 1].bias;
-  read('bias-r', `<b>${f.toFixed(1)}&deg; &rarr; ${l.toFixed(1)}&deg; across four races, falling every time.</b> ` +
-    `Use the latest, not the ${(R.reduce((a, r) => a + r.bias, 0) / R.length).toFixed(1)}&deg; mean.`);
 }
 
 /* ---------------- start line ---------------- */
@@ -609,7 +573,7 @@ function drawFleet(){
 }
 
 /* ---------------- nav ---------------- */
-const SECTIONS = [['bench','Benchmark'],['wind','Wind'],['bias','Error'],['start','Start'],
+const SECTIONS = [['bench','Benchmark'],['wind','Wind'],['start','Start'],
                   ['race4','Race 4'],['vmg','VMG'],['spread','Spread'],['segments','Segments'],
                   ['top5','Top 5'],['fleet','Fleet']];
 function drawNav(){
@@ -625,6 +589,6 @@ function drawNav(){
   upd();
 }
 
-drawHead(); drawBench(); drawWind(); drawBias(); drawStart(); drawR4();
+drawHead(); drawBench(); drawWind(); drawStart(); drawR4();
 drawVmg(); drawCmp(); drawSeg(); drawKpi(); drawFleet(); drawNav();
 </script>
