@@ -225,16 +225,17 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
         <circle cx="70" cy="70" r="3" fill="#171a16"></circle>
       </svg>
       <div style="flex:1;min-width:230px;display:flex;flex-direction:column;gap:10px;">
-        <div class="row"><span class="k">Raw GRIB model</span><b class="tnum" id="w-raw">&mdash;</b></div>
-        <div class="row hl"><span class="k">Corrected TWD</span><b class="tnum" id="w-cor">&mdash;</b></div>
+        <div class="row"><span class="k" id="w-lraw">Raw GRIB model</span><b class="tnum" id="w-raw">&mdash;</b></div>
+        <div class="row hl"><span class="k" id="w-lcor">Corrected TWD</span><b class="tnum" id="w-cor">&mdash;</b></div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <div class="tile" style="flex:1;min-width:96px;"><div class="k">Speed</div><div class="v tnum" id="w-kn" style="font-size:20px;">&mdash;</div></div>
-          <div class="tile" style="flex:1;min-width:96px;"><div class="k">Gust</div><div class="v tnum" id="w-gu" style="font-size:20px;">&mdash;</div></div>
-          <div class="tile" style="flex:1;min-width:96px;"><div class="k">Model spread</div><div class="v tnum" id="w-sp" style="font-size:20px;">&mdash;</div></div>
+          <div class="tile" style="flex:1;min-width:96px;"><div class="k" id="w-kkn">Speed</div><div class="v tnum" id="w-kn" style="font-size:20px;">&mdash;</div></div>
+          <div class="tile" style="flex:1;min-width:96px;"><div class="k" id="w-kgu">Gust</div><div class="v tnum" id="w-gu" style="font-size:20px;">&mdash;</div></div>
+          <div class="tile" style="flex:1;min-width:96px;"><div class="k" id="w-ksp">Model spread</div><div class="v tnum" id="w-sp" style="font-size:20px;">&mdash;</div></div>
         </div>
-        <div class="seg scroll" id="wind-hours" style="margin-top:2px;"></div>
+        <div class="seg scroll" id="wind-sub" style="margin-top:2px;"></div>
       </div>
     </div>
+    <div id="w-legs" style="margin-top:16px;"></div>
     <p class="note" id="w-note"></p>
   </section>
 
@@ -464,30 +465,86 @@ function drawSummary(){
 }
 
 /* ---------------- wind ---------------- */
-let wDay = 0, wHour = 0;
+/* Two days, two sources. Tuesday is what the fleet measured on the water, race by race;
+   Wednesday is today's forecast, because race 4 has no published wind analysis yet.
+   Nothing beyond today is shown — the regatta has not sailed it. */
+let wDay = 'tue', wRace = 0, wHour = 0;
 function drawWind(){
-  const day = D.wind.days[wDay], r = day.rows[Math.min(wHour, day.rows.length - 1)];
-  seg($('wind-days'), D.wind.days.map((d, i) => ({key: i, label: d.short})), wDay,
-      k => { wDay = k; wHour = Math.min(wHour, D.wind.days[k].rows.length - 1); drawWind(); });
-  seg($('wind-hours'), day.rows.map((x, i) => ({key: i, label: x.hr + 'h'})), wHour,
-      k => { wHour = k; drawWind(); });
+  seg($('wind-days'), [{key:'tue', label:'Tue 8 Sep'}, {key:'wed', label:'Wed 9 Sep'}], wDay,
+      k => { wDay = k; drawWind(); });
   seg($('unitseg'), [{key:'kn',label:'kn'},{key:'mps',label:'m/s'}], unit,
       k => { unit = k; drawAll(); });
+
+  if (wDay === 'tue') drawWindTue(); else drawWindWed();
+}
+
+function drawWindTue(){
+  const R = D.wind.tue;
+  seg($('wind-sub'), R.map((r, i) => ({key: i, label: 'Race ' + r.n})), wRace,
+      k => { wRace = k; drawWind(); });
+  const r = R[Math.min(wRace, R.length - 1)];
+  $('n-raw').style.transform = `rotate(${r.forecast}deg)`;
+  $('n-cor').style.transform = `rotate(${r.measured}deg)`;
+  $('w-raw').textContent = deg(r.forecast);
+  $('w-cor').textContent = deg(r.measured);
+  $('w-lraw').textContent = 'GRIB forecast at the gun';
+  $('w-lcor').textContent = 'Measured on the water';
+  $('w-kn').textContent = '+' + r.bias.toFixed(1) + '°';
+  $('w-gu').textContent = r.setting + '°';
+  $('w-sp').textContent = r.gun || '—';
+  $('w-kkn').textContent = 'Model error';
+  $('w-kgu').textContent = 'Line set to';
+  $('w-ksp').textContent = 'Gun, local';
+
+  const L = r.legs;
+  $('w-legs').innerHTML =
+    `<div class="panel"><div class="h">Wind measured on each leg</div>` +
+    `<div class="tiles">` +
+    [['1st upwind', L.uw1], ['1st downwind', L.dw1], ['2nd upwind', L.uw2], ['2nd downwind', L.dw2]]
+      .map(([k, v]) => `<div class="tile" style="background:var(--card);"><div class="k">${k}</div>` +
+                       `<div class="v tnum">${v}°</div></div>`).join('') +
+    `</div></div>`;
+
+  const drift = L.dw1 - L.uw1;
+  $('w-note').innerHTML =
+    `<b>The model was ${r.bias.toFixed(1)}° right of the water at the gun.</b> ` +
+    `Not once — across the three races it ran +19.1°, +18.0° and +11.2°, shrinking through the ` +
+    `afternoon, which is why the page treats +${D.meta.bias}° as a centre rather than a fixed offset. ` +
+    `${D.wind.note}<br><br>` +
+    `Within the race the downwind legs read ${Math.abs(drift)}° ${drift > 0 ? 'right' : 'left'} of ` +
+    `the upwinds (${L.dw1}° against ${L.uw1}°). The same sign shows in every race, so it is either a ` +
+    `real gradient down the course or an artefact of deriving wind from downwind tracks — worth ` +
+    `knowing either way before choosing a gate.`;
+}
+
+function drawWindWed(){
+  const rows = D.wind.wed;
+  seg($('wind-sub'), rows.map((x, i) => ({key: i, label: x.hr + 'h'})), Math.min(wHour, rows.length - 1),
+      k => { wHour = k; drawWind(); });
+  const r = rows[Math.min(wHour, rows.length - 1)];
   $('n-raw').style.transform = `rotate(${r.raw}deg)`;
   $('n-cor').style.transform = `rotate(${r.cor == null ? r.raw : r.cor}deg)`;
   $('w-raw').textContent = deg(r.raw);
   $('w-cor').textContent = r.cor == null ? 'withheld' : deg(r.cor);
+  $('w-lraw').textContent = 'Raw GRIB model';
+  $('w-lcor').textContent = 'Corrected TWD';
   $('w-kn').textContent = sp(r.kn);
   $('w-gu').textContent = sp(r.gust);
   $('w-sp').textContent = r.sp.toFixed(1) + '°';
-  $('w-note').innerHTML = r.cor == null
-    ? `<b>No correction at this hour.</b> The bias is calibrated in a sea breeze; at ${sp(r.kn)} with ` +
-      `${r.sp.toFixed(0)}° between the models there is nothing solid to correct, so the figure is ` +
-      `withheld rather than guessed. ${D.wind.note}`
-    : `The models are put at <b>${deg(r.raw)}</b>; the fleet sails <b>${deg(r.cor)}</b>. ` +
-      `${D.wind.note} At the tacking angle of ${D.meta.tack}°, that is a starboard heading of ` +
-      `<b>${((r.cor - D.meta.tack / 2 + 360) % 360).toFixed(0)}°</b> and port at ` +
-      `<b>${((r.cor + D.meta.tack / 2) % 360).toFixed(0)}°</b>.`;
+  $('w-kkn').textContent = 'Speed';
+  $('w-kgu').textContent = 'Gust';
+  $('w-ksp').textContent = 'Model spread';
+  $('w-legs').innerHTML = '';
+  $('w-note').innerHTML =
+    `<b>Race 4 was sailed today, but the event has published no wind analysis for it yet</b> — so ` +
+    `unlike Tuesday there is nothing measured to check this against. This is the three-model ` +
+    `consensus with Tuesday's calibration applied. ` +
+    (r.cor == null
+      ? `At this hour it is withheld: ${sp(r.kn)} with ${r.sp.toFixed(0)}° between the models is not ` +
+        `something a sea-breeze correction can be trusted on.`
+      : `At the tacking angle of ${D.meta.tack}°, ${deg(r.cor)} puts starboard at ` +
+        `<b>${((r.cor - D.meta.tack / 2 + 360) % 360).toFixed(0)}°</b> and port at ` +
+        `<b>${((r.cor + D.meta.tack / 2) % 360).toFixed(0)}°</b>.`);
 }
 
 /* ---------------- performance gap ---------------- */

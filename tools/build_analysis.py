@@ -13,9 +13,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMG = os.path.join(ROOT, 'site2/img')
 OUT = os.path.join(ROOT, 'race-analysis.html')
 
-DAY_LABEL = {'2026-09-07': 'Sun 7 Sep', '2026-09-08': 'Tue 8 Sep', '2026-09-09': 'Wed 9 Sep'}
+DAY_LABEL = {'2026-09-08': 'Tue 8 Sep', '2026-09-09': 'Wed 9 Sep'}
 DAY_NOTE = {
-  '2026-09-07': 'The abandoned day — a practice fleet, no scored racing, and no Team Sweden log.',
   '2026-09-08': 'Races 1, 2 and 3. Thirty boats decode here against the event\'s own 34-boat '
                 'analysis set, so fleet-relative figures are a real fleet comparison.',
   '2026-09-09': 'Race 4. Only three logs have synced for this day, and Garm\'s is not among them — '
@@ -122,17 +121,33 @@ def main():
     raceday = '2026-09-08'
 
     # fleet, one row per log, flagged for the client boat
+    # Sunday 7 September was the abandoned practice day — no scored racing, no Garm log.
+    # It is dropped rather than shown as a third tab nobody asked for.
+    RACED = ('2026-09-08', '2026-09-09')
     fleet = [{'name': f['file'], 'day': f['day'], 'avg': f['avg'], 'up': f['upAvg'],
               'dn': f['dnAvg'], 'mx': f['mx'], 'nm': f['nm'],
               'team': f['file'].startswith('Team Sweden') or f['file'] == 'vakaros'}
-             for f in D['fleet']]
+             for f in D['fleet'] if f['day'] in RACED]
 
-    # wind: keep only the hours the models are worth showing, label the days
-    days = []
-    for d in D['wind']['days']:
-        days.append({'date': d['date'], 'short': DAY_LABEL.get(d['date'], d['date'][5:]),
-                     'rows': [{k: r[k] for k in ('hr', 'raw', 'cor', 'sp', 'kn', 'gust')}
-                              for r in d['rows']]})
+    # Wind, restricted to the two days that have actually been raced.
+    #
+    # wind.json runs four days forward because the refresh job forecasts to the end of the
+    # regatta, and the page was showing all four — Thursday and Friday included, neither of
+    # which has been sailed. Tuesday is better served by what the fleet measured than by
+    # what any model said, so the two days are built from different sources on purpose:
+    # Tuesday from the event's measured wind per race, Wednesday from today's forecast.
+    guns = {r['n']: r['gun'] for r in D['races']}
+    bias_by_race = {b['race']: b for b in D['ib']['bias_rows']}
+    tue = []
+    for r in D['ib']['races']:
+        b = bias_by_race.get(r['n'], {})
+        tue.append({'n': r['n'], 'date': r['date'], 'gun': guns.get(r['n']),
+                    'forecast': b.get('forecast'), 'measured': b.get('measured'),
+                    'bias': b.get('bias'), 'setting': r['setting'], 'legs': r['legs']})
+
+    wed = next((d for d in D['wind']['days'] if d['date'] == '2026-09-09'), None)
+    wed_rows = [{k: r[k] for k in ('hr', 'raw', 'cor', 'sp', 'kn', 'gust')}
+                for r in wed['rows']] if wed else []
 
     # start line, from the event's published geometry
     startline = [{'race': r['n'], 'setting': r['setting'], 'line_m': r['line_m'],
@@ -198,11 +213,13 @@ def main():
                'team': team, 'legteam': 'Team Sweden', 'raceday': raceday,
                'logs': D['official']['telemetry']['logs']},
       'official': {'fleet': D['official']['fleet_scored'], 'races': D['official']['races_scored'],
-                   'event': D['official']['event'],
+                   # only the field the page prints; the event's end date is not shown
+                   'event': {'dates': D['official']['event']['dates']},
                    'team': {'pos': t['pos'], 'sail': t['sail'], 'boat': t['boat'],
                             'skipper': t['skipper'], 'pts': t['pts'], 'gain': t['gain_total'],
                             'races': [t['r1'], t['r2'], t['r3'], t['r4']]}},
-      'wind': {'days': days, 'note': D['coach']['mechanism']},
+      'wind': {'tue': tue, 'wed': wed_rows, 'note': D['coach']['mechanism'],
+               'tueDate': '2026-09-08', 'wedDate': '2026-09-09'},
       'fleet': fleet,
       'dayLabel': DAY_LABEL, 'dayNote': DAY_NOTE,
       'startline': startline,
@@ -228,6 +245,8 @@ def main():
       'no placeholder standings': '38th' not in html and '>75<' not in html,
       'the real fleet size': str(D['official']['fleet_scored']) in html,
       'no unfilled bindings': '{{' not in html and '__' not in html.replace('__DATA__', ''),
+      'no unraced days': '2026-09-10' not in html and '2026-09-11' not in html
+                         and '2026-09-12' not in html and '2026-09-07' not in html,
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,
     }
     bad = [k for k, v in checks.items() if not v]
