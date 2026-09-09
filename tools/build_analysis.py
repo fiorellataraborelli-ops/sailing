@@ -15,10 +15,10 @@ OUT = os.path.join(ROOT, 'race-analysis.html')
 
 DAY_LABEL = {'2026-09-08': 'Tue 8 Sep', '2026-09-09': 'Wed 9 Sep'}
 DAY_NOTE = {
-  '2026-09-08': 'Races 1, 2 and 3. Thirty boats decode here against the event\'s own 34-boat '
+  '2026-09-08': 'Races 1 and 2. Thirty boats decode here against the event\'s own 34-boat '
                 'analysis set, so fleet-relative figures are a real fleet comparison.',
-  '2026-09-09': 'Race 4. Only three logs have synced for this day, and Garm\'s is not among them — '
-                'so there is no telemetry for the team\'s racing today, only the scored result.',
+  '2026-09-09': 'Only three logs have synced for this day, and Garm\'s is not among them — so there '
+                'is no telemetry for the team\'s racing, only the fleet\'s speed segments.',
 }
 fold = lambda s: ud.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
 
@@ -124,6 +124,9 @@ def main():
     # Sunday 7 September was the abandoned practice day — no scored racing, no Garm log.
     # It is dropped rather than shown as a third tab nobody asked for.
     RACED = ('2026-09-08', '2026-09-09')
+    # Races 1 and 2 are the only ones with decoded telemetry. Race 3 has no logs at all
+    # and race 4 only the event's start and first upwind, so neither is shown.
+    TRACKED = (1, 2)
     fleet = [{'name': f['file'], 'day': f['day'], 'avg': f['avg'], 'up': f['upAvg'],
               'dn': f['dnAvg'], 'mx': f['mx'], 'nm': f['nm'],
               'team': f['file'].startswith('Team Sweden') or f['file'] == 'vakaros'}
@@ -139,6 +142,8 @@ def main():
     bias_by_race = {b['race']: b for b in D['ib']['bias_rows']}
     by_day = {}
     for r in D['ib']['races']:
+        if r['n'] not in TRACKED:
+            continue
         b = bias_by_race.get(r['n'], {})
         by_day.setdefault(r['date'], []).append({
             # the loggers' gun, not the event's published one: race 1's report says
@@ -152,7 +157,7 @@ def main():
     # start line, from the event's published geometry
     startline = [{'race': r['n'], 'setting': r['setting'], 'line_m': r['line_m'],
                   'bias_deg': r['bias_deg'], 'bias_m': r['bias_m'], 'calc_m': r['calc_m'],
-                  'favoured': r['favoured']} for r in D['ib']['races']]
+                  'favoured': r['favoured']} for r in D['ib']['races'] if r['n'] in TRACKED]
 
     # segments, flagged and renamed for the client boat
     segs = []
@@ -229,16 +234,6 @@ def main():
       'segments': {'rows': segs, 'caveat': D['segments']['caveat']},
       'kpi': {'rows': D['kpi']['rows'], 'note': D['kpi']['note']},
       'coach': {'start': D['coach']['start'], 'mechanism': D['coach']['mechanism']},
-      'race4': {
-        'date': D['race4']['date'], 'boats': D['race4']['boats'],
-        'coverage': D['race4']['coverage'], 'note': D['race4']['analyst_note'],
-        'wind_uw1': D['race4']['wind_uw1'], 'start_line': D['race4']['start_line'],
-        'gun_utc': '12:55:00Z',
-        'start_cols': D['race4']['start_cols'], 'start': D['race4']['start'],
-        'uw1_cols': D['race4']['uw1_cols'], 'uw1': D['race4']['uw1'],
-      },
-      'bias': {'rows': D['ib']['bias_rows'], 'trend': D['ib']['bias_trend'],
-               'note': D['ib']['bias_note']},
       'compare': build_compare(D),
       'qa': qa,
     }
@@ -254,7 +249,10 @@ def main():
       'no placeholder standings': '38th' not in html and '>75<' not in html,
       'the real fleet size': str(D['official']['fleet_scored']) in html,
       'no unfilled bindings': '{{' not in html and '__' not in html.replace('__DATA__', ''),
+      'only tracked races': all(r['n'] in TRACKED for d in wind_days for r in d['races'])
+                            and all(r['race'] in TRACKED for r in startline),
       'wind days all raced': all(d['date'] in RACED and d['races'] for d in wind_days),
+      'no race 3 or 4 on the page': 'Race 3' not in html and 'Race 4' not in html,
       'no unraced days': '2026-09-10' not in html and '2026-09-11' not in html
                          and '2026-09-12' not in html and '2026-09-07' not in html,
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,
