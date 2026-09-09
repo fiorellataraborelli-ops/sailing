@@ -570,6 +570,32 @@ function drawVmg(){
     `${beat.extra > (dr?1350:0) ? 'extra distance sailed' : 'consistency rather than raw speed'}.`;
 }
 
+function drawDayCompare(){
+  const C=D.daycompare; if(!C) return;
+  head('dc-h',['Boat','Hours on water','Distance nm','Peak kn','Downwind kn','Sub-8 kn avg']);
+  const cell=(a,b,dp,unit)=>{
+    const dlt=b-a, cls=dlt>0.05?'up':dlt<-0.05?'dn':'nu';
+    return `${a.toFixed(dp)} → <b>${b.toFixed(dp)}</b> ` +
+           `<span class="pill ${cls}">${dlt>=0?'+':''}${dlt.toFixed(dp)}${unit||''}</span>`;
+  };
+  $('dc-b').innerHTML = C.rows.map(r=>
+    `<tr><td>${r.boat}</td>`+[
+      cell(r.h8,r.h9,1), cell(r.nm8,r.nm9,1), cell(r.mx8,r.mx9,1),
+      cell(r.dn8,r.dn9,2), cell(r.up8,r.up9,2)
+    ].map(c=>`<td style="text-align:right;font-family:'IBM Plex Sans',sans-serif;">${c}</td>`).join('')+'</tr>').join('');
+  const avg=k=>C.rows.reduce((t,r)=>t+r[k],0)/C.rows.length;
+  const dMax=avg('mx9')-avg('mx8'), dDn=avg('dn9')-avg('dn8'), dUp=avg('up9')-avg('up8'),
+        dH=avg('h9')-avg('h8');
+  $('dc-note').innerHTML =
+    `<b>All three moved the same way.</b> Peak speed up ${dMax.toFixed(1)} kn on average ` +
+    `(mid-16s to around 20) and downwind average up ${dDn.toFixed(2)} kn — today simply had more breeze, ` +
+    `which is what the forecast called: 13 kn building with gusts near 30 against 11–12 kn on Tuesday. ` +
+    `They were also out ${dH.toFixed(1)} h longer.<br><br>` +
+    `The sub-8 kn average fell ${Math.abs(dUp).toFixed(2)} kn, and it would be easy to read that as slower ` +
+    `upwind. Be careful: ${C.caveat}<br><br>` +
+    `<b>${C.note}</b>`;
+}
+
 /* ---------------- boot ---------------- */
 $('s-fleet').textContent = D.official.fleet_scored + ' entries';
 $('s-logs').textContent  = D.fleet.length + ' logs';
@@ -580,5 +606,5 @@ $('foot').innerHTML = `Vakaros Atlas VKX telemetry decoded from the Sailing driv
   `tomorrow’s from a live ICON-EU / ECMWF IFS / GFS consensus at 38.68 N 9.42 W. ` +
   `Corrected bearings subtract the ${BIAS.toFixed(1)}° right-bias measured against the event's own race reports ` +
   `(ib-sailing.com, 34-boat fleet), which supersede an earlier ${D.meta.bias_old.toFixed(0)}° estimate built on the committee line square.`;
-ticks(); drawRace(); drawFleet(); drawMv(); drawOfficial(); drawCov(); drawBrief(); drawPipeline(); drawStrategy(); drawVmg(); loadWind();
+ticks(); drawRace(); drawFleet(); drawMv(); drawOfficial(); drawCov(); drawBrief(); drawPipeline(); drawStrategy(); drawVmg(); drawDayCompare(); loadWind();
 </script>
