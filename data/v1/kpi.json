@@ -63,7 +63,7 @@
   {
    "boat": "Another Affair",
    "pos": 5,
-   "pts": 46,
+   "pts": 47,
    "gain": 40,
    "gain_up": null,
    "gain_dn": null,
@@ -77,8 +77,8 @@
   },
   {
    "boat": "Garm",
-   "pos": 27,
-   "pts": 131,
+   "pos": 29,
+   "pts": 133,
    "gain": 50,
    "gain_up": 3,
    "gain_dn": 21,
@@ -92,5 +92,5 @@
   }
  ],
  "n_seg": 30,
- "note": "Joined from three independent sources: the scored results, the event segment table for Wednesday, and VMG computed here from the raw logs. Blanks are boats with no Vakaros log in the folder and no row in the segment table — not zeros."
+ "note": "Joined from three sources: scored results, the 9 September segment table, and VMG computed from the raw logs. Blanks are boats with neither a Vakaros log nor a segment row."
 }

@@ -89,7 +89,7 @@
   "Aretê 1872 (BRA 1795 — Areté) 08-09-2026.vkx",
   "To Nessa 1527 (BRA 1527 — To Nessa) 08-09-2026.vkx"
  ],
- "race4_note": "Race 4 (9 Sep) is scored on cncascais.com but still has no ib-sailing wind/bias analysis page and no synced team telemetry, so it is not in the race explorer or the bias calibration table. Overnight the scored results were amended: Garm's race 4 went from 48th to 50th (total 131->133 pts, overall 27th->29th of 100), and Another Affair's race 3 moved 19th->20th (46->47 pts) -- a reminder that early-posted results can still move.",
+ "race4_note": "Race 4 is scored, and the event has now published its start and first-upwind analysis. Nothing after the first mark is published, and no Garm telemetry for 9 September has synced.",
  "telemetry": {
   "logs": 34,
   "day8": 30,

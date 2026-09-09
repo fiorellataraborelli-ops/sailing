@@ -223,9 +223,6 @@ def main():
       'fleet': fleet,
       'dayLabel': DAY_LABEL, 'dayNote': DAY_NOTE,
       'startline': startline,
-      'races': [{'n': r['n'], 'boats': [{**{k: b[k] for k in ('b', 'up', 'dn', 'ex', 'dl')},
-                                         'tk': leg_tacks(D, r['n'], b['b'])}
-                                        for b in r['boats']]} for r in D['races']],
       'legs': {'races': D['legs']['races'], 'drivers': D['legs']['drivers']},
       'segments': {'rows': segs, 'caveat': D['segments']['caveat']},
       'kpi': {'rows': D['kpi']['rows'], 'note': D['kpi']['note']},
@@ -246,9 +243,9 @@ def main():
 
     html = open(os.path.join(ROOT, 'site2/page.html'), encoding='utf-8').read()
     html = html.replace('__DATA__', json.dumps(payload, ensure_ascii=False, separators=(',', ':')))
-    for tok, fn in (('__HERO__', 'hero.jpg'), ('__IMG1__', 'crew.jpg'),
-                    ('__IMG2__', 'hiking.jpg'), ('__IMG3__', 'prize.jpg')):
-        html = html.replace(tok, data_uri(os.path.join(IMG, fn)))
+    # one image now: the page is a data page, and three decorative photos were 240 KB
+    # of payload a phone had to download before it could read a number.
+    html = html.replace('__HERO__', data_uri(os.path.join(IMG, 'hero.jpg')))
 
     # guards against the regressions this page has already had once
     checks = {
@@ -257,7 +254,7 @@ def main():
       'no unfilled bindings': '{{' not in html and '__' not in html.replace('__DATA__', ''),
       'no unraced days': '2026-09-10' not in html and '2026-09-11' not in html
                          and '2026-09-12' not in html and '2026-09-07' not in html,
-      'every image inlined': html.count('data:image/jpeg;base64,') == 4,
+      'the hero inlined': html.count('data:image/jpeg;base64,') == 1,
     }
     bad = [k for k, v in checks.items() if not v]
     if bad:
