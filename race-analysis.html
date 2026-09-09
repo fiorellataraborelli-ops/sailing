@@ -114,6 +114,11 @@ header.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cove
   text-transform:uppercase;color:var(--faint);}
 .gridhead span:not(:first-child),.grid span:not(:first-child){text-align:right;}
 .grid.team{background:var(--mint);}
+/* the rank the sort gave the row, kept visible so pinning the client boat to the top
+   never reads as a claim that it leads */
+.pos{display:inline-block;min-width:2.2em;color:var(--faint);font-weight:600;
+  font-variant-numeric:tabular-nums;}
+.grid.team .pos{color:var(--deep);}
 .grid.team span:first-child{font-weight:700;}
 .scroller{max-height:420px;overflow-y:auto;overflow-x:auto;margin:0 -6px;padding:0 6px;}
 .scroller::-webkit-scrollbar{width:6px;height:6px;}
@@ -700,6 +705,16 @@ function drawStart(){
     `<b>${err.toFixed(1)}% from the event's published figure.</b> The pin was favoured in every race of the regatta.`;
 }
 
+/* Garm rides at the top of every ranked list — it is the boat this page is for, and
+   hunting for it in thirty rows is not the job. The sort still decides the ranking:
+   each row keeps the position number it earned, so pinning moves the row, not the rank. */
+function pinTeam(sorted){
+  const ranked = sorted.map((r, i) => ({r, rank: i + 1}));
+  const us = ranked.filter(x => x.r.team);
+  return us.length ? [...us, ...ranked.filter(x => !x.r.team)] : ranked;
+}
+const posCell = rank => `<span class="pos">${rank}</span>`;
+
 /* ---------------- fleet ---------------- */
 let fDay = null;
 function drawFleet(){
@@ -709,9 +724,10 @@ function drawFleet(){
       k => { fDay = k; drawFleet(); });
   const rows = D.fleet.filter(b => b.day === fDay).sort((a, b) => b.avg - a.avg);
   $('fleet-note').textContent = D.dayNote[fDay] || '';
-  $('fleet-rows').innerHTML = rows.map(b =>
+  $('fleet-rows').innerHTML = pinTeam(rows).map(({r: b, rank}) =>
     `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.7fr 1fr 1fr 1fr 1fr;">
-      <span>${esc(b.name)}</span><span class="tnum">${sp(b.avg)}</span><span class="tnum">${sp(b.up)}</span>
+      <span>${posCell(rank)}${esc(b.name)}</span><span class="tnum">${sp(b.avg)}</span>
+      <span class="tnum">${sp(b.up)}</span>
       <span class="tnum">${sp(b.mx)}</span><span class="tnum">${b.nm.toFixed(1)} nm</span></div>`).join('');
 }
 
@@ -869,10 +885,10 @@ function drawCompare(){
     (sub ? `<div style="font-size:11.5px;color:var(--faint);margin-top:3px;">${esc(sub)}</div>` : '') + `</div>`).join('');
 
   const dash = v => v == null ? '<span style="color:var(--faint);">—</span>' : v;
-  $('cmp-rows').innerHTML = have.map(b => {
+  $('cmp-rows').innerHTML = pinTeam(have).map(({r: b, rank}) => {
     const d = us ? b[M.k] - us[M.k] : null;
     return `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.5fr .75fr .8fr .75fr .6fr .75fr .7fr .8fr .7fr;">
-      <span>${esc(b.name)}</span>
+      <span>${posCell(rank)}${esc(b.name)}</span>
       <span class="tnum">${dash(b.up && b.up.toFixed(2))}</span>
       <span class="tnum">${dash(b.dn && b.dn.toFixed(2))}</span>
       <span class="tnum">${dash(b.vmg1 && b.vmg1.toFixed(2))}</span>
@@ -906,9 +922,9 @@ function drawSeg(){
   seg($('seg-sort'), [{key:'s0',label:'Peak'},{key:'s60',label:'60 s'},{key:'hold',label:'Hold'}], segKey,
       k => { segKey = k; drawSeg(); });
   const rows = [...D.segments.rows].sort((a, b) => b[segKey] - a[segKey]);
-  $('seg-rows').innerHTML = rows.map(r =>
+  $('seg-rows').innerHTML = pinTeam(rows).map(({r, rank}) =>
     `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.5fr .7fr .7fr .7fr .7fr .9fr;">
-      <span>${esc(r.boat)}</span><span class="tnum">${r.s0.toFixed(2)}</span>
+      <span>${posCell(rank)}${esc(r.boat)}</span><span class="tnum">${r.s0.toFixed(2)}</span>
       <span class="tnum">${r.s10.toFixed(2)}</span><span class="tnum">${r.s30.toFixed(2)}</span>
       <span class="tnum">${r.s60.toFixed(2)}</span>
       <span class="tnum" style="color:${r.hold >= .88 ? 'var(--deep)' : r.hold < .82 ? 'var(--red)' : 'inherit'};font-weight:700;">${r.hold.toFixed(3)}</span></div>`).join('');
