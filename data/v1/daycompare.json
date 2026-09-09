@@ -1,0 +1,52 @@
+{
+ "days": {
+  "2026-09-08": "Tue 8 Sep",
+  "2026-09-09": "Wed 9 Sep"
+ },
+ "rows": [
+  {
+   "boat": "J70 Let it be",
+   "h8": 5.4,
+   "h9": 6.8,
+   "nm8": 35.4,
+   "nm9": 37.8,
+   "mx8": 16.2,
+   "mx9": 20.0,
+   "dn8": 11.44,
+   "dn9": 13.12,
+   "up8": 5.35,
+   "up9": 4.6
+  },
+  {
+   "boat": "Mag",
+   "h8": 5.2,
+   "h9": 5.9,
+   "nm8": 36.4,
+   "nm9": 35.8,
+   "mx8": 17.0,
+   "mx9": 20.5,
+   "dn8": 12.38,
+   "dn9": 13.42,
+   "up8": 5.57,
+   "up9": 4.99
+  },
+  {
+   "boat": "Yupi",
+   "h8": 5.3,
+   "h9": 6.8,
+   "nm8": 36.6,
+   "nm9": 37.4,
+   "mx8": 16.7,
+   "mx9": 19.8,
+   "dn8": 12.1,
+   "dn9": 13.15,
+   "up8": 5.47,
+   "up9": 4.51
+  }
+ ],
+ "team_has": [
+  "2026-09-08"
+ ],
+ "caveat": "Upwind and downwind are split at 8 knots over the whole session, so the slow bucket also holds pre-start manoeuvring and the sail out and back. A longer day therefore drags the \"upwind\" average down on its own — the downwind and peak figures are the solid ones.",
+ "note": "Only three boats have a log for both days. Team Sweden has 8 September only, so the team cannot be compared day over day."
+}

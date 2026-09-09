@@ -457,6 +457,9 @@ function drawPipeline(){
     `The site and the analysis pipeline now sit on one branch; before today the branch carrying the page had ` +
     `none of the code.<br><br>` +
     R.automation.map(([n,d]) => `<b>${n}</b> — ${d}.`).join('<br>') +
+    (R.data ? `<br><br><b>The data is published too</b> — every table on this page is also a ` +
+      `file under <code>${R.data.path}</code>: ${R.data.n_datasets} datasets, ${R.data.formats}, ` +
+      `each with a field dictionary. ${R.data.note}` : '') +
     `<br><br><b>The VKX format has a published spec</b> at ` +
     `<a href="${R.spec}" style="color:var(--accent);">${R.spec.replace('https://github.com/','')}</a>. ` +
     `The canonical reader is written against it and handles wind, load and shift-angle records — ` +

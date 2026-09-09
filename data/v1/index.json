@@ -1,0 +1,244 @@
+{
+ "dataset": "J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry",
+ "version": "v1",
+ "generated_utc": "2026-09-09T22:10:21Z",
+ "base_url": "https://github.com/fiorellataraborelli-ops/sailing/tree/main/data/v1",
+ "licence_note": "Telemetry belongs to the boats that recorded it. Scored results and race analysis are the event organisers'. Published here for the teams involved.",
+ "conventions": {
+  "time": "UTC throughout, ISO 8601 with a trailing Z",
+  "speed": "knots unless a field says otherwise",
+  "bearings": "degrees true, 0-360",
+  "wind_direction": "the direction the wind is coming FROM",
+  "null": "means no data. It never means zero, and no file substitutes one for the other",
+  "boat_names": "as written on the log file, with a small alias map applied; the same string is used as the join key across every file"
+ },
+ "files": [
+  {
+   "name": "meta",
+   "json": "meta.json",
+   "csv": null,
+   "rows": null,
+   "about": "Venue, calibrated model bias, tacking angle, event dates and telemetry coverage.",
+   "fields": null
+  },
+  {
+   "name": "fleet",
+   "json": "fleet.json",
+   "csv": "fleet.csv",
+   "rows": 34,
+   "about": "One row per decoded .vkx log: session extent, fix count, distance and speed splits.",
+   "fields": {
+    "file": "Log file, named for the boat",
+    "day": "Date of the session (UTC)",
+    "t0": "First fix, UTC",
+    "t1": "Last fix, UTC",
+    "fixes": "Number of position fixes",
+    "nm": "Distance sailed, nautical miles",
+    "mx": "Peak SOG, knots",
+    "avg": "Mean SOG over the whole session, knots",
+    "upAvg": "Mean SOG below 8 kn (treated as upwind), knots",
+    "dnAvg": "Mean SOG at or above 8 kn (treated as downwind), knots"
+   }
+  },
+  {
+   "name": "legs",
+   "json": "legs.json",
+   "csv": "legs.csv",
+   "rows": 232,
+   "about": "Wind-referenced VMG per boat per leg, plus the correlations between each variable and first-beat VMG across the tracked fleet.",
+   "fields": {
+    "race": "Race number",
+    "boat": "Boat",
+    "n": "Leg number, 1-4",
+    "kind": "beat (upwind) or run (downwind)",
+    "wind": "Wind on this leg as measured by the event, degrees true",
+    "min": "Leg duration, minutes",
+    "sog": "Mean speed over ground, knots",
+    "vmg": "Mean wind-referenced VMG, knots — the component of boat speed along the wind axis",
+    "twa": "Mean true wind angle, degrees off the wind",
+    "eff": "VMG divided by SOG (definitional, not an independent measure)",
+    "extra": "Distance sailed beyond the straight line, metres",
+    "tacks": "Settled tacks",
+    "gybes": "Settled gybes",
+    "tloss": "Mean speed lost per tack, knots",
+    "gloss": "Mean speed lost per gybe, knots"
+   }
+  },
+  {
+   "name": "races",
+   "json": "races.json",
+   "csv": "races.csv",
+   "rows": 25,
+   "about": "Mark timings, speed splits and start-line position per boat per race, with the race header (gun, line length and bearing, measured wind) alongside.",
+   "fields": {
+    "race": "Race number",
+    "boat": "Boat",
+    "m0": "Cumulative minutes at mark 1",
+    "m1": "Cumulative minutes at mark 2",
+    "m2": "Cumulative minutes at mark 3",
+    "up": "Mean upwind SOG, knots",
+    "dn": "Mean downwind SOG, knots",
+    "ex": "Extra distance sailed over the race, metres",
+    "tk": "Tacks",
+    "dl": "Distance to the start line at the gun, metres (negative = over)",
+    "al": "Position along the line, 0 = pin, 1 = committee boat"
+   }
+  },
+  {
+   "name": "segments",
+   "json": "segments.json",
+   "csv": "segments.csv",
+   "rows": 30,
+   "about": "Maximum speed held over rolling windows, 9 Sep. Transcribed from the event's published table; the hold ratio and ranks are derived here.",
+   "fields": {
+    "boat": "Boat",
+    "s0": "Instantaneous peak speed, knots",
+    "s5": "Best speed held 5 s, knots",
+    "s10": "Best speed held 10 s, knots",
+    "s20": "Best speed held 20 s, knots",
+    "s30": "Best speed held 30 s, knots",
+    "s60": "Best speed held 60 s, knots",
+    "hold": "The 60 s figure divided by the peak — how much of the headline number survives a minute",
+    "rank0": "Rank on peak",
+    "rank60": "Rank on the 60 s figure",
+    "rankhold": "Rank on hold"
+   }
+  },
+  {
+   "name": "kpi",
+   "json": "kpi.json",
+   "csv": "kpi.csv",
+   "rows": 6,
+   "about": "Top five and the client boat joined across scored results, the segment table and VMG from the logs. Nulls mean no data, never zero.",
+   "fields": {
+    "boat": "Boat",
+    "pos": "Overall position",
+    "pts": "Net points",
+    "team": "True for the client boat",
+    "gain": "Places won between the first windward mark and the finish, summed over races",
+    "peak": "Instantaneous peak speed on 9 Sep, knots",
+    "s60": "Best speed held 60 s on 9 Sep, knots",
+    "hold": "Hold ratio",
+    "vmg": "Mean upwind VMG from this boat's own log, knots",
+    "twa": "Mean upwind true wind angle, degrees"
+   }
+  },
+  {
+   "name": "official",
+   "json": "official.json",
+   "csv": "official.csv",
+   "rows": 6,
+   "about": "Scored standings, not derived from telemetry.",
+   "fields": {
+    "pos": "Overall position",
+    "sail": "Sail number",
+    "boat": "Boat",
+    "pts": "Net points",
+    "r": "Finishing position in each race",
+    "gain": "Places won after the first windward mark"
+   }
+  },
+  {
+   "name": "wind",
+   "json": "wind.json",
+   "csv": "wind.csv",
+   "rows": 32,
+   "about": "Three-model consensus at the race area, hourly 11:00-18:00 UTC, refreshed every three hours. Raw and bias-corrected direction side by side.",
+   "fields": {
+    "date": "Forecast date",
+    "hr": "Hour, UTC",
+    "raw": "Model consensus wind direction, degrees true",
+    "cor": "Direction after the +16.1 deg fleet-measured bias, degrees true; null when not trusted",
+    "sp": "Spread between the three models, degrees",
+    "kn": "Wind speed, knots",
+    "gust": "Gust, knots",
+    "mslp": "Pressure, hPa",
+    "trust": "False below 8 kn or above 30 deg of spread — the bias is not applied there"
+   }
+  },
+  {
+   "name": "bias",
+   "json": "bias.json",
+   "csv": "bias.csv",
+   "rows": 3,
+   "about": "GRIB forecast against wind measured on the water, per race. This is where the +16.1 deg correction comes from, and it is not a constant.",
+   "fields": {
+    "race": "Race number",
+    "forecast": "GRIB direction at the first beat, degrees true",
+    "measured": "Direction measured on the water, degrees true",
+    "bias": "Forecast minus measured, degrees",
+    "old_observed": "An earlier, superseded observation, kept for audit",
+    "old_bias": "The error that earlier observation produced"
+   }
+  },
+  {
+   "name": "startline",
+   "json": "startline.json",
+   "csv": "startline.csv",
+   "rows": 3,
+   "about": "Line geometry per race, with the event's published advantage beside the one our own formula produces from the geometry alone.",
+   "fields": {
+    "race": "Race number",
+    "setting": "Direction the committee set the line to, degrees true",
+    "line_m": "Line length, metres",
+    "bias_deg": "Line bias, degrees off square",
+    "bias_m": "Advantage to the favoured end, metres, as the event published it",
+    "calc_m": "The same advantage from our own geometry: line_m x sin(bias_deg)",
+    "favoured": "Favoured end"
+   }
+  },
+  {
+   "name": "wind_by_leg",
+   "json": "wind_by_leg.json",
+   "csv": "wind_by_leg.csv",
+   "rows": 3,
+   "about": "Wind bearing measured on each leg of each race by the event.",
+   "fields": {
+    "race": "Race number",
+    "uw1": "First upwind, degrees true",
+    "dw1": "First downwind, degrees true",
+    "uw2": "Second upwind, degrees true",
+    "dw2": "Second downwind, degrees true"
+   }
+  },
+  {
+   "name": "daycompare",
+   "json": "daycompare.json",
+   "csv": "daycompare.csv",
+   "rows": 3,
+   "about": "Boats with a log on both 8 and 9 Sep — same hulls, same crews, different breeze.",
+   "fields": null
+  },
+  {
+   "name": "coach",
+   "json": "coach.json",
+   "csv": null,
+   "rows": null,
+   "about": "Coaching notes, transcribed. Not measured, and labelled as such.",
+   "fields": null
+  },
+  {
+   "name": "brief",
+   "json": "brief.json",
+   "csv": null,
+   "rows": null,
+   "about": "The analysis requirements, with what is validated and what is open.",
+   "fields": null
+  },
+  {
+   "name": "tracks",
+   "json": "tracks/index.json",
+   "csv": null,
+   "rows": 58,
+   "about": "Position, SOG, COG and leg index at 2 s for every boat in races 1 and 2, one columnar file per boat per race, plus estimated mark positions. This is what a course plan view or a polar scatter is drawn from.",
+   "fields": {
+    "t": "seconds since start_utc",
+    "lat": "degrees",
+    "lon": "degrees",
+    "sog": "knots",
+    "cog": "degrees true",
+    "leg": "1-4, 0 outside a leg"
+   }
+  }
+ ]
+}

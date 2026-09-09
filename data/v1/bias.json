@@ -1,0 +1,30 @@
+{
+ "note": "Race 3 has no published start time, so its forecast is read at an estimated 16:30Z first beat. Across a 15:00-17:00Z window the bias only moves between +12.9 and +10.7, so the finding that race 3 is markedly less biased than races 1 and 2 does not depend on that guess.",
+ "trend": "The bias is not a constant. It ran +19.1, +18.0, +11.2 across the three races — shrinking through the afternoon as the model backed further than the water did. Treat 16 deg as a centre, not a fixed offset, and expect the early races of a day to need the larger correction.",
+ "rows": [
+  {
+   "race": 1,
+   "forecast": 336.6,
+   "measured": 317.5,
+   "bias": 19.1,
+   "old_observed": 324.4,
+   "old_bias": 12.2
+  },
+  {
+   "race": 2,
+   "forecast": 331.5,
+   "measured": 313.5,
+   "bias": 18.0,
+   "old_observed": 321.6,
+   "old_bias": 9.9
+  },
+  {
+   "race": 3,
+   "forecast": 326.2,
+   "measured": 315.0,
+   "bias": 11.2,
+   "old_observed": null,
+   "old_bias": null
+  }
+ ]
+}

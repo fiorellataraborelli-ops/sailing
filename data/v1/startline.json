@@ -1,0 +1,32 @@
+{
+ "source": "ib-sailing.com race report, 2026-09 J70 Worlds",
+ "rows": [
+  {
+   "race": 1,
+   "setting": 318,
+   "line_m": 1001,
+   "bias_deg": 6,
+   "bias_m": 107,
+   "calc_m": 105,
+   "favoured": "Pin"
+  },
+  {
+   "race": 2,
+   "setting": 313,
+   "line_m": 1007,
+   "bias_deg": 12,
+   "bias_m": 206,
+   "calc_m": 209,
+   "favoured": "Pin"
+  },
+  {
+   "race": 3,
+   "setting": 317,
+   "line_m": 1007,
+   "bias_deg": 8,
+   "bias_m": 137,
+   "calc_m": 140,
+   "favoured": "Pin"
+  }
+ ]
+}

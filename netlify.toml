@@ -32,6 +32,20 @@
   [headers.values]
     Cache-Control = "no-cache, must-revalidate"
 
+# The v1 dataset is a read API: any site should be able to fetch it cross-origin.
+# Short cache because the wind and the standings move during the regatta.
+[[headers]]
+  for = "/data/v1/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=300"
+
+[[headers]]
+  for = "/data/v1/tracks/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=86400"
+
 # The brief carries client race data. Keep it out of search results.
 [[headers]]
   for = "/*"

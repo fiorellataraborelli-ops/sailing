@@ -1,0 +1,113 @@
+{
+ "source": "cncascais.com scored results + ib-sailing mark-progress standings",
+ "updated": "09/09/2026 late evening",
+ "races_scored": 4,
+ "top": [
+  {
+   "pos": 1,
+   "sail": "ESP 1283",
+   "boat": "Marnatura",
+   "pts": 20,
+   "r": [
+    4,
+    8,
+    5,
+    3
+   ],
+   "gain": 23
+  },
+  {
+   "pos": 2,
+   "sail": "BRA 641",
+   "boat": "Oceanpact - Viking",
+   "pts": 31,
+   "r": [
+    9,
+    1,
+    17,
+    4
+   ],
+   "gain": 45
+  },
+  {
+   "pos": 3,
+   "sail": "BRA 1795",
+   "boat": "Areté",
+   "pts": 38,
+   "r": [
+    13,
+    9,
+    7,
+    9
+   ],
+   "gain": 2
+  },
+  {
+   "pos": 4,
+   "sail": "POR 284",
+   "boat": "Navis Portugal",
+   "pts": 44,
+   "r": [
+    20,
+    10,
+    6,
+    8
+   ],
+   "gain": 10
+  },
+  {
+   "pos": 5,
+   "sail": "POR 1282",
+   "boat": "Another Affair",
+   "pts": 46,
+   "r": [
+    7,
+    18,
+    19,
+    2
+   ],
+   "gain": 40
+  }
+ ],
+ "team": {
+  "pos": 27,
+  "sail": "SWE 1121",
+  "boat": "Garm",
+  "skipper": "Per Roman",
+  "r1": 16,
+  "r2": 57,
+  "r3": 10,
+  "r4": 48,
+  "pts": 131,
+  "gain_total": 50,
+  "gain_up": 3,
+  "gain_down": 21
+ },
+ "fleet_scored": 100,
+ "drive_new": [
+  "Nautique J70 (BRA — Nautique) 9-8-2026.vkx",
+  "Aretê 1872 (BRA 1795 — Areté) 08-09-2026.vkx",
+  "To Nessa 1527 (BRA 1527 — To Nessa) 08-09-2026.vkx"
+ ],
+ "race4_note": "Race 4 sailed and scored today (9 Sep); no ib-sailing wind/bias report published for it yet, and no team telemetry (vkx) for 9 Sep has synced to Drive or Downloads, so it cannot be added to the race-explorer or the bias calibration table this run.",
+ "telemetry": {
+  "logs": 34,
+  "day8": 30,
+  "day9": 3,
+  "day9_boats": [
+   "J70 Let it be",
+   "Mag",
+   "Yupi"
+  ],
+  "team_day9": false,
+  "note": "Decoded 9 Sep from ~/Downloads/Sailing Files. Two byte-identical duplicates skipped. Day assigned from the decoded timestamps, not the filenames — the download scrambled those, and several boats have a higher-numbered file for the EARLIER day."
+ },
+ "event": {
+  "dates": "4–12 September 2026",
+  "last_racing_day": "2026-09-12",
+  "entries": "99–100",
+  "entries_note": "The event report gives both \"99 boats\" and \"a fleet of 100 boats\"; the scored results list 100. The 34 that appear repeatedly here are the subset the event publishes race analysis for, not the fleet.",
+  "source": "sail-world.com day 1 report"
+ },
+ "gain_def": "Places won between the first windward mark and the finish — the estimated Windward 1 position minus the official finish, summed over the races."
+}
