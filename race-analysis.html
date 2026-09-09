@@ -314,11 +314,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
         </svg>
         <p class="fine" id="polar-note"></p>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div class="panel" style="flex:1;">
-          <div class="h" id="man-h">Manoeuvre impact</div>
-          <div class="bars" id="man-bars"></div>
-        </div>
+      <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
         <div class="insight"><div class="k">Coach insight</div><p id="man-insight"></p></div>
       </div>
     </div>
@@ -614,15 +610,6 @@ function drawMan(){
   $('polar-note').textContent =
     'Session averages placed at a nominal 42° and 150° true wind angle, with the range between them ' +
     'interpolated. The per-leg VMG below is the measured version of this.';
-
-  // extra-distance bars, whole race fleet
-  const bars = [...R.boats].sort((a, b) => b.ex - a.ex);
-  const max = bars[0].ex;
-  $('man-h').textContent = `Extra distance sailed, race ${R.n}`;
-  $('man-bars').innerHTML = bars.map(b =>
-    `<div class="bar"><span style="font-weight:${b.b === mBoat ? 700 : 500};">${esc(b.b === D.meta.team ? 'Garm' : b.b)}</span>
-     <span class="tnum" style="text-align:right;">${b.ex.toLocaleString()}</span>
-     <span class="track"><span class="fill" style="width:${(b.ex / max * 100).toFixed(0)}%;background:${b.b === mBoat ? 'var(--lime)' : 'var(--bar)'};"></span></span></div>`).join('');
 
   const nm = sb.b === D.meta.team ? 'Garm' : sb.b;
   $('man-insight').textContent = vs > 0
