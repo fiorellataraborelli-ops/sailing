@@ -1,0 +1,743 @@
+<title>Vakaros Race Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Lora:wght@400;500;600;700&family=DM+Sans:wght@500;700&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f2f3f1; --card:#ffffff; --sunk:#f6f7f4; --mint:#eef7e2; --line:#e4e6e1;
+  --ink:#171a16; --body:#3a3e37; --muted:#5b6157; --faint:#8a9080; --bar:#c7cbc1;
+  --green:#3a7d2c; --lime:#8bc63f; --deep:#2f6522; --red:#b3452e;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--ink);font-family:'Lora',Georgia,serif;
+  -webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;}
+a{color:var(--green);text-decoration:none;}
+a:hover{color:var(--deep);}
+.tnum{font-variant-numeric:tabular-nums;}
+.cg{font-family:'Cormorant Garamond',Georgia,serif;}
+.dm{font-family:'DM Sans',system-ui,sans-serif;}
+.shell{max-width:1080px;margin:0 auto;min-height:100vh;background:var(--bg);padding-bottom:56px;}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  gap:20px;padding:18px 28px;background:rgba(242,243,241,.92);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);}
+.mark{flex:none;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:18px;
+  letter-spacing:-.01em;display:flex;align-items:center;gap:2px;}
+.mark span{color:var(--lime);}
+.navpills{display:flex;gap:28px;overflow-x:auto;scrollbar-width:none;}
+.navpills::-webkit-scrollbar{display:none;}
+.navpills a{flex:none;white-space:nowrap;font-size:13px;font-weight:600;color:var(--faint);
+  text-transform:uppercase;letter-spacing:.04em;font-size:12px;transition:color .3s ease;}
+.navpills a.on{color:var(--ink);}
+.cta{flex:none;background:var(--ink);color:#fff;font:700 12px 'Lora',serif;letter-spacing:.04em;
+  text-transform:uppercase;padding:12px 22px;border-radius:999px;white-space:nowrap;}
+.cta:hover{color:#fff;}
+
+/* hero */
+header.hero{position:relative;min-height:640px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;background:#0c1116;overflow:hidden;margin:0 0 16px;}
+header.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 40%;}
+.scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(58,80,54,.35) 0%,rgba(20,30,20,.55) 100%);}
+.heroin{position:relative;padding:0 24px;color:#fff;max-width:920px;}
+.kicker{font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  color:#dcecc8;margin-bottom:22px;}
+.heroin h1{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(38px,6.5vw,72px);
+  line-height:1.08;letter-spacing:-.01em;margin:0 0 22px;color:#fff;text-wrap:balance;}
+.herobtn{display:inline-block;background:#fff;color:var(--ink);font:700 14px 'Lora',serif;
+  text-transform:uppercase;letter-spacing:.04em;padding:16px 34px;border-radius:999px;}
+.herobtn:hover{color:var(--ink);}
+.herosub{margin:16px 0 0;font-size:13px;color:#cfd6c8;}
+
+/* photo strip */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:0 0 24px;}
+.strip div{overflow:hidden;}
+.strip img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+@keyframes kb1{from{transform:scale(1) translate(0,0);}to{transform:scale(1.12) translate(-2%,1%);}}
+@keyframes kb2{from{transform:scale(1.08) translate(1%,-1%);}to{transform:scale(1.18) translate(-1%,2%);}}
+@keyframes kb3{from{transform:scale(1.05) translate(-1%,0);}to{transform:scale(1.15) translate(2%,-2%);}}
+.strip img:nth-of-type(1){animation:kb1 16s ease-in-out infinite alternate;}
+.strip div:nth-child(2) img{animation:kb2 18s ease-in-out infinite alternate;}
+.strip div:nth-child(3) img{animation:kb3 20s ease-in-out infinite alternate;}
+
+/* cards */
+.stack{display:flex;flex-direction:column;gap:16px;padding:0 20px;}
+.rd-card{background:var(--card);border-radius:20px;
+  box-shadow:0 1px 2px rgba(20,25,20,.04),0 10px 28px rgba(20,25,20,.05);padding:24px;}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.is-visible{opacity:1;transform:none;}
+.cardhead{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+.title{display:flex;align-items:baseline;gap:10px;}
+.title .n{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:13px;color:var(--lime);}
+.title h2{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:20px;margin:0;}
+.lede{font-size:13px;color:var(--muted);margin:0 0 18px;}
+.note{font-size:13px;line-height:1.65;color:var(--muted);margin:16px 0 0;}
+.fine{font-size:12px;color:var(--faint);margin:10px 0 0;line-height:1.55;}
+.rd-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;border:1.5px solid var(--green);
+  color:var(--deep);font-family:'Lora',serif;font-weight:700;font-size:13px;padding:6px 16px;}
+
+/* segmented controls */
+.seg{display:flex;background:var(--sunk);border-radius:99px;padding:3px;gap:2px;}
+.seg button{cursor:pointer;border:0;background:transparent;padding:6px 14px;border-radius:99px;
+  font:700 12px 'DM Sans',sans-serif;color:var(--muted);white-space:nowrap;}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff;}
+.seg button:focus-visible{outline:2px solid var(--green);outline-offset:1px;}
+.segwrap{display:flex;gap:8px;flex-wrap:wrap;}
+.seg.scroll{width:100%;overflow-x:auto;scrollbar-width:none;}
+.seg.scroll::-webkit-scrollbar{display:none;}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;}
+.tile{padding:14px;background:var(--sunk);border-radius:14px;}
+.tile .k{font-size:12px;color:var(--faint);font-weight:600;margin-bottom:4px;}
+.tile .v{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;
+  background:var(--sunk);border-radius:12px;font-size:13px;}
+.row.hl{background:var(--mint);}
+.row .k{color:var(--muted);font-weight:600;}
+.row.hl .k{color:var(--deep);font-weight:700;}
+.row b{font-family:'Cormorant Garamond',serif;font-weight:700;}
+.row.hl b{color:var(--deep);font-size:18px;}
+
+/* data grids */
+.grid{display:grid;gap:8px;padding:12px;font-size:13px;border-radius:12px;align-items:center;}
+.gridhead{display:grid;gap:8px;padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--faint);}
+.gridhead span:not(:first-child),.grid span:not(:first-child){text-align:right;}
+.grid.team{background:var(--mint);}
+.grid.team span:first-child{font-weight:700;}
+.scroller{max-height:420px;overflow-y:auto;overflow-x:auto;margin:0 -6px;padding:0 6px;}
+.scroller::-webkit-scrollbar{width:6px;height:6px;}
+.scroller::-webkit-scrollbar-thumb{background:var(--bar);border-radius:99px;}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:9px;}
+.bar{display:grid;grid-template-columns:1fr 60px;gap:10px;align-items:center;font-size:12.5px;}
+.bar .track{grid-column:1/-1;height:8px;border-radius:99px;background:var(--line);overflow:hidden;}
+.bar .fill{height:100%;border-radius:99px;}
+
+/* insight */
+.insight{padding:14px 16px;background:var(--ink);border-radius:16px;}
+.insight .k{font-size:11px;font-weight:700;color:var(--lime);text-transform:uppercase;
+  letter-spacing:.06em;margin-bottom:6px;}
+.insight p{font-size:13px;line-height:1.55;color:var(--bg);margin:0;}
+
+.split{display:grid;grid-template-columns:1.3fr 1fr;gap:14px;align-items:stretch;}
+.panel{background:var(--sunk);border-radius:16px;padding:18px;}
+.panel .h{font-size:13px;font-weight:600;color:var(--body);margin-bottom:12px;}
+.wind-needle{transition:transform .8s ease;}
+
+/* chat */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.chips button{cursor:pointer;background:var(--sunk);border:none;border-radius:999px;padding:8px 14px;
+  font:600 12px 'Lora',serif;color:var(--body);}
+.chips button:hover{background:var(--mint);}
+.ask{display:flex;gap:8px;}
+.ask input{flex:1;border:none;background:var(--sunk);border-radius:12px;padding:12px 16px;
+  font:14px 'Lora',serif;color:var(--ink);}
+.ask button{flex:none;border:none;border-radius:12px;background:var(--ink);color:#fff;
+  font:700 13px 'Lora',serif;padding:0 20px;cursor:pointer;}
+.msg{display:flex;margin-bottom:8px;}
+.msg div{max-width:82%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.45;}
+.msg.me{justify-content:flex-end;}
+.msg.me div{background:var(--ink);color:#fff;}
+.msg.ai div{background:var(--sunk);color:var(--ink);}
+
+footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);line-height:1.8;}
+
+@media (max-width:760px){
+  nav{padding:14px 16px;gap:12px;}
+  .navpills{gap:18px;}
+  .cta{display:none;}
+  header.hero{min-height:460px;}
+  .strip{grid-template-columns:1fr;}
+  .strip div:nth-child(3){display:none;}
+  .stack{padding:0 12px;}
+  .rd-card{padding:18px;border-radius:16px;}
+  .split{grid-template-columns:1fr;}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}
+  .reveal{opacity:1;transform:none;}}
+</style>
+
+<div class="shell">
+
+<nav>
+  <span class="mark">vakaros<span>.</span></span>
+  <div class="navpills" id="nav"></div>
+  <a href="#analyser" class="cta">Ask analyser</a>
+</nav>
+
+<header class="hero">
+  <img src="__HERO__" alt="The team's boat driving through spray under spinnaker">
+  <div class="scrim"></div>
+  <div class="heroin">
+    <div class="kicker">Vakaros Atlas Analysis</div>
+    <h1>Per Roman Sailing AI Machine</h1>
+    <a href="#wind" class="herobtn">View the analysis</a>
+    <p class="herosub" id="herosub">&mdash;</p>
+  </div>
+</header>
+
+<div class="strip">
+  <div><img src="__IMG1__" alt="Crew grinding and trimming upwind"></div>
+  <div><img src="__IMG2__" alt="Full crew hiking out hard off the rail"></div>
+  <div><img src="__IMG3__" alt="Prize ceremony, 44th Copa del Rey MAPFRE"></div>
+</div>
+
+<div class="stack">
+
+  <div class="rd-card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;">Official result</div>
+        <div class="cg" style="font-weight:700;font-size:34px;margin-top:2px;" id="sum-pos">&mdash;</div>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;" id="sum-stats"></div>
+    </div>
+    <p class="fine" id="sum-note"></p>
+  </div>
+
+  <section id="wind" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">01</span><h2>Conditions on the racecourse</h2></div>
+      <div class="segwrap">
+        <div class="seg" id="wind-days"></div>
+        <div class="seg" id="unitseg"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+      <svg viewBox="0 0 140 140" style="width:128px;height:128px;flex:none;" role="img" aria-label="Wind compass">
+        <circle cx="70" cy="70" r="60" fill="none" stroke="#e4e6e1"></circle>
+        <circle cx="70" cy="70" r="42" fill="none" stroke="#e4e6e1" stroke-dasharray="2 5"></circle>
+        <g font-family="Lora,serif" font-size="11" font-weight="700" fill="#8a9080" text-anchor="middle">
+          <text x="70" y="15">N</text><text x="128" y="74">E</text><text x="70" y="133">S</text><text x="12" y="74">W</text>
+        </g>
+        <g id="n-raw" style="transform-origin:70px 70px;transition:transform .8s ease;">
+          <line x1="70" y1="24" x2="70" y2="100" stroke="#c7cbc1" stroke-width="1.5"></line>
+          <polygon points="70,104 64,92 76,92" fill="#c7cbc1"></polygon>
+        </g>
+        <g id="n-cor" class="wind-needle" style="transform-origin:70px 70px;">
+          <line x1="70" y1="20" x2="70" y2="104" stroke="#8bc63f" stroke-width="3"></line>
+          <polygon points="70,110 61,90 79,90" fill="#8bc63f"></polygon>
+        </g>
+        <circle cx="70" cy="70" r="3" fill="#171a16"></circle>
+      </svg>
+      <div style="flex:1;min-width:230px;display:flex;flex-direction:column;gap:10px;">
+        <div class="row"><span class="k">Raw GRIB model</span><b class="tnum" id="w-raw">&mdash;</b></div>
+        <div class="row hl"><span class="k">Corrected TWD</span><b class="tnum" id="w-cor">&mdash;</b></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <div class="tile" style="flex:1;min-width:96px;"><div class="k">Speed</div><div class="v tnum" id="w-kn" style="font-size:20px;">&mdash;</div></div>
+          <div class="tile" style="flex:1;min-width:96px;"><div class="k">Gust</div><div class="v tnum" id="w-gu" style="font-size:20px;">&mdash;</div></div>
+          <div class="tile" style="flex:1;min-width:96px;"><div class="k">Model spread</div><div class="v tnum" id="w-sp" style="font-size:20px;">&mdash;</div></div>
+        </div>
+        <div class="seg scroll" id="wind-hours" style="margin-top:2px;"></div>
+      </div>
+    </div>
+    <p class="note" id="w-note"></p>
+  </section>
+
+  <section id="gap" class="reveal rd-card">
+    <div class="title" style="margin-bottom:6px;"><span class="n">02</span><h2>Performance gap</h2></div>
+    <p class="lede">Where is Garm losing speed to the best boat in the tracked fleet, and what does that mean in race time?</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:14px;" id="gap-cards"></div>
+    <div class="row hl" style="margin-bottom:8px;padding:12px 16px;border-radius:14px;">
+      <span class="k">Fleet rank by average speed, 8 Sep</span><b class="tnum" id="gap-rank">&mdash;</b>
+    </div>
+    <p class="fine" id="gap-fine"></p>
+  </section>
+
+  <section id="start" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">03</span><h2>Start-line read</h2></div>
+      <div class="seg" id="start-races"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+      <span style="font-size:13px;color:var(--muted);font-weight:600;">Favoured end</span>
+      <span class="rd-pill" style="font-size:22px;" id="sl-end">&mdash;</span>
+    </div>
+    <div style="height:10px;border-radius:99px;background:linear-gradient(90deg,#8bc63f 0%,#c7cbc1 50%,#e4e6e1 100%);margin-bottom:8px;position:relative;">
+      <span id="sl-dot" style="position:absolute;top:50%;left:24%;width:16px;height:16px;border-radius:50%;background:#171a16;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transform:translate(-50%,-50%);transition:left .5s ease;"></span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--faint);font-weight:600;margin-bottom:16px;">
+      <span>Pin favoured</span><span>Even</span><span>Boat favoured</span>
+    </div>
+    <div class="tnum" style="display:flex;gap:16px;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:12px;flex-wrap:wrap;" id="sl-facts"></div>
+    <p class="note" style="margin-top:0;" id="sl-note"></p>
+  </section>
+
+  <section id="fleet" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">04</span><h2>Fleet snapshot</h2></div>
+      <div class="seg" id="fleet-days"></div>
+    </div>
+    <p class="fine" style="margin:0 0 12px;" id="fleet-note"></p>
+    <div class="gridhead" style="grid-template-columns:1.7fr 1fr 1fr 1fr 1fr;">
+      <span>Boat</span><span>Avg</span><span>Upwind</span><span>Max</span><span>Distance</span>
+    </div>
+    <div class="scroller" id="fleet-rows"></div>
+  </section>
+
+  <section id="maneuvers" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">05</span><h2>Point of sail &amp; manoeuvres</h2></div>
+      <div class="seg" id="man-races"></div>
+    </div>
+    <div class="seg scroll" id="man-boats" style="margin-bottom:20px;"></div>
+    <div class="tiles" style="margin-bottom:20px;" id="man-tiles"></div>
+    <div class="split">
+      <div class="panel">
+        <div class="h" style="margin-bottom:2px;">Boat speed by point of sail</div>
+        <div style="display:flex;gap:16px;align-items:center;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:12px;">
+          <span style="display:flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#8bc63f;display:inline-block;"></span>measured</span>
+          <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:0;border-top:2px dashed #c7cbc1;display:inline-block;"></span>interpolated range</span>
+        </div>
+        <svg viewBox="0 0 320 290" style="width:100%;max-width:420px;height:auto;display:block;" id="polar" role="img" aria-label="Boat speed against true wind angle">
+          <circle cx="160" cy="150" r="40" fill="none" stroke="#e4e6e1"></circle>
+          <circle cx="160" cy="150" r="80" fill="none" stroke="#e4e6e1"></circle>
+          <circle cx="160" cy="150" r="120" fill="none" stroke="#e4e6e1"></circle>
+          <line x1="160" y1="30" x2="160" y2="270" stroke="#e4e6e1"></line>
+          <line x1="40" y1="150" x2="280" y2="150" stroke="#e4e6e1"></line>
+          <path id="p-curve" d="" fill="none" stroke="#c7cbc1" stroke-width="2" stroke-dasharray="5 4"></path>
+          <line id="p-lup" x1="160" y1="150" stroke="#8bc63f" stroke-width="1.5" stroke-dasharray="2 3"></line>
+          <line id="p-ldn" x1="160" y1="150" stroke="#8bc63f" stroke-width="1.5" stroke-dasharray="2 3"></line>
+          <circle id="p-up" r="5" fill="#8bc63f"></circle>
+          <circle id="p-dn" r="5" fill="#8bc63f"></circle>
+          <text id="p-tup" font-family="Lora,serif" font-size="11" font-weight="700" fill="#171a16" text-anchor="middle"></text>
+          <text id="p-tdn" font-family="Lora,serif" font-size="11" font-weight="700" fill="#171a16" text-anchor="middle"></text>
+          <text x="160" y="20" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="middle">0° (wind)</text>
+          <text x="30" y="153" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="end">90°</text>
+          <text x="290" y="153" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="start">90°</text>
+          <text x="160" y="284" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="middle">180°</text>
+        </svg>
+        <p class="fine" id="polar-note"></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div class="panel" style="flex:1;">
+          <div class="h" id="man-h">Manoeuvre impact</div>
+          <div class="bars" id="man-bars"></div>
+        </div>
+        <div class="insight"><div class="k">Coach insight</div><p id="man-insight"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vmg" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">06</span><h2>Leg analysis &mdash; VMG</h2></div>
+      <div class="seg" id="vmg-races"></div>
+    </div>
+    <p class="lede">Speed made good along the wind axis, computed fix by fix against the wind the event measured on that leg. The coaching brief calls this the most important number on the page, and it is the one a straight-line proxy gets wrong.</p>
+    <div class="tiles" style="margin-bottom:18px;" id="vmg-tiles"></div>
+    <div class="gridhead" style="grid-template-columns:1.5fr .8fr .8fr .8fr .8fr .8fr;">
+      <span>Boat</span><span>VMG</span><span>SOG</span><span>TWA</span><span>Tacks</span><span>Extra m</span>
+    </div>
+    <div class="scroller" id="vmg-rows"></div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="h">Garm, leg by leg</div>
+      <div class="gridhead" style="grid-template-columns:1.1fr .7fr .7fr .7fr .7fr .7fr .7fr;padding-left:0;padding-right:0;">
+        <span>Leg</span><span>Wind</span><span>Min</span><span>SOG</span><span>VMG</span><span>TWA</span><span>Tk/Gy</span>
+      </div>
+      <div id="ts-rows"></div>
+    </div>
+    <p class="note" id="vmg-note"></p>
+  </section>
+
+  <section id="segments" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">07</span><h2>Speed segments, 9 Sep</h2></div>
+      <div class="seg" id="seg-sort"></div>
+    </div>
+    <p class="lede">Maximum speed held across a rolling window. The columns get harder left to right: anyone can touch 20 knots for an instant, holding it for a minute is a different thing.</p>
+    <div class="gridhead" style="grid-template-columns:1.5fr .7fr .7fr .7fr .7fr .9fr;">
+      <span>Boat</span><span>Peak</span><span>10 s</span><span>30 s</span><span>60 s</span><span>Hold</span>
+    </div>
+    <div class="scroller" id="seg-rows"></div>
+    <p class="note" id="seg-note"></p>
+  </section>
+
+  <section id="kpi" class="reveal rd-card">
+    <div class="title" style="margin-bottom:6px;"><span class="n">08</span><h2>Top five against Garm</h2></div>
+    <p class="lede">The championship leaders on the KPIs that matter, joined from three independent sources &mdash; scored results, the 9 September speed segments, and VMG computed here from the raw logs.</p>
+    <div class="gridhead" style="grid-template-columns:1.5fr .5fr .6fr .8fr .7fr .8fr .7fr;">
+      <span>Boat</span><span>Pos</span><span>Pts</span><span>Gained</span><span>Peak</span><span>Hold</span><span>VMG</span>
+    </div>
+    <div id="kpi-rows"></div>
+    <p class="note" id="kpi-note"></p>
+  </section>
+
+  <section id="coach" class="reveal rd-card">
+    <div class="title" style="margin-bottom:16px;"><span class="n">09</span><h2>Coach's read</h2></div>
+    <p class="cg" style="font-weight:600;font-style:italic;font-size:22px;line-height:1.35;color:var(--ink);background:var(--mint);border-radius:14px;padding:16px 18px;margin:0 0 16px;">&ldquo;Start at the pin, then get right immediately.&rdquo;</p>
+    <div id="coach-points"></div>
+    <p class="note" id="coach-mech"></p>
+  </section>
+
+  <section id="analyser" class="reveal rd-card">
+    <div class="title" style="margin-bottom:16px;"><span class="n">10</span><h2>Ask the analyser</h2></div>
+    <div id="chatlog" style="margin-bottom:12px;"></div>
+    <div class="chips" id="chips"></div>
+    <form class="ask" id="askform">
+      <input type="text" id="askinput" placeholder="Ask about the race…" autocomplete="off">
+      <button type="submit">Ask</button>
+    </form>
+    <p class="fine">Answers come from the analysis on this page, matched on keywords. It is not a live model &mdash; anything it cannot answer belongs with the coach on shore.</p>
+  </section>
+
+</div>
+
+<div style="padding:16px 20px 24px;">
+  <a href="https://claude.ai/code/artifact/94f50bb9-dd0f-4d7c-87e1-4b9d07baf81c" target="_blank" rel="noopener" class="rd-card" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Data opportunity, next Vakaros request</div>
+      <div class="cg" style="font-weight:700;font-size:17px;color:var(--ink);">Two fields in the log would close every remaining gap</div>
+      <p style="margin:6px 0 0;font-size:13px;color:var(--muted);line-height:1.6;">Every wind bearing here is reconstructed from GPS geometry, because no boat logged a wind instrument; and marks are inferred from track reversals, because the Atlas records no rounding. A masthead feed and a mark event would replace three inference layers with a measurement &mdash; see the full teardown of this model &rarr;</p>
+    </div>
+    <span style="flex:none;font-size:22px;color:var(--ink);">&rarr;</span>
+  </a>
+</div>
+
+<footer id="foot"></footer>
+
+</div>
+
+<script>
+const D = __DATA__;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KN = 1, MPS = 0.514444;
+let unit = 'kn';
+const sp = kn => kn == null ? '—' : (unit === 'kn' ? kn.toFixed(1) + ' kn' : (kn * MPS).toFixed(1) + ' m/s');
+const deg = d => d == null ? '—' : d.toFixed(1) + '°';
+const sp2 = kn => kn == null ? '—' : (unit === 'kn' ? kn.toFixed(2) + ' kn' : (kn * MPS).toFixed(2) + ' m/s');
+const ord = n => n + (n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th','st','nd','rd'][n % 10] || 'th');
+
+function seg(el, items, active, onPick){
+  el.innerHTML = '';
+  items.forEach(it => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = it.label;
+    b.setAttribute('aria-pressed', it.key === active);
+    b.onclick = () => onPick(it.key);
+    el.appendChild(b);
+  });
+}
+
+/* ---------------- summary ---------------- */
+function drawSummary(){
+  const t = D.official.team, e = D.official.event;
+  $('sum-pos').innerHTML = `${ord(t.pos)}<span style="font-size:15px;color:var(--faint);font-family:Lora,serif;font-weight:500;"> / ${D.official.fleet}</span>`;
+  const stats = [['Net points', t.pts], ['Races', t.races.join(' · ')],
+                 ['Places gained', '+' + t.gain]];
+  $('sum-stats').innerHTML = stats.map(([k, v], i) =>
+    `<div style="text-align:right;"><div style="font-size:12px;color:var(--faint);font-weight:600;">${k}</div>` +
+    `<div class="tnum ${i === 2 ? 'rd-pill' : 'cg'}" style="font-weight:700;font-size:20px;${i === 2 ? 'padding:2px 12px;' : ''}">${v}</div></div>`).join('');
+  $('sum-note').textContent =
+    `${t.sail} ${t.boat}, ${t.skipper}. ${D.official.races} races scored of a ${D.official.fleet}-boat ` +
+    `championship, ${e.dates}. Places gained counts positions won between the first windward mark ` +
+    `and the finish — the largest recovery in the top of the fleet.`;
+  $('herosub').textContent = `Team Sweden · ${t.sail} ${t.boat} · J/70 Worlds, Cascais`;
+  $('foot').innerHTML =
+    `Built on ${D.meta.logs} Vakaros Atlas VKX logs · ib-sailing race reports · cncascais.com results · ` +
+    `Cascais, Portugal · ${D.meta.pos}<br>Wind from a three-model consensus refreshed every three hours. ` +
+    `Model bias +${D.meta.bias}°, measured by the fleet itself.`;
+}
+
+/* ---------------- wind ---------------- */
+let wDay = 0, wHour = 0;
+function drawWind(){
+  const day = D.wind.days[wDay], r = day.rows[Math.min(wHour, day.rows.length - 1)];
+  seg($('wind-days'), D.wind.days.map((d, i) => ({key: i, label: d.short})), wDay,
+      k => { wDay = k; wHour = Math.min(wHour, D.wind.days[k].rows.length - 1); drawWind(); });
+  seg($('wind-hours'), day.rows.map((x, i) => ({key: i, label: x.hr + 'h'})), wHour,
+      k => { wHour = k; drawWind(); });
+  seg($('unitseg'), [{key:'kn',label:'kn'},{key:'mps',label:'m/s'}], unit,
+      k => { unit = k; drawAll(); });
+  $('n-raw').style.transform = `rotate(${r.raw}deg)`;
+  $('n-cor').style.transform = `rotate(${r.cor == null ? r.raw : r.cor}deg)`;
+  $('w-raw').textContent = deg(r.raw);
+  $('w-cor').textContent = r.cor == null ? 'withheld' : deg(r.cor);
+  $('w-kn').textContent = sp(r.kn);
+  $('w-gu').textContent = sp(r.gust);
+  $('w-sp').textContent = r.sp.toFixed(1) + '°';
+  $('w-note').innerHTML = r.cor == null
+    ? `<b>No correction at this hour.</b> The bias is calibrated in a sea breeze; at ${sp(r.kn)} with ` +
+      `${r.sp.toFixed(0)}° between the models there is nothing solid to correct, so the figure is ` +
+      `withheld rather than guessed. ${D.wind.note}`
+    : `The models are put at <b>${deg(r.raw)}</b>; the fleet sails <b>${deg(r.cor)}</b>. ` +
+      `${D.wind.note} At the tacking angle of ${D.meta.tack}°, that is a starboard heading of ` +
+      `<b>${((r.cor - D.meta.tack / 2 + 360) % 360).toFixed(0)}°</b> and port at ` +
+      `<b>${((r.cor + D.meta.tack / 2) % 360).toFixed(0)}°</b>.`;
+}
+
+/* ---------------- performance gap ---------------- */
+function drawGap(){
+  const F = D.fleet.filter(b => b.day === D.meta.raceday);
+  const us = F.find(b => b.team);
+  if (!us) return;
+  const mk = (label, key) => {
+    const best = F.reduce((a, b) => b[key] > a[key] ? b : a);
+    const gap = us[key] - best[key];
+    const lost = (60 / us[key] - 60 / best[key]) * 60;
+    return `<div class="tile" style="padding:16px;border-radius:14px;">
+      <div style="font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">${label}</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Garm average</span><b class="tnum">${sp2(us[key])}</b></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Fleet best (${esc(best.name)})</span><b class="tnum">${sp2(best[key])}</b></div>
+      <div style="display:flex;justify-content:space-between;font-size:15px;margin-top:8px;padding-top:8px;border-top:1px solid var(--line);"><span style="font-weight:600;">Gap</span><b class="tnum" style="color:${gap >= 0 ? 'var(--deep)' : 'var(--red)'};">${gap >= 0 ? '+' : ''}${sp2(gap)}</b></div>
+      <div style="font-size:12px;color:var(--faint);margin-top:4px;">${lost <= 0 ? 'no time lost' : '≈ +' + Math.round(lost) + 's per nm, estimated'}</div>
+    </div>`;
+  };
+  $('gap-cards').innerHTML = mk('Upwind', 'up') + mk('Downwind', 'dn');
+  const ranked = [...F].sort((a, b) => b.avg - a.avg);
+  $('gap-rank').textContent = (ranked.findIndex(b => b.team) + 1) + ' of ' + F.length;
+  $('gap-fine').textContent =
+    `Averages over the whole session, split at 8 knots of boat speed — not per-fix telemetry, so ` +
+    `treat time-lost as directional. Measured against the ${F.length} boats decoded for that day, ` +
+    `which is the event's own analysis set, not the full ${D.official.fleet}-boat championship.`;
+}
+
+/* ---------------- start line ---------------- */
+let slRace = 0;
+function drawStart(){
+  const r = D.startline[slRace];
+  seg($('start-races'), D.startline.map((x, i) => ({key: i, label: 'Race ' + x.race})), slRace,
+      k => { slRace = k; drawStart(); });
+  $('sl-end').textContent = r.favoured + ' end';
+  $('sl-dot').style.left = (r.favoured === 'Pin' ? Math.max(6, 50 - r.bias_deg * 2.2)
+                                                 : Math.min(94, 50 + r.bias_deg * 2.2)) + '%';
+  $('sl-facts').innerHTML =
+    `<span>Bias ${r.bias_deg}° (${r.bias_m} m)</span><span>Line ${r.line_m.toLocaleString()} m</span>` +
+    `<span>Set to ${r.setting}°</span><span>Our formula ${r.calc_m} m</span>`;
+  const err = Math.abs(r.calc_m - r.bias_m) / r.bias_m * 100;
+  $('sl-note').innerHTML =
+    `<b>${r.favoured} favoured by ${r.bias_m} m on a ${r.line_m.toLocaleString()} m line</b> — ` +
+    `${(r.bias_m / r.line_m * 100).toFixed(0)}% of the line's length, free, before anyone has sailed a metre. ` +
+    `Our own geometry, working only from the line bearing and the measured wind, gives ${r.calc_m} m: ` +
+    `<b>${err.toFixed(1)}% from the event's published figure.</b> The pin was favoured in every race of the regatta.`;
+}
+
+/* ---------------- fleet ---------------- */
+let fDay = null;
+function drawFleet(){
+  const days = [...new Set(D.fleet.map(b => b.day))].sort();
+  if (fDay === null) fDay = D.meta.raceday;
+  seg($('fleet-days'), days.map(d => ({key: d, label: D.dayLabel[d] || d})), fDay,
+      k => { fDay = k; drawFleet(); });
+  const rows = D.fleet.filter(b => b.day === fDay).sort((a, b) => b.avg - a.avg);
+  $('fleet-note').textContent = D.dayNote[fDay] || '';
+  $('fleet-rows').innerHTML = rows.map(b =>
+    `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.7fr 1fr 1fr 1fr 1fr;">
+      <span>${esc(b.name)}</span><span class="tnum">${sp(b.avg)}</span><span class="tnum">${sp(b.up)}</span>
+      <span class="tnum">${sp(b.mx)}</span><span class="tnum">${b.nm.toFixed(1)} nm</span></div>`).join('');
+}
+
+/* ---------------- manoeuvres ---------------- */
+let mRace = 0, mBoat = 'Team Sweden (Roman)';
+function drawMan(){
+  const R = D.races[mRace];
+  seg($('man-races'), D.races.map((x, i) => ({key: i, label: 'Race ' + x.n})), mRace,
+      k => { mRace = k; if (!D.races[k].boats.some(b => b.b === mBoat)) mBoat = D.races[k].boats[0].b; drawMan(); });
+  seg($('man-boats'), R.boats.map(b => ({key: b.b, label: b.b === D.meta.team ? 'GARM' : b.b})), mBoat,
+      k => { mBoat = k; drawMan(); });
+  const sb = R.boats.find(b => b.b === mBoat) || R.boats[0];
+  const avgEx = R.boats.reduce((s, b) => s + b.ex, 0) / R.boats.length;
+  const vs = Math.round(sb.ex - avgEx);
+  $('man-tiles').innerHTML = [
+    ['Upwind avg', sp(sb.up)], ['Downwind avg', sp(sb.dn)],
+    ['Tacks, beat 1', sb.tk == null ? '—' : sb.tk], ['Extra distance', sb.ex.toLocaleString() + ' m'],
+    ['Distance to line at gun', sb.dl.toFixed(1) + ' m']
+  ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
+
+  // polar
+  const CX = 160, CY = 150, RMAX = 120, SMAX = 14;
+  const pt = (d, s) => { const r = Math.min(s / SMAX, 1) * RMAX, a = d * Math.PI / 180;
+                         return [CX + r * Math.sin(a), CY - r * Math.cos(a)]; };
+  const [ux, uy] = pt(42, sb.up), [dx, dy] = pt(150, sb.dn);
+  const [mx, my] = pt(96, (sb.up + sb.dn) / 2 + 1.5);
+  $('p-curve').setAttribute('d', `M ${ux.toFixed(1)},${uy.toFixed(1)} Q ${mx.toFixed(1)},${my.toFixed(1)} ${dx.toFixed(1)},${dy.toFixed(1)}`);
+  $('p-lup').setAttribute('x2', ux.toFixed(1)); $('p-lup').setAttribute('y2', uy.toFixed(1));
+  $('p-ldn').setAttribute('x2', dx.toFixed(1)); $('p-ldn').setAttribute('y2', dy.toFixed(1));
+  $('p-up').setAttribute('cx', ux.toFixed(1)); $('p-up').setAttribute('cy', uy.toFixed(1));
+  $('p-dn').setAttribute('cx', dx.toFixed(1)); $('p-dn').setAttribute('cy', dy.toFixed(1));
+  $('p-tup').setAttribute('x', ux.toFixed(1)); $('p-tup').setAttribute('y', (uy - 12).toFixed(1));
+  $('p-tup').textContent = sp(sb.up);
+  $('p-tdn').setAttribute('x', dx.toFixed(1)); $('p-tdn').setAttribute('y', (dy + 18).toFixed(1));
+  $('p-tdn').textContent = sp(sb.dn);
+  $('polar-note').textContent =
+    'Session averages placed at a nominal 42° and 150° true wind angle, with the range between them ' +
+    'interpolated. The per-leg VMG below is the measured version of this.';
+
+  // extra-distance bars, whole race fleet
+  const bars = [...R.boats].sort((a, b) => b.ex - a.ex);
+  const max = bars[0].ex;
+  $('man-h').textContent = `Extra distance sailed, race ${R.n}`;
+  $('man-bars').innerHTML = bars.map(b =>
+    `<div class="bar"><span style="font-weight:${b.b === mBoat ? 700 : 500};">${esc(b.b === D.meta.team ? 'Garm' : b.b)}</span>
+     <span class="tnum" style="text-align:right;">${b.ex.toLocaleString()}</span>
+     <span class="track"><span class="fill" style="width:${(b.ex / max * 100).toFixed(0)}%;background:${b.b === mBoat ? 'var(--lime)' : 'var(--bar)'};"></span></span></div>`).join('');
+
+  const nm = sb.b === D.meta.team ? 'Garm' : sb.b;
+  $('man-insight').textContent = vs > 0
+    ? `${nm} sailed ${sb.ex.toLocaleString()} m more than the straight line in race ${R.n} — ` +
+      `${vs} m more than the fleet average, with ${sb.tk} tacks on the first beat. ` +
+      `Across the tracked fleet, though, tack count is the weakest predictor of VMG there is: ` +
+      `the distance goes somewhere other than the manoeuvres.`
+    : `${nm} sailed ${sb.ex.toLocaleString()} m of extra distance in race ${R.n}, ` +
+      `${Math.abs(vs)} m better than the fleet average, with ${sb.tk} tacks on the first beat.`;
+}
+
+/* ---------------- leg VMG ---------------- */
+let vRace = '1';
+function drawVmg(){
+  const keys = Object.keys(D.legs.races);
+  seg($('vmg-races'), keys.map(k => ({key: k, label: 'Race ' + k})), vRace, k => { vRace = k; drawVmg(); });
+  const R = D.legs.races[vRace];
+  const beats = Object.entries(R).map(([b, L]) => ({b, l: L.find(x => x.kind === 'beat')}))
+                                 .filter(x => x.l && x.l.vmg).sort((a, b) => b.l.vmg - a.l.vmg);
+  const us = beats.find(x => x.b === D.meta.legteam);
+  const med = beats[Math.floor(beats.length / 2)].l.vmg;
+  const dr = D.legs.drivers[vRace] || {};
+  $('vmg-tiles').innerHTML = [
+    ['Garm VMG, beat 1', us ? sp2(us.l.vmg) : '—'],
+    ['Fleet median', sp2(med)],
+    ['Rank of ' + beats.length, us ? (beats.findIndex(x => x.b === D.meta.legteam) + 1) : '—'],
+    ['Garm TWA', us ? us.l.twa.toFixed(1) + '°' : '—']
+  ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
+  $('vmg-rows').innerHTML = beats.map(x =>
+    `<div class="grid ${x.b === D.meta.legteam ? 'team' : ''}" style="grid-template-columns:1.5fr .8fr .8fr .8fr .8fr .8fr;">
+      <span>${esc(x.b === D.meta.legteam ? 'Garm' : x.b)}</span>
+      <span class="tnum">${x.l.vmg.toFixed(2)}</span><span class="tnum">${x.l.sog.toFixed(2)}</span>
+      <span class="tnum">${x.l.twa.toFixed(1)}°</span><span class="tnum">${x.l.tacks}</span>
+      <span class="tnum">${x.l.extra.toLocaleString()}</span></div>`).join('');
+  const TS = R[D.meta.legteam] || [];
+  $('ts-rows').innerHTML = TS.map(l =>
+    `<div class="grid" style="grid-template-columns:1.1fr .7fr .7fr .7fr .7fr .7fr .7fr;padding-left:0;padding-right:0;">
+      <span>${l.n}. ${l.kind === 'beat' ? 'Beat' : 'Run'}</span><span class="tnum">${l.wind}°</span>
+      <span class="tnum">${l.min.toFixed(1)}</span><span class="tnum">${l.sog.toFixed(2)}</span>
+      <span class="tnum" style="font-weight:700;">${l.vmg.toFixed(2)}</span><span class="tnum">${l.twa.toFixed(0)}°</span>
+      <span class="tnum">${l.tacks}/${l.gybes}</span></div>`).join('');
+  $('vmg-note').innerHTML =
+    `<b>What actually separated the fleet on the first beat.</b> Across ${dr.n || beats.length} boats, ` +
+    `true wind angle correlates with VMG at <b>r = ${dr.r_twa}</b> and extra distance at ` +
+    `<b>${dr.r_extra}</b>. Tack count comes in at <b>${dr.r_tacks}</b> — the weakest of the three by ` +
+    `some distance. ` +
+    `The boats that made ground were sailing a better angle, not tacking less. ` +
+    `Efficiency (VMG ÷ SOG) correlates at ${dr.r_eff}, but that is definitional and is not treated as a driver.`;
+}
+
+/* ---------------- speed segments ---------------- */
+let segKey = 's0';
+function drawSeg(){
+  seg($('seg-sort'), [{key:'s0',label:'Peak'},{key:'s60',label:'60 s'},{key:'hold',label:'Hold'}], segKey,
+      k => { segKey = k; drawSeg(); });
+  const rows = [...D.segments.rows].sort((a, b) => b[segKey] - a[segKey]);
+  $('seg-rows').innerHTML = rows.map(r =>
+    `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.5fr .7fr .7fr .7fr .7fr .9fr;">
+      <span>${esc(r.boat)}</span><span class="tnum">${r.s0.toFixed(2)}</span>
+      <span class="tnum">${r.s10.toFixed(2)}</span><span class="tnum">${r.s30.toFixed(2)}</span>
+      <span class="tnum">${r.s60.toFixed(2)}</span>
+      <span class="tnum" style="color:${r.hold >= .88 ? 'var(--deep)' : r.hold < .82 ? 'var(--red)' : 'inherit'};font-weight:700;">${r.hold.toFixed(3)}</span></div>`).join('');
+  const g = D.segments.rows.find(r => r.team);
+  const peaky = [...D.segments.rows].sort((a, b) => b.s0 - a.s0)[0];
+  const best = [...D.segments.rows].sort((a, b) => b.hold - a.hold)[0];
+  $('seg-note').innerHTML =
+    `<b>Peak speed and sustained speed pull against each other.</b> Across these ${D.segments.rows.length} ` +
+    `boats the correlation between the instantaneous peak and how much of it survives a full minute is ` +
+    `<b>−0.59</b>. ${esc(peaky.boat)} tops the fleet at ${peaky.s0.toFixed(2)} kn and keeps only ` +
+    `${(peaky.hold * 100).toFixed(0)}% of it — the worst retention here. ${esc(best.boat)} has one of the ` +
+    `lowest peaks and the best retention at ${(best.hold * 100).toFixed(0)}%.` +
+    (g ? ` <b>Garm is ${g.rank0} of ${D.segments.rows.length} on raw peak but ${g.rankhold} on retention</b> — ` +
+         `the boat holds speed better than it spikes.` : '') +
+    `<br><br><span style="color:var(--faint);">${D.segments.caveat}</span>`;
+}
+
+/* ---------------- KPI ---------------- */
+function drawKpi(){
+  const dash = v => v == null ? '<span style="color:var(--faint);">—</span>' : v;
+  $('kpi-rows').innerHTML = D.kpi.rows.map(r =>
+    `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.5fr .5fr .6fr .8fr .7fr .8fr .7fr;">
+      <span>${esc(r.boat)}</span><span class="tnum">${r.pos}</span><span class="tnum">${r.pts}</span>
+      <span class="tnum" style="color:var(--deep);font-weight:700;">+${r.gain}</span>
+      <span class="tnum">${dash(r.peak && r.peak.toFixed(1))}</span>
+      <span class="tnum">${dash(r.hold && r.hold.toFixed(3))}</span>
+      <span class="tnum">${dash(r.vmg && r.vmg.toFixed(2))}</span></div>`).join('');
+  const g = D.kpi.rows.find(r => r.team), a = D.kpi.rows.find(r => r.vmg && !r.team);
+  $('kpi-note').innerHTML = (a && g
+    ? `<b>Compare Garm with ${esc(a.boat)}.</b> Third overall against ${g.pos}th — and on raw boat speed ` +
+      `there is almost nothing between them. Upwind VMG from the logs is <b>${g.vmg.toFixed(2)} kn against ` +
+      `${a.vmg.toFixed(2)} kn</b>, at ${g.twa.toFixed(1)}° and ${a.twa.toFixed(1)}° true wind angle. ` +
+      `Two boats sailing the same speed at the same angle.<br><br>` +
+      `<b>The gap is where they sail, not how fast.</b> ${esc(a.boat)} gains just +${a.gain} places after ` +
+      `the first mark because it is already at the front; Garm gains +${g.gain} because it starts each race ` +
+      `deep. The boat is not slow. The first beat is losing the race.<br><br>` : '') +
+    `<span style="color:var(--faint);">${D.kpi.note}</span>`;
+}
+
+/* ---------------- coach ---------------- */
+function drawCoach(){
+  $('coach-points').innerHTML = D.coach.start.map(([h, t]) =>
+    `<div style="display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--line);">
+      <span style="flex:none;width:6px;height:6px;border-radius:50%;background:var(--lime);margin-top:8px;"></span>
+      <p style="font-size:14px;line-height:1.6;margin:0;color:var(--body);"><b>${esc(h)}.</b> ${esc(t)}</p></div>`).join('');
+  $('coach-mech').innerHTML = `<b>Why the model is wrong in the same direction every day.</b> ${esc(D.coach.mechanism)}`;
+}
+
+/* ---------------- analyser ---------------- */
+function drawChat(){
+  $('chips').innerHTML = '';
+  D.qa.forEach((qa, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = qa.label;
+    b.onclick = () => say(qa.q, qa.a);
+    $('chips').appendChild(b);
+  });
+  $('askform').onsubmit = e => {
+    e.preventDefault();
+    const t = $('askinput').value.trim();
+    if (!t) return;
+    const w = t.toLowerCase();
+    const hit = D.qa.find(qa => qa.k.some(k => w.includes(k)));
+    say(t, hit ? hit.a : 'Not something this page can answer from the data it holds. ' +
+        'The full dataset behind it is published as JSON and CSV — that, or the coach on shore.');
+    $('askinput').value = '';
+  };
+}
+function say(q, a){
+  const log = $('chatlog');
+  log.insertAdjacentHTML('beforeend',
+    `<div class="msg me"><div>${esc(q)}</div></div><div class="msg ai"><div>${a}</div></div>`);
+  log.lastElementChild.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+}
+
+/* ---------------- nav + reveal ---------------- */
+const SECTIONS = [['wind','Wind'],['gap','Perf. gap'],['start','Start line'],['fleet','Fleet'],
+                  ['maneuvers','Manoeuvres'],['vmg','VMG'],['segments','Segments'],['kpi','Top 5'],
+                  ['coach','Coach'],['analyser','Analyser']];
+function drawNav(){
+  $('nav').innerHTML = SECTIONS.map(([id, l]) => `<a href="#${id}" data-s="${id}">${l}</a>`).join('');
+  let raf = null;
+  const recompute = () => {
+    raf = null;
+    let cur = SECTIONS[0][0];
+    for (const [id] of SECTIONS){
+      const el = $(id);
+      if (el && el.getBoundingClientRect().top <= 64) cur = id;
+    }
+    document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('on', a.dataset.s === cur));
+  };
+  addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(recompute); }, {passive: true});
+  recompute();
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('is-visible');
+  }), {threshold: 0.08});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+}
+
+function drawAll(){
+  drawSummary(); drawWind(); drawGap(); drawStart(); drawFleet();
+  drawMan(); drawVmg(); drawSeg(); drawKpi(); drawCoach();
+}
+drawAll(); drawChat(); drawNav();
+</script>
