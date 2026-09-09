@@ -1,0 +1,487 @@
+<script>
+const D = __PAYLOAD__;
+const $ = id => document.getElementById(id);
+const deg = v => Math.round(v) + '°';
+const norm = a => ((a % 360) + 360) % 360;
+const diff = (a,b) => ((a - b + 540) % 360) - 180;   // signed a-b in (-180,180]
+
+/* ---------------- day series ---------------- */
+/* Wind is loaded at runtime, newest source first:
+     1. data/wind.json  — refreshed every 3 h by .github/workflows/wind-refresh.yml
+     2. Open-Meteo direct — live, if the host allows the call
+     3. the snapshot embedded in this file — always works, may be stale
+   Whichever answers first wins, and the source is shown under the day tabs. */
+const MODELS = 'icon_eu,ecmwf_ifs025,gfs_seamless';
+const OM = 'https://api.open-meteo.com/v1/forecast?latitude=38.68&longitude=-9.42'
+  + '&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl'
+  + '&wind_speed_unit=kn&timezone=Europe%2FLisbon&forecast_days=5&models=' + MODELS;
+const LAST_DAY = '2026-09-11';        // the regatta ends Friday
+const MIN_KN = 8;                     // below this the bias correction is invalid
+
+let DAYS = [], dayIdx = 0, hrIdx = 0, timer = null, STAMP = '';
+const BIAS = D.meta.bias, TACK = D.meta.tack;
+
+function label(date){
+  const d = new Date(date + 'T12:00:00');
+  const today = new Date().toISOString().slice(0,10);
+  const names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return names[d.getDay()] + ' ' + d.getDate() + ' ' + mon[d.getMonth()]
+       + (date === today ? ' · today' : '');
+}
+function fromWindJson(w){
+  return w.days.map(d => ({
+    key: d.date, label: label(d.date), date: d.date,
+    rows: d.rows.map(r => ({
+      hr: r.hr, raw: r.raw, kn: r.kn, gust: r.gust, sp: r.sp, mslp: r.mslp,
+      cor: r.cor, trust: r.trust !== false
+    }))
+  }));
+}
+function circMean(a){
+  const x = a.reduce((t,v)=>t+Math.cos(v*Math.PI/180),0);
+  const y = a.reduce((t,v)=>t+Math.sin(v*Math.PI/180),0);
+  return (Math.atan2(y,x)*180/Math.PI+360)%360;
+}
+function fromOpenMeteo(js){
+  const h = js.hourly, ms = MODELS.split(','), by = {};
+  h.time.forEach((stamp,i) => {
+    const [date,hh] = stamp.split('T'), hr = +hh.slice(0,2);
+    if (hr < 11 || hr > 18 || date > LAST_DAY) return;
+    const col = p => ms.map(m => h[p+'_'+m][i]).filter(v => v != null);
+    const dirs = col('wind_direction_10m'), sp = col('wind_speed_10m'),
+          gu = col('wind_gusts_10m'), pr = col('pressure_msl');
+    if (!dirs.length) return;
+    const raw = circMean(dirs), m = circMean(dirs);
+    const sprd = Math.max(...dirs.map(v => Math.abs(((v-m+180)%360)-180)));
+    const kn = sp.reduce((a,b)=>a+b,0)/sp.length;
+    const trust = kn >= MIN_KN && sprd <= 30;
+    (by[date] = by[date] || []).push({
+      hr, raw:+raw.toFixed(1), kn:+kn.toFixed(1), gust:Math.max(...gu),
+      sp:+sprd.toFixed(1), mslp:+(pr.reduce((a,b)=>a+b,0)/pr.length).toFixed(1),
+      cor: trust ? +(((raw-BIAS)%360+360)%360).toFixed(1) : null, trust
+    });
+  });
+  return Object.keys(by).sort().map(d => ({key:d, label:label(d), date:d, rows:by[d]}));
+}
+function embedded(){
+  if (D.wind && D.wind.days && D.wind.days.length) return fromWindJson(D.wind);
+  const mk = (rows, date) => ({key:date, label:label(date), date, rows: rows.map(r => ({
+    hr: r.hr != null ? r.hr : r.utc + 1, raw: r.raw != null ? r.raw : r.dir,
+    kn: r.kn, gust: r.gust, sp: null, mslp: null,
+    cor: +(((( r.raw != null ? r.raw : r.dir) - BIAS)%360+360)%360).toFixed(1), trust: true
+  }))});
+  return [mk(D.today.icon, '2026-09-08')];
+}
+
+async function loadWind(){
+  const tries = [
+    ['data/wind.json', async () => {
+      const r = await fetch('data/wind.json', {cache:'no-store'});
+      if (!r.ok) throw 0;
+      const w = await r.json();
+      return {days: fromWindJson(w), src: 'data/wind.json', at: w.generated};
+    }],
+    ['Open-Meteo live', async () => {
+      const r = await fetch(OM, {cache:'no-store'});
+      if (!r.ok) throw 0;
+      return {days: fromOpenMeteo(await r.json()), src: 'Open-Meteo, live', at: null};
+    }],
+  ];
+  for (const [, fn] of tries){
+    try {
+      const got = await fn();
+      if (got.days && got.days.length){
+        DAYS = got.days;
+        const today = new Date().toISOString().slice(0,10);
+        dayIdx = Math.max(0, DAYS.findIndex(d => d.date >= today));
+        hrIdx = 0; stamp(got.src, got.at); syncDay(); return;
+      }
+    } catch (e) { /* try the next source */ }
+  }
+  DAYS = embedded();
+  const today = new Date().toISOString().slice(0,10);
+  const k = DAYS.findIndex(d => d.date >= today);
+  dayIdx = k >= 0 ? k : DAYS.length - 1;
+  stamp(D.wind ? 'three-model consensus, baked in at publish'
+              : 'embedded snapshot — may be stale', D.wind ? D.wind.generated : null);
+  syncDay();
+}
+function stamp(src, at){
+  STAMP = src + (at ? ' · ' + at.replace('T',' ').replace('Z',' UTC') : '');
+  if ($('dayhint')) $('dayhint').textContent = STAMP;
+}
+
+function series(){ return DAYS[dayIdx].rows; }
+function cur(){ return series()[Math.min(hrIdx, series().length-1)]; }
+
+function drawDays(){
+  const w = $('daysel'); w.innerHTML = '';
+  DAYS.forEach((d,i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = d.label;
+    b.setAttribute('aria-pressed', i === dayIdx);
+    b.onclick = () => { dayIdx = i; hrIdx = 0; stop(); syncDay(); };
+    w.appendChild(b);
+  });
+  if (STAMP) $('dayhint').textContent = STAMP;
+}
+function syncDay(){
+  const s = series();
+  $('hr').max = String(s.length - 1);
+  $('hr').value = String(hrIdx);
+  drawDays(); paint(); calc();
+}
+
+/* ---------------- compass + readouts ---------------- */
+function ticks(){
+  let g = '';
+  for (let a = 0; a < 360; a += 15){
+    const r1 = a % 45 === 0 ? 88 : 94, w = a % 45 === 0 ? 2 : 1;
+    const rad = (a - 90) * Math.PI / 180;
+    g += `<line x1="${120+Math.cos(rad)*r1}" y1="${120+Math.sin(rad)*r1}" x2="${120+Math.cos(rad)*100}" y2="${120+Math.sin(rad)*100}" stroke="var(--line)" stroke-width="${w}"/>`;
+  }
+  $('ticks').innerHTML = g;
+}
+
+function paint(){
+  const h = cur();
+  const cor = h.cor != null ? h.cor : norm(h.raw - BIAS);
+  const ok  = h.trust !== false && h.cor != null;
+  $('r-raw').textContent = deg(h.raw);
+  $('r-cor').textContent = ok ? deg(cor) : '—';
+  $('r-kn').textContent  = h.kn.toFixed(1);
+  $('r-gu').textContent  = h.gust.toFixed(1);
+  $('r-sp').textContent  = h.sp == null ? '—' : h.sp.toFixed(1) + '°';
+  $('n-raw').style.transform = `rotate(${h.raw}deg)`;
+  $('n-cor').style.transform = `rotate(${cor}deg)`;
+  $('n-cor').style.opacity = ok ? '1' : '0.25';
+  $('b-stb').textContent  = ok ? deg(norm(cor - TACK/2)) : '—';
+  $('b-prt').textContent  = ok ? deg(norm(cor + TACK/2)) : '—';
+  $('b-line').textContent = ok ? deg(norm(cor + 90))      : '—';
+  $('b-mslp').textContent = h.mslp == null ? '—' : h.mslp.toFixed(1);
+  $('clock').textContent  = String(h.hr).padStart(2,'0') + ':00 local';
+
+  const s = series(), good = s.filter(x => x.trust !== false && x.cor != null);
+  if (!good.length){
+    $('trend').innerHTML = `<b>Direction is not meaningful today.</b> The models disagree by up to ` +
+      `${Math.max(...s.map(x=>x.sp||0)).toFixed(0)}° and the breeze never reaches ${MIN_KN} kn, which is what ` +
+      `no gradient looks like. The ${BIAS.toFixed(1)}° correction was calibrated on a 10–14 kn Nortada and ` +
+      `does not apply here — sail what you see on the water.`;
+    return;
+  }
+  const a = good[0].cor, b = good[good.length-1].cor;
+  const d = diff(b, a), hrs = good[good.length-1].hr - good[0].hr;
+  const knd = s[s.length-1].kn - s[0].kn;
+  $('trend').innerHTML =
+    `<b>Across the window</b> the corrected breeze runs ${deg(a)} → ${deg(b)} ` +
+    `(<span class="pill ${d < -1 ? 'dn' : d > 1 ? 'up' : 'nu'}">${d >= 0 ? '+' : ''}${d.toFixed(1)}°` +
+    `${hrs ? ', ' + (d/hrs >= 0 ? '+' : '') + (d/hrs).toFixed(2) + '°/h' : ''}</span>), ` +
+    `and it ${knd >= 0 ? 'builds' : 'eases'} from ${s[0].kn.toFixed(1)} to ${s[s.length-1].kn.toFixed(1)} kn ` +
+    `<span class="pill ${knd > 0.5 ? 'up' : knd < -0.5 ? 'dn' : 'nu'}">${knd >= 0 ? '+' : ''}${knd.toFixed(1)} kn</span>. ` +
+    `Gusts average ${(s.reduce((t,x) => t + x.gust/x.kn, 0)/s.length).toFixed(2)}× the mean. ` +
+    (d < -1 ? 'A left-backing breeze pays the left of the beat.'
+            : d > 1 ? 'A right-veering breeze pays the right of the beat.'
+                    : 'Direction is close to steady — sail pressure, not shifts.');
+}
+
+$('hr').addEventListener('input', e => { hrIdx = +e.target.value; paint(); calc(); });
+function stop(){ if (timer){ clearInterval(timer); timer = null; $('play').textContent = 'Play afternoon'; } }
+$('play').onclick = () => {
+  if (timer) return stop();
+  $('play').textContent = 'Pause';
+  timer = setInterval(() => {
+    hrIdx = (hrIdx + 1) % series().length;
+    $('hr').value = String(hrIdx); paint(); calc();
+    if (hrIdx === series().length - 1) stop();
+  }, 950);
+};
+
+/* ---------------- start-line calculator ---------------- */
+function calc(){
+  const brg = +$('c-brg').value, len = +$('c-len').value;
+  const h0 = cur(), cor = h0.cor != null ? h0.cor : norm(h0.raw - BIAS);
+  const sq  = norm(brg - 90);            // wind the line is square to (pin→boat bearing, less 90)
+  const off = diff(cor, sq);             // negative => wind left of square
+  const gain = Math.abs(len * Math.sin(off * Math.PI / 180));
+  $('v-brg').textContent = deg(brg);
+  $('v-len').textContent = len + ' m';
+  $('c-sq').textContent  = deg(sq);
+  $('c-off').textContent = (off >= 0 ? '+' : '') + off.toFixed(1) + '°';
+  const end = Math.abs(off) < 1.5 ? 'Square' : (off < 0 ? 'Pin' : 'Committee boat');
+  $('c-end').textContent = end;
+  $('c-gain').textContent = end === 'Square'
+    ? 'Neither end pays more than a boat length.'
+    : `${gain.toFixed(0)} m of advantage over the full line — about ${(gain/12).toFixed(0)} boat lengths.`;
+  $('c-hint').innerHTML = `If the committee squares to the <i>raw</i> model instead of the corrected wind, ` +
+    `the line sits ${BIAS.toFixed(0)}° off and the pin pays ` +
+    `<b>${(len*Math.sin(BIAS*Math.PI/180)).toFixed(0)} m</b>. On the day the committee laid ` +
+    `${D.ib.races.map(r=>r.bias_deg+'°').join(' and ')} of pin bias, worth ` +
+    `${D.ib.races.map(r=>r.bias_m+' m').join(' and ')} — this formula reproduces both within 2%.`;
+}
+$('c-brg').addEventListener('input', calc);
+$('c-len').addEventListener('input', calc);
+
+/* ---------------- race explorer ---------------- */
+let rIdx = 0, sel = null, sk = null, sd = 1;
+const RC = [
+  ['b','Boat',0],['m0','M1 min',1],['m1','M2 min',1],['m2','M3 min',1],
+  ['up','Beat kn',1],['dn','Run kn',1],['ex','Extra m',1],['tk','Tacks',1],
+  ['dl','To line m',1],['al','Pin→boat',1]
+];
+const rv = (b,k) => k[0] === 'm' && k.length === 2 ? b.m[+k[1]] : b[k];
+
+function drawRace(){
+  const r = D.races[rIdx];
+  const tabs = $('racetabs'); tabs.innerHTML = '';
+  D.races.forEach((x,i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.textContent = `Race ${x.n} · gun ${x.gun}`;
+    b.setAttribute('aria-pressed', i === rIdx);
+    b.onclick = () => { rIdx = i; sk = null; drawRace(); };
+    tabs.appendChild(b);
+  });
+  $('racemeta').innerHTML = `Line ${Math.round(r.length)} m, bearing ${deg(r.brg)}, square to ${deg(r.sq)} ` +
+    `· first beat sailed ${deg(r.beat)} · ${r.tracked} boats tracked`;
+  const t = r.team, g = t.gap_to_leader_min;
+  $('racetiles').innerHTML = [
+    ['Team Sweden at marks', t.position_at_each_mark.join(' → ')],
+    ['Gap to leader', g[g.length-1].toFixed(2) + ' min'],
+    ['Beat 1 speed vs fleet', (t.beat1_avg_sog_vs_fleet_kn>=0?'+':'') + t.beat1_avg_sog_vs_fleet_kn.toFixed(2) + ' kn'],
+    ['Beat 1 extra distance', (t.beat1_extra_distance_vs_fleet_m>=0?'+':'') + Math.round(t.beat1_extra_distance_vs_fleet_m) + ' m'],
+    ['Beat 1 tacks vs median', (t.beat1_tacks_vs_fleet_median>=0?'+':'') + t.beat1_tacks_vs_fleet_median]
+  ].map(x => `<div class="beat"><span>${x[0]}</span><b class="mono">${x[1]}</b></div>`).join('');
+
+  const cw = $('boatchips'); cw.innerHTML = '';
+  const all = document.createElement('button');
+  all.type='button'; all.className='chip'; all.textContent='All boats';
+  all.setAttribute('aria-pressed', !sel); all.onclick = () => { sel = null; drawRace(); };
+  cw.appendChild(all);
+  r.order.forEach(n => {
+    const b = document.createElement('button');
+    b.type='button'; b.className = 'chip' + (n === D.meta.team ? ' tm' : '');
+    b.textContent = n; b.setAttribute('aria-pressed', sel === n);
+    b.onclick = () => { sel = sel === n ? null : n; drawRace(); };
+    cw.appendChild(b);
+  });
+
+  const hd = $('rt-h'); hd.innerHTML = '';
+  RC.forEach(([k,t2,num]) => {
+    const th = document.createElement('th');
+    th.textContent = t2 + (sk === k ? (sd > 0 ? ' ↑' : ' ↓') : '');
+    th.tabIndex = 0;
+    if (sk === k) th.setAttribute('aria-sort', sd > 0 ? 'ascending' : 'descending');
+    const go = () => { if (sk === k) sd = -sd; else { sk = k; sd = 1; } drawRace(); };
+    th.onclick = go;
+    th.onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } };
+    hd.appendChild(th);
+  });
+
+  let rows = r.boats.map(b => ({ b, pos: r.order.indexOf(b.b) + 1 }));
+  if (sk) rows.sort((x,y) => {
+    const a = rv(x.b, sk), c = rv(y.b, sk);
+    return sd * (typeof a === 'string' ? a.localeCompare(c) : a - c);
+  });
+  else rows.sort((x,y) => x.pos - y.pos);
+
+  const tb = $('rt-b'); tb.innerHTML = '';
+  rows.forEach(({b,pos}) => {
+    const tr = document.createElement('tr');
+    tr.className = b.b === sel ? 'sel' : (b.b === D.meta.team ? 'team' : '');
+    tr.onclick = () => { sel = sel === b.b ? null : b.b; drawRace(); };
+    tr.innerHTML = [`<span class="pos">${pos}</span>${b.b}`, b.m[0].toFixed(1), b.m[1].toFixed(1),
+      b.m[2].toFixed(1), b.up.toFixed(2), b.dn.toFixed(2), b.ex, b.tk, b.dl.toFixed(1), b.al.toFixed(2)]
+      .map(c => `<td>${c}</td>`).join('');
+    tb.appendChild(tr);
+  });
+
+  $('racenote').innerHTML = `<b>Start position against time to the windward mark:</b> r = ${r.corr.toFixed(2)}. ` +
+    `Positive means boats starting nearer the committee-boat end took longer up the first beat — the pin end paid, ` +
+    `which is what a left-backing breeze does.`;
+}
+
+/* ---------------- fleet ---------------- */
+let fDay = null, fk = 'nm', fd = -1;
+const FC = [['file','Boat / file',0],['t0','From',0],['t1','To',0],['fixes','Fixes',1],
+            ['nm','Distance nm',1],['mx','Max kn',1],['avg','Avg kn',1],
+            ['upAvg','Upwind kn',1],['dnAvg','Downwind kn',1]];
+function drawFleet(){
+  const days = [...new Set(D.fleet.map(f => f.day))].sort();
+  if (fDay === null) fDay = days[days.length-1];
+  const w = $('fleettabs'); w.innerHTML = '';
+  days.forEach(d => {
+    const b = document.createElement('button');
+    b.type='button'; b.className='chip'; b.textContent = d;
+    b.setAttribute('aria-pressed', d === fDay);
+    b.onclick = () => { fDay = d; drawFleet(); };
+    w.appendChild(b);
+  });
+  const hd = $('ft-h'); hd.innerHTML = '';
+  FC.forEach(([k,t]) => {
+    const th = document.createElement('th');
+    th.textContent = t + (fk === k ? (fd > 0 ? ' ↑' : ' ↓') : '');
+    th.tabIndex = 0;
+    const go = () => { if (fk === k) fd = -fd; else { fk = k; fd = -1; } drawFleet(); };
+    th.onclick = go;
+    th.onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } };
+    hd.appendChild(th);
+  });
+  const rows = D.fleet.filter(f => f.day === fDay).sort((a,b) => {
+    const x = a[fk], y = b[fk];
+    return fd * (typeof x === 'string' ? x.localeCompare(y) : x - y);
+  });
+  const tb = $('ft-b'); tb.innerHTML = '';
+  rows.forEach(f => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = [f.file.replace(/\.vkx$/,''), f.t0, f.t1, f.fixes.toLocaleString('en-GB'),
+      f.nm.toFixed(1), f.mx.toFixed(1), f.avg.toFixed(2), f.upAvg.toFixed(2), f.dnAvg.toFixed(2)]
+      .map(c => `<td>${c}</td>`).join('');
+    tb.appendChild(tr);
+  });
+}
+
+/* ---------------- measured vs model ---------------- */
+function rowsOut(id, cells){ document.getElementById(id).innerHTML = cells.map(c => `<td>${c}</td>`).join(''); }
+function head(id, hs){ document.getElementById(id).innerHTML = hs.map(h => `<th>${h}</th>`).join(''); }
+
+function drawMv(){
+  const IB = D.ib;
+  head('mv-h', ['Race','GRIB forecast','Measured','Error','Old estimate','Old error']);
+  $('mv-b').innerHTML = IB.bias_rows.map(r =>
+    `<tr><td>Race ${r.race}</td>` + [
+      deg(r.forecast), deg(r.measured),
+      `<span class="pill dn">+${r.bias.toFixed(1)}°</span>`,
+      deg(r.old_observed), `+${r.old_bias.toFixed(1)}°`
+    ].map(c => `<td>${c}</td>`).join('') + '</tr>').join('');
+  $('mv-note').innerHTML = `<b>The GRIB sits +${BIAS.toFixed(1)}° right of the wind the fleet actually raced</b> ` +
+    `— tighter across the two races (${IB.bias_rows.map(r=>'+'+r.bias.toFixed(1)+'°').join(' and ')}) than the ` +
+    `+${D.meta.bias_old.toFixed(1)}° estimated earlier. That earlier figure averaged the committee's line square with the ` +
+    `fleet's beat bearing, which assumed a square line. The report shows the line was ` +
+    `${IB.races.map(r=>r.bias_deg+'°').join(' then ')} off square, so the estimate was pulled toward the model by ` +
+    `roughly that much. Bearings on this page now subtract the measured figure.`;
+
+  head('lg-h', ['Race','Setting','1st upwind','1st downwind','2nd upwind','2nd downwind']);
+  $('lg-b').innerHTML = IB.races.map(r =>
+    `<tr><td>Race ${r.n}</td>` + [deg(r.setting), deg(r.legs.uw1), deg(r.legs.dw1),
+      deg(r.legs.uw2), deg(r.legs.dw2)].map(c => `<td>${c}</td>`).join('') + '</tr>').join('');
+
+  head('sl-h', ['Race','Line length','Bias','Advantage','Favoured','My formula']);
+  $('sl-b').innerHTML = IB.races.map(r =>
+    `<tr><td>Race ${r.n}</td>` + [r.line_m + ' m', deg(r.bias_deg), r.bias_m + ' m',
+      r.favoured, r.calc_m + ' m'].map(c => `<td>${c}</td>`).join('') + '</tr>').join('');
+  $('sl-note').innerHTML = `<b>Pin favoured in both races</b>, by ${IB.races.map(r=>r.bias_m+' m').join(' and ')} ` +
+    `— and race 2's 206 m on a 1007 m line is a fifth of the line's length. The calculator above, given the same ` +
+    `line and bias, returns ${IB.races.map(r=>r.calc_m+' m').join(' and ')}: within 2% of the report's own figures, ` +
+    `so the maths in this page is sound. It also matches what the telemetry said independently — boats starting ` +
+    `nearer the committee boat took longer up the first beat in both races.`;
+}
+
+function drawOfficial(){
+  const O = D.official;
+  if (!O){ return; }
+  $('off-p').textContent = `Scored after ${O.races_scored} races, last updated ${O.updated} — source: ${O.source}.`;
+  head('off-h', ['Pos','Sail','Boat','Net points']);
+  const rows = O.top.map(r => ({pos:r.pos, sail:r.sail, boat:r.boat, pts:r.pts, team:false}));
+  rows.push({pos: O.team.pos, sail: O.team.sail, boat: O.team.boat + ' — ' + O.team.skipper, pts: O.team.pts, team: true});
+  $('off-b').innerHTML = rows.map(r =>
+    `<tr class="${r.team ? 'team' : ''}"><td>${r.pos}</td><td>${r.sail}</td><td style="text-align:left;font-family:'IBM Plex Sans',sans-serif;">${r.boat}</td><td>${r.pts}</td></tr>`
+  ).join('');
+  $('off-note').innerHTML = `<b>Team Sweden (Roman) is ${O.team.pos}th of ${O.fleet_scored} scored boats</b>, on ${O.team.pts} net points ` +
+    `— ${O.team.r1}th in race 1, ${O.team.r2}th in race 2. This is the first run where a finishing position exists for the team; ` +
+    `the race explorer above still ranks by last mark rounding, not this official result, since the two are not yet joined.`;
+}
+
+function drawCov(){
+  const have = D.fleet.filter(f => f.day === '2026-09-08').length;
+  const IB = D.ib;
+  $('cov').innerHTML =
+    `<b>${IB.fleet} boats raced; ${have} logs are in hand.</b> The event reports name the full fleet: ` +
+    `${IB.names.join(', ')}. Two of those resolve puzzles in the folder — <b>MidlifeCrisis</b> is the ` +
+    `<code>MLC USA 26 primary</code> file, which logs at roughly 10 Hz against everyone else's 2 Hz, and ` +
+    `<b>ToNessa</b> is the one file that sits in the GitHub repo but never reached the Drive folder. ` +
+    `Neither appears in any race analysis yet.<br><br>` +
+    `<b>The start time is resolved.</b> The event report puts race 1 at ${IB.races[0].start_local} local while ` +
+    `every logger recorded a timer expiring at 13:05:00, all within ~20 ms of each other — about half an hour ` +
+    `apart. The Atlas logs a race-start event <i>every time a start sequence reaches zero</i>, general recalls ` +
+    `included, so 13:05 was a recalled sequence and the race got away at ${IB.races[0].start_local}. ` +
+    `Anchor on the <b>last</b> such event, never the first, or every "at the gun" figure is measured half an ` +
+    `hour early. Race 1 ran 12:34:52 to 13:50:41 UTC.<br><br>` +
+    `<b>Three more logs have appeared in the Drive folder</b> since the last check — Nautique, Areté (BRA 1795) ` +
+    `and To Nessa (BRA 1527), all dated 8 Sep — but none has synced to the local Downloads copy yet, so they ` +
+    `are not decoded here. Still no race 3: only race 1 and race 2 (both 8 Sep) have an ib-sailing analysis page.`;
+}
+
+function drawBrief(){
+  const B = D.brief;
+  $('brief').innerHTML = [
+    ['1 · Start analysis', B.start], ['2 · Leg analysis', B.leg], ['3 · Race analysis', B.race]
+  ].map(([h,items]) => `<div><h4>${h}</h4><ol>` +
+      items.map(x => `<li>${x.includes('most important') ? '<b style="color:var(--text)">'+x+'</b>' : x}</li>`).join('') +
+      '</ol></div>').join('');
+  $('done').innerHTML = B.done.map(x => `<li>${x}</li>`).join('');
+  $('open').innerHTML = B.open.map(x => `<li>${x}</li>`).join('');
+}
+
+function drawPipeline(){
+  const R = D.repo;
+  head('mods-h', ['Module', 'What it does']);
+  $('mods-b').innerHTML = R.modules.map(([m,d]) =>
+    `<tr><td><code>${m}</code></td><td style="text-align:left;font-family:'IBM Plex Sans',sans-serif;">${d}</td></tr>`).join('');
+  $('repo').innerHTML =
+    `<b>Repository</b> — <a href="${R.url}" style="color:var(--accent);">${R.url.replace('https://github.com/','')}</a>, ` +
+    `branch <code>${R.branch}</code>, deployed on ${R.host}. ` +
+    `The site and the analysis pipeline now sit on one branch; before today the branch carrying the page had ` +
+    `none of the code.<br><br>` +
+    R.automation.map(([n,d]) => `<b>${n}</b> — ${d}.`).join('<br>') +
+    `<br><br><b>The VKX format has a published spec</b> at ` +
+    `<a href="${R.spec}" style="color:var(--accent);">${R.spec.replace('https://github.com/','')}</a>. ` +
+    `The canonical reader is written against it and handles wind, load and shift-angle records — ` +
+    `a decoder reverse-engineered from the raw bytes was deleted in favour of it.`;
+}
+
+function drawStrategy(){
+  const C = D.coach, RS = D.races, IB = D.ib.races;
+  $('tension').textContent = 'Start at the pin, then get right immediately';
+  $('tension-sub').innerHTML =
+    `The pin was favoured at the gun by ${IB[0].bias_m} m and ${IB[1].bias_m} m — but it also sat about ` +
+    `1 km across the course axis, because the top mark was above the committee boat. ` +
+    `The bias still won: pin-end starters reached the windward mark first in both races.`;
+
+  head('pin-h', ['Race','Line','Bias at the gun','Favoured','Pin offset from the course','Who got there first']);
+  $('pin-b').innerHTML = RS.map((r,i) =>
+    `<tr><td>Race ${r.n}</td>` + [
+      `${Math.round(r.length)} m`,
+      `${IB[i].bias_deg}° = <b>${IB[i].bias_m} m</b>`,
+      IB[i].favoured,
+      `${r.pin_offset_m} m`,
+      `r = ${r.corr.toFixed(2)} — pin end`
+    ].map(c => `<td>${c}</td>`).join('') + '</tr>').join('');
+
+  $('pin-note').innerHTML =
+    `<b>The mechanism.</b> ${C.mechanism} So the right being stronger and the GRIB being wrong are not ` +
+    `two findings — they are the same shoreline bend seen from two directions. The committee squares its ` +
+    `line to something close to the model, which is exactly why the line kept coming out pin-biased.` +
+    `<br><br>The coach put the pin about 1 km left of the course. Computed from the logged line ends and the ` +
+    `fleet's own beat bearing it is <b>${RS[0].pin_offset_m} m</b> and <b>${RS[1].pin_offset_m} m</b> — his ` +
+    `read of the geometry is exact.`;
+
+  $('rules').innerHTML = C.start.map(([h,t]) =>
+    `<div><h4>${h}</h4><p style="margin:0;font-size:12.5px;color:var(--muted);line-height:1.55;">${t}</p></div>`).join('');
+
+  $('beyond').innerHTML =
+    `<b>Gate bias.</b> ${C.gate}<br><br>` +
+    `<b>Top mark.</b> ${C.topmark}<br><br>` +
+    `<b>Between races.</b> ${C.between}`;
+}
+
+/* ---------------- boot ---------------- */
+$('s-fleet').textContent = D.fleet.length + ' boats';
+$('s-bias').textContent  = '+' + BIAS.toFixed(1) + '°';
+$('s-tack').textContent  = TACK.toFixed(1) + '°';
+$('foot').innerHTML = `Vakaros Atlas VKX telemetry decoded from the Sailing drive folder at 0.5 s — ` +
+  `20 logs across 07 and 08 September 2026, Cascais. Today’s wind from DWD ICON-EU 06z and ECMWF IFS 06z; ` +
+  `tomorrow’s from a live ICON-EU / ECMWF IFS / GFS consensus at 38.68 N 9.42 W. ` +
+  `Corrected bearings subtract the ${BIAS.toFixed(1)}° right-bias measured against the event's own race reports ` +
+  `(ib-sailing.com, 34-boat fleet), which supersede an earlier ${D.meta.bias_old.toFixed(0)}° estimate built on the committee line square.`;
+ticks(); drawRace(); drawFleet(); drawMv(); drawOfficial(); drawCov(); drawBrief(); drawPipeline(); drawStrategy(); loadWind();
+</script>

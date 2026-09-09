@@ -1,0 +1,226 @@
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Vakaros Atlas telemetry &middot; J/70 Cascais</div>
+  <h1>Per Roman AI Sailing Model</h1>
+  <p class="sub">Every figure below is decoded from the fleet's own VKX logs or from live model data at the race area. Wind bearings are corrected for the bias the fleet itself measured.</p>
+  <div class="stamp">
+    <span>Race area <b class="mono">38.68 N &nbsp;9.42 W</b></span>
+    <span>Fleet <b id="s-fleet" class="mono">&mdash;</b></span>
+    <span>Model bias <b class="mono" id="s-bias">&mdash;</b></span>
+    <span>Tacking angle <b class="mono" id="s-tack">&mdash;</b></span>
+  </div>
+</header>
+
+<div class="daybar">
+  <div class="seg" id="daysel" role="group" aria-label="Forecast day"></div>
+  <span class="clock" id="dayhint"></span>
+</div>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Conditions on the racecourse</h2>
+    <p>Drag the scrubber through the afternoon. The grey needle is the raw model; the coloured needle is what the fleet will actually sail.</p>
+  </div>
+  <div class="card">
+    <div class="hero">
+      <svg class="rose" viewBox="0 0 240 240" role="img" aria-label="Wind direction compass">
+        <circle cx="120" cy="120" r="100" fill="none" stroke="var(--line)"/>
+        <circle cx="120" cy="120" r="74" fill="none" stroke="var(--line)" stroke-dasharray="2 5"/>
+        <g id="ticks"></g>
+        <g font-family="IBM Plex Mono,monospace" font-size="13" font-weight="600"
+           fill="var(--muted)" text-anchor="middle">
+          <text x="120" y="20">N</text><text x="228" y="125">E</text>
+          <text x="120" y="234">S</text><text x="12" y="125">W</text>
+        </g>
+        <g id="n-raw" style="transition:transform .4s ease;transform-origin:120px 120px;">
+          <line x1="120" y1="34" x2="120" y2="176" stroke="var(--faint)" stroke-width="2.5"/>
+          <polygon points="120,186 111,164 129,164" fill="var(--faint)"/>
+        </g>
+        <g id="n-cor" style="transition:transform .4s ease;transform-origin:120px 120px;">
+          <line x1="120" y1="30" x2="120" y2="178" stroke="var(--accent)" stroke-width="5"/>
+          <polygon points="120,192 108,166 132,166" fill="var(--accent)"/>
+        </g>
+        <circle cx="120" cy="120" r="5" fill="var(--text)"/>
+      </svg>
+      <div>
+        <div class="readout">
+          <div class="rd"><b class="mono" id="r-raw">&mdash;</b><span>raw model</span></div>
+          <div class="rd acc"><b class="mono" id="r-cor">&mdash;</b><span>corrected TWD</span></div>
+          <div class="rd"><b class="mono" id="r-kn">&mdash;</b><span>knots</span></div>
+          <div class="rd"><b class="mono" id="r-gu">&mdash;</b><span>gust</span></div>
+          <div class="rd cool"><b class="mono" id="r-sp">&mdash;</b><span>model spread</span></div>
+        </div>
+        <div class="scrub">
+          <input type="range" id="hr" min="0" max="0" step="1" value="0" aria-label="Hour of the afternoon">
+          <div class="ctlrow">
+            <button class="btn solid" id="play" type="button">Play afternoon</button>
+            <span class="clock" id="clock"></span>
+          </div>
+        </div>
+        <div class="beats">
+          <div class="beat"><span>Starboard tack heading</span><b class="mono" id="b-stb">&mdash;</b></div>
+          <div class="beat"><span>Port tack heading</span><b class="mono" id="b-prt">&mdash;</b></div>
+          <div class="beat"><span>Square line bearing</span><b class="mono" id="b-line">&mdash;</b></div>
+          <div class="beat"><span>Pressure</span><b class="mono" id="b-mslp">&mdash;</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="note" id="trend"></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Start-line calculator</h2>
+    <p>Set the bearing the committee lays and the line length, and read the bias at the scrubbed hour. The committee squares to the model; the fleet sails the corrected wind, and the gap is worth metres.</p>
+  </div>
+  <div class="card">
+    <div class="calc">
+      <div>
+        <div class="lbl"><span>Line bearing</span><b id="v-brg">&mdash;</b></div>
+        <input type="range" id="c-brg" min="0" max="180" step="1" value="54">
+        <div class="lbl" style="margin-top:16px;"><span>Line length</span><b id="v-len">&mdash;</b></div>
+        <input type="range" id="c-len" min="200" max="1600" step="10" value="1000">
+        <div class="note" id="c-hint"></div>
+      </div>
+      <div>
+        <div class="verdict">
+          <span>Favoured end</span>
+          <b id="c-end">&mdash;</b>
+          <span id="c-gain"></span>
+        </div>
+        <div class="beats" style="margin-top:16px;">
+          <div class="beat"><span>Line square to</span><b class="mono" id="c-sq">&mdash;</b></div>
+          <div class="beat"><span>Wind off square</span><b class="mono" id="c-off">&mdash;</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>The start decision</h2>
+    <p>The coach's read of race 1, set against the decoded numbers. Two things pull in opposite directions here, and getting the order right is the whole beat.</p>
+  </div>
+  <div class="card">
+    <div class="verdict" style="margin-bottom:16px;">
+      <span>The tension, in one line</span>
+      <b id="tension">&mdash;</b>
+      <span id="tension-sub"></span>
+    </div>
+    <div class="rail"><table id="pin"><thead><tr id="pin-h"></tr></thead><tbody id="pin-b"></tbody></table></div>
+    <div class="note" id="pin-note"></div>
+    <h3 style="font-size:14px;margin:22px 0 8px;">Rules for the gun</h3>
+    <div class="two-col" id="rules"></div>
+    <h3 style="font-size:14px;margin:22px 0 8px;">Beyond the start</h3>
+    <div class="note" id="beyond" style="margin-top:0;"></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>08 September &mdash; races sailed to a finish</h2>
+    <p>Sort any column. Tap a boat to follow it through both races. Mark roundings come from each boat's own track; the synced RACE_END is never used for ranking, so the final leg is excluded.</p>
+  </div>
+  <div class="card">
+    <div class="chips" id="racetabs"></div>
+    <div class="note" style="margin:0 0 14px;" id="racemeta"></div>
+    <div class="beats" style="margin:0 0 16px;" id="racetiles"></div>
+    <div class="chips" id="boatchips"></div>
+    <div class="rail"><table id="rt"><thead><tr id="rt-h"></tr></thead><tbody id="rt-b"></tbody></table></div>
+    <div class="note" id="racenote"></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Official results</h2>
+    <p id="off-p">Scored positions, not derived from telemetry &mdash; pulled straight from the event's own results page.</p>
+  </div>
+  <div class="card">
+    <div class="rail"><table id="off"><thead><tr id="off-h"></tr></thead><tbody id="off-b"></tbody></table></div>
+    <div class="note" id="off-note"></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Fleet telemetry</h2>
+    <p>Decoded straight from the 20 VKX files. Upwind and downwind averages split at 8 knots.</p>
+  </div>
+  <div class="card">
+    <div class="chips" id="fleettabs"></div>
+    <div class="rail"><table id="ft"><thead><tr id="ft-h"></tr></thead><tbody id="ft-b"></tbody></table></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Measured on the water vs. the model</h2>
+    <p>Wind measured across the fleet by the event's own race reports, against the GRIB for the same moment. The line was never square &mdash; which is why an earlier estimate built on &ldquo;line square&rdquo; understated the error.</p>
+  </div>
+  <div class="card">
+    <div class="rail"><table id="mv"><thead><tr id="mv-h"></tr></thead><tbody id="mv-b"></tbody></table></div>
+    <div class="note" id="mv-note"></div>
+    <h3 style="font-size:14px;margin:22px 0 10px;">Wind by leg, as measured</h3>
+    <div class="rail"><table id="lg"><thead><tr id="lg-h"></tr></thead><tbody id="lg-b"></tbody></table></div>
+    <div class="note">The downwind legs read consistently right of the upwinds &mdash; 323&deg; against 317&deg; in race 1, 321&deg; against 314&deg; in race 2. Whether that is a real gradient across the run or an artefact of deriving wind from downwind tracks, it is the same sign in both races.</div>
+    <h3 style="font-size:14px;margin:22px 0 10px;">Start line, as measured</h3>
+    <div class="rail"><table id="sl"><thead><tr id="sl-h"></tr></thead><tbody id="sl-b"></tbody></table></div>
+    <div class="note" id="sl-note"></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Where the analysis stands</h2>
+    <p>The team's brief, against what is actually built. Green is validated; the rest is honest about what is missing and why.</p>
+  </div>
+  <div class="card">
+    <div class="two-col" id="brief"></div>
+    <h3 style="font-size:14px;margin:22px 0 8px;">Validated</h3>
+    <ul class="tick" id="done"></ul>
+    <h3 style="font-size:14px;margin:20px 0 8px;">Still open</h3>
+    <ul class="cross" id="open"></ul>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Fleet coverage and the two loose ends</h2>
+    <p>34 boats raced. Every fleet-relative figure above is measured against a 14-boat sample.</p>
+  </div>
+  <div class="card"><div class="note" id="cov" style="margin-top:0;"></div></div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>The pipeline behind this page</h2>
+    <p>Everything lives on one branch and deploys itself. Wind refreshes on GitHub's servers, so nothing needs to be open locally.</p>
+  </div>
+  <div class="card">
+    <div class="rail"><table id="mods"><thead><tr id="mods-h"></tr></thead><tbody id="mods-b"></tbody></table></div>
+    <div class="note" id="repo"></div>
+  </div>
+</section>
+
+<details class="meth">
+  <summary>How this was produced, and what is not in it</summary>
+  <div class="body">
+    <ul>
+      <li><b>Telemetry</b> &mdash; 20 Vakaros Atlas <code>.vkx</code> logs decoded from the Drive folder. Position, SOG and COG at 0.5&nbsp;s; positions are int32 degrees &times; 1e-7, COG in radians, plus a unit orientation quaternion on every fix.</li>
+      <li><b>Wind</b> &mdash; today from DWD ICON-EU 06z (7&nbsp;km) and ECMWF IFS 06z (0.25&deg;); tomorrow from a live three-model consensus (ICON-EU, ECMWF IFS, GFS) at the race area.</li>
+      <li><b>The correction</b> &mdash; the mean of the committee line square and the fleet's first-beat bearing, compared with the forecast at the midpoint of each beat. Both inputs are independent of the model.</li>
+      <li><b>No wind instrument</b> &mdash; no boat logged one, so every observed bearing is inferred from GPS geometry and no measured wind speed exists.</li>
+      <li><b>Not derived from telemetry</b> &mdash; finishing positions, elapsed times, points and penalties. Mark positions are inferred from track reversals, not recorded.</li>
+      <li><b>Manoeuvre counts</b> &mdash; from speed dips. Upwind tack counts are reliable; downwind gybe counts over-count, because surfing makes speed oscillate.</li>
+      <li><b>Heel and pitch</b> &mdash; derivable from the quaternion, but not yet computed.</li>
+    </ul>
+  </div>
+</details>
+
+<footer id="foot"></footer>
+</div>
+

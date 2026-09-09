@@ -47,6 +47,31 @@ GitHub's servers, so nothing needs to be open locally. Trigger it by hand from
 
 ---
 
+## Editing the page
+
+`index.html` is a **build output — do not edit it**. Anything written directly into
+it is lost the next time the page is rebuilt, by a person or by the 3-hourly task.
+
+Edit the four sources in `site/` and run the build:
+
+| File | What lives there |
+|---|---|
+| `site/head.html` | `<title>`, fonts, the whole stylesheet |
+| `site/body.html` | page structure and copy |
+| `site/app.js.html` | behaviour, with `__PAYLOAD__` where the data goes |
+| `site/payload.json` | every number the page displays |
+
+```bash
+python3 site/build.py    # rewrites index.html; refuses if a known fix is missing
+```
+
+The build asserts a short list of regressions this page has actually suffered — the
+inverted line-square formula, the dark palette coming back, sub-12px type — and fails
+rather than shipping any of them.
+
+**Design tools and reviewers should be pointed at `main`, and should propose changes
+to `site/`, not to `index.html`.**
+
 ## The analysis pipeline
 
 - `src/sailing_agents/vkx_parser.py` — the canonical VKX reader, written against the
