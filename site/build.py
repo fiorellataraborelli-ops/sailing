@@ -23,7 +23,22 @@ def build() -> str:
     js   = (HERE / 'app.js.html').read_text(encoding='utf-8')
     payload = (HERE / 'payload.json').read_text(encoding='utf-8')
 
-    json.loads(payload)                      # fail loudly on malformed data
+    # The page embeds a copy of the wind for hosts that cannot fetch. Re-sync it
+    # from data/wind.json on every build: keeping a hand-maintained copy meant the
+    # header could advertise one bias while the bearings were computed with another.
+    data = json.loads(payload)
+    wind_path = ROOT / 'data' / 'wind.json'
+    if wind_path.exists():
+        wind = json.loads(wind_path.read_text(encoding='utf-8'))
+        if data.get('wind') != wind:
+            data['wind'] = wind
+            payload = json.dumps(data, ensure_ascii=False)
+            (HERE / 'payload.json').write_text(payload, encoding='utf-8')
+            print('  re-synced the embedded wind from data/wind.json')
+        bias = data.get('meta', {}).get('bias')
+        if bias is not None and abs(wind.get('bias_deg', bias) - bias) > 0.05:
+            sys.exit(f"build refused: meta.bias {bias} but wind.json was built "
+                     f"with {wind.get('bias_deg')} — rerun tools/fetch_wind.py")
     if '__PAYLOAD__' not in js:
         sys.exit('app.js.html has no __PAYLOAD__ placeholder')
     out = head + body + js.replace('__PAYLOAD__', payload)
