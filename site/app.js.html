@@ -410,11 +410,14 @@ function drawCov(){
     `included, so 13:05 was a recalled sequence and the race got away at ${IB.races[0].start_local}. ` +
     `Anchor on the <b>last</b> such event, never the first, or every "at the gun" figure is measured half an ` +
     `hour early. Race 1 ran 12:34:52 to 13:50:41 UTC.<br><br>` +
-    `<b>The Drive folder has run well ahead of what is decoded here.</b> As of 20:00 UTC on 9 Sep it holds ` +
-    `${D.official.drive_pending.missing} logs that are not on the analysis machine — 17 more from 8 Sep, ` +
-    `one from 7 Sep, and all three of 9 Sep (${D.official.drive_pending.day9.join(', ')}). Direct download ` +
-    `needs authentication, so they have to be synced locally before they can be decoded. Doing so would take ` +
-    `8 September coverage from ${have} boats to 30.`;
+    `<b>The telemetry gap is closed for 8 September.</b> ${D.official.telemetry.day8} boats now decode ` +
+    `against the event's 34-boat analysis set, up from 14, so the fleet-relative figures above are a real ` +
+    `fleet comparison rather than a thin sample.<br><br>` +
+    `<b>Today is a different story.</b> Only ${D.official.telemetry.day9} logs exist for 9 September — ` +
+    `${D.official.telemetry.day9_boats.join(', ')} — and <b>Team Sweden's own log for today is not among ` +
+    `them</b>, so nothing here analyses the team's racing today. Those three sailed 12:08 to 18:58 and hit ` +
+    `19.8-20.5 kn against 16.5 on 8 Sep, which is the extra breeze the forecast called.<br><br>` +
+    `${D.official.telemetry.note}`;
 }
 
 function drawBrief(){
