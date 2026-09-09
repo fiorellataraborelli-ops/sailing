@@ -4,24 +4,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
 <style>
 :root{
+  color-scheme: light;
   --ink:#F6F8FA; --surface:#FFFFFF; --raise:#FFFFFF; --line:#D9E2EA; --grid:#EDF2F6;
   --text:#0D1B26; --muted:#57708A; --faint:#8098AE;
   --accent:#D9531E; --cool:#0B7A85; --good:#1E8A4E; --warn:#A66A00; --crit:#BE3A31;
   --shadow:0 1px 2px rgba(13,27,38,.06),0 8px 24px -12px rgba(13,27,38,.18);
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --ink:#0A1520; --surface:#101F2E; --raise:#15273A; --line:#25394E; --grid:#16283A;
-    --text:#E9F1F8; --muted:#93AAC0; --faint:#6D869E;
-    --accent:#FF7A3D; --cool:#4FD1C5; --good:#45C97D; --warn:#F0B429; --crit:#F0605B;
-    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
-  }
-}
-:root[data-theme="dark"]{
-  --ink:#0A1520; --surface:#101F2E; --raise:#15273A; --line:#25394E; --grid:#16283A;
-  --text:#E9F1F8; --muted:#93AAC0; --faint:#6D869E;
-  --accent:#FF7A3D; --cool:#4FD1C5; --good:#45C97D; --warn:#F0B429; --crit:#F0605B;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
 }
 *{box-sizing:border-box;}
 body{margin:0;background:var(--ink);color:var(--text);
