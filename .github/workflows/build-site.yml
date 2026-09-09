@@ -1,0 +1,50 @@
+name: Build site
+
+# index.html is generated from site/. A change to site/ that is not rebuilt
+# deploys a page that looks exactly like the old one, which is a confusing way
+# to lose an afternoon — so rebuild it here.
+#
+# Unlike the wind cron, this fires regardless of which branch GitHub calls
+# default: only `schedule` is restricted to the default branch, `push` is not.
+on:
+  push:
+    branches: [main]
+    paths: ['site/**']          # the rebuild only touches index.html, so no loop
+  pull_request:
+    paths: ['site/**']          # on a PR, build as a check and commit nothing
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # build.py exits non-zero if a known regression has crept back in —
+      # the inverted line-square formula, the dark palette, sub-12px type
+      - name: Rebuild index.html
+        run: python site/build.py
+
+      - name: Commit the rebuilt page
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name  "site-bot"
+          git config user.email "site-bot@users.noreply.github.com"
+          if git diff --quiet -- index.html; then
+            echo "index.html already matches site/ — nothing to commit"
+          else
+            git add index.html
+            git commit -m "build: rebuild index.html from site/"
+            git push
+          fi
