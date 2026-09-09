@@ -386,9 +386,10 @@ function drawOfficial(){
   $('off-b').innerHTML = rows.map(r =>
     `<tr class="${r.team ? 'team' : ''}"><td>${r.pos}</td><td>${r.sail}</td><td style="text-align:left;font-family:'IBM Plex Sans',sans-serif;">${r.boat}</td><td>${r.pts}</td></tr>`
   ).join('');
+  const perRace = [['1', O.team.r1], ['2', O.team.r2], ['3', O.team.r3]]
+    .filter(([, r]) => r != null).map(([n, r]) => `${r}th in race ${n}`).join(', ');
   $('off-note').innerHTML = `<b>Team Sweden (Roman) is ${O.team.pos}th of ${O.fleet_scored} scored boats</b>, on ${O.team.pts} net points ` +
-    `— ${O.team.r1}th in race 1, ${O.team.r2}th in race 2. This is the first run where a finishing position exists for the team; ` +
-    `the race explorer above still ranks by last mark rounding, not this official result, since the two are not yet joined.`;
+    `— ${perRace}. The race explorer above still ranks by last mark rounding, not this official result, since the two are not yet joined.`;
 }
 
 function drawCov(){
@@ -406,9 +407,10 @@ function drawCov(){
     `included, so 13:05 was a recalled sequence and the race got away at ${IB.races[0].start_local}. ` +
     `Anchor on the <b>last</b> such event, never the first, or every "at the gun" figure is measured half an ` +
     `hour early. Race 1 ran 12:34:52 to 13:50:41 UTC.<br><br>` +
-    `<b>Three more logs have appeared in the Drive folder</b> since the last check — Nautique, Areté (BRA 1795) ` +
+    `<b>Three more logs have appeared in the Drive folder</b> — Nautique, Areté (BRA 1795) ` +
     `and To Nessa (BRA 1527), all dated 8 Sep — but none has synced to the local Downloads copy yet, so they ` +
-    `are not decoded here. Still no race 3: only race 1 and race 2 (both 8 Sep) have an ib-sailing analysis page.`;
+    `are not decoded here. Race 3 (8 Sep) now has an ib-sailing analysis page too, but its start time could not ` +
+    `be reliably extracted, so it is not yet in the bias table below.`;
 }
 
 function drawBrief(){
