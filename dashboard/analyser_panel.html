@@ -1,0 +1,245 @@
+<!-- ===== Strategy analyser (self-contained; independent of the DC runtime) ===== -->
+<style>
+#sa-wrap{margin:28px 40px 0;border:1px solid var(--bh-grey-line);}
+#sa-head{background:var(--bh-black);color:var(--bh-white);padding:16px 20px;}
+#sa-title{font-size:13px;font-weight:600;letter-spacing:0.02em;}
+#sa-sub{font-size:11px;color:var(--bh-grey-100);margin-top:4px;}
+#sa-body{padding:20px;}
+#sa-unavail{display:none;font-size:12px;color:var(--bh-grey-700);background:var(--bh-grey-50);
+  border:1px solid var(--bh-grey-line);padding:12px 14px;}
+#sa-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.sa-chip{font-family:inherit;font-size:11.5px;padding:7px 12px;cursor:pointer;
+  background:var(--bh-white);color:var(--bh-black);border:1px solid var(--bh-grey-300);}
+.sa-chip:hover{border-color:var(--bh-ultramarine);color:var(--bh-ultramarine);}
+#sa-log{display:flex;flex-direction:column;gap:14px;margin-bottom:16px;}
+.sa-turn{font-size:13px;line-height:1.55;}
+.sa-q{font-weight:600;color:var(--bh-black);border-left:3px solid var(--bh-ultramarine);padding-left:12px;}
+.sa-a{color:var(--bh-grey-700);white-space:pre-wrap;border-left:3px solid var(--bh-grey-200);padding-left:12px;}
+.sa-err{color:var(--bh-traffic-red);font-size:12px;border-left:3px solid var(--bh-traffic-red);padding-left:12px;}
+.sa-note{color:var(--bh-traffic-yellow);font-size:12px;border-left:3px solid var(--bh-traffic-yellow);padding-left:12px;}
+#sa-form{display:flex;gap:10px;align-items:flex-start;}
+#sa-input{flex:1;min-width:0;font-family:inherit;font-size:13px;padding:10px 12px;
+  border:1px solid var(--bh-grey-300);color:var(--bh-black);background:var(--bh-white);resize:vertical;}
+#sa-input:focus{outline:none;border-color:var(--bh-ultramarine);}
+.sa-btn{font-family:inherit;font-size:12.5px;font-weight:600;padding:10px 18px;cursor:pointer;border:none;
+  background:var(--bh-black);color:var(--bh-white);white-space:nowrap;}
+.sa-btn:disabled{background:var(--bh-grey-300);cursor:default;}
+#sa-stop{display:none;background:var(--bh-white);color:var(--bh-black);border:1px solid var(--bh-black);}
+#sa-foot{font-size:10.5px;color:var(--bh-grey-400);margin-top:12px;line-height:1.5;}
+</style>
+
+<div id="sa-wrap">
+  <div id="sa-head">
+    <div id="sa-title">Strategy analyser</div>
+    <div id="sa-sub">Ask about the telemetry above — answers come from Claude, reading only this session's data</div>
+  </div>
+  <div id="sa-body">
+    <div id="sa-unavail"></div>
+    <div id="sa-live">
+      <div id="sa-chips"></div>
+      <div id="sa-log"></div>
+      <div id="sa-form">
+        <textarea id="sa-input" rows="2" placeholder="e.g. Which end of the line paid on the valid start, and what should we change today?"></textarea>
+        <button id="sa-ask" class="sa-btn">Ask</button>
+        <button id="sa-stop" class="sa-btn">Stop</button>
+      </div>
+      <div id="sa-foot"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var DIGEST = __SA_DIGEST__;
+
+  var RULES = [
+    "You are a race-analytics assistant for a sailing team, talking to one analyst at Bullhound Capital.",
+    "You answer ONLY from the JSON race digest below. It is the complete extent of what was measured.",
+    "",
+    "Hard rules:",
+    "- Never invent a number. Every figure you give must be traceable to a field in the digest.",
+    "- If something is not in the digest, say plainly that it was not measured, and name what would be needed to answer it. The digest's 'not_in_this_data' list is authoritative on this.",
+    "- There is NO wind direction in this data. So do not state true wind angles, true VMG, favoured tack, wind shifts, or which end of the line was favoured as fact. If asked, explain what the data can and cannot support, and what the numbers do suggest, labelled as inference.",
+    "- Read 'vmg_proxy_kn' carefully: it is straight-line progress along the boat's own track per unit time, NOT wind-referenced VMG. Do not call it VMG without that caveat.",
+    "- Distinguish measurement from interpretation. Label inferences as inference.",
+    "- The finishing result (3rd of 103) was reported by the crew and is NOT in the telemetry; never present it as a measured output.",
+    "",
+    "Style: brief and concrete. Lead with the answer. Use short paragraphs or tight bullets, cite the actual numbers you relied on, and keep it under ~200 words unless asked for more. No preamble, no restating the question.",
+    "",
+    "RACE DIGEST (JSON):",
+    JSON.stringify(DIGEST),
+  ].join("\n");
+
+  var PRESETS = [
+    "Where did we actually lose time vs the fleet?",
+    "How did our start execution compare across the four starts?",
+    "Was our extra distance sailed upwind justified?",
+    "What should we change for today's racing?",
+    "What can't this data tell us?",
+  ];
+
+  var unavail = document.getElementById("sa-unavail");
+  var live = document.getElementById("sa-live");
+  var log = document.getElementById("sa-log");
+  var input = document.getElementById("sa-input");
+  var askBtn = document.getElementById("sa-ask");
+  var stopBtn = document.getElementById("sa-stop");
+  var chips = document.getElementById("sa-chips");
+  var foot = document.getElementById("sa-foot");
+
+  foot.textContent =
+    "Answers are generated by Claude on the viewer's own Claude account, on the most capable model tier "
+    + "available to it. Not a substitute for the underlying telemetry: no boat logged a wind instrument, so "
+    + "wind direction is estimated and wind speed comes from a forecast.";
+
+  function showUnavailable(msg) {
+    live.style.display = "none";
+    unavail.style.display = "block";
+    unavail.textContent = msg;
+  }
+
+  function addTurn(cls, text) {
+    var el = document.createElement("div");
+    el.className = "sa-turn " + cls;
+    el.textContent = text;
+    log.appendChild(el);
+    return el;
+  }
+
+  // Viewer-facing copy per error code. Codes that mean "this view can never
+  // sample" hide the feature; the rest keep the control so the person can retry.
+  var FATAL = {
+    not_granted: "The analyser needs permission to use Claude, and that was declined for this view. Reload the page to be asked again.",
+    sampling_disabled: "Claude is not available on this account, so the analyser can't run here.",
+    not_declared: "This version of the dashboard no longer has the analyser enabled.",
+    capability_disabled: "The analyser isn't available in this view.",
+    capability_removed: "This viewer app is too old to run the analyser."
+  };
+  var RETRYABLE = {
+    rate_limited: "Too many questions too quickly, or your Claude usage limit was reached. Wait a moment and ask again.",
+    session_expired: "Your Claude session expired — sign in again, then re-ask.",
+    refused: "Claude declined to answer that one. Try rephrasing the question.",
+    empty_completion: "No answer came back. Try asking for less at a time.",
+    upstream_error: "Something went wrong reaching Claude. Try again.",
+    prompt_too_large: "This conversation got too long. Reload the page to start a fresh one."
+  };
+
+  var turns = [];        // page-kept conversation; Claude remembers nothing between calls
+  var ctl = null;
+  var busy = false;
+
+  function setBusy(b) {
+    busy = b;
+    askBtn.disabled = b;
+    askBtn.textContent = b ? "Thinking…" : "Ask";
+    stopBtn.style.display = b ? "inline-block" : "none";
+  }
+
+  function trimTurns() {
+    // The instructions turn is re-sent every call, so keep the tail short:
+    // drop oldest exchanges once the conversation grows past a few rounds.
+    while (turns.length > 8) turns.shift();
+  }
+
+  function start(sample) {
+    chips.innerHTML = "";
+    PRESETS.forEach(function (q) {
+      var b = document.createElement("button");
+      b.className = "sa-chip";
+      b.type = "button";
+      b.textContent = q;
+      b.onclick = function () { if (!busy) ask(sample, q); };
+      chips.appendChild(b);
+    });
+
+    askBtn.onclick = function () { ask(sample, input.value); };
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); askBtn.click(); }
+    });
+    stopBtn.onclick = function () { if (ctl) ctl.abort(); };
+  }
+
+  async function ask(sample, question) {
+    question = String(question || "").trim();
+    if (!question || busy) return;
+    input.value = "";
+    addTurn("sa-q", question);
+    var out = addTurn("sa-a", "Thinking… (deep reasoning, this can take up to a minute)");
+
+    turns.push({ role: "user", content: question });
+    trimTurns();
+
+    ctl = new AbortController();   // a NEW controller for every call
+    setBusy(true);
+    try {
+      var res = await sample(
+        [{ role: "user", content: RULES }].concat(turns),
+        {
+          // The capability selects a model FAMILY, not a named model: there is
+          // no "opus" here, only quick / default / complex. "complex" asks for
+          // the most capable family and the longest thinking, which is what
+          // race-strategy reasoning over this much data wants. The platform may
+          // serve a nearer tier if the viewer's plan lacks it, so the tier that
+          // actually answered is reported below rather than assumed.
+          modelTier: "complex",
+          cache: false,            // every turn of a chat must really ask
+          signal: ctl.signal,
+          onText: function (u) { out.textContent = u.text; }   // whole answer so far
+        }
+      );
+      out.textContent = res.text;
+      if (res.modelTierApplied && res.modelTierApplied !== "complex") {
+        addTurn("sa-note",
+          "Answered on the '" + res.modelTierApplied + "' model tier — the most capable tier "
+          + "wasn't available on this account, so this answer had less reasoning behind it.");
+      }
+      if (res.truncated) addTurn("sa-err", "(Answer was cut short — ask for less at a time.)");
+      turns.push({ role: "assistant", content: res.text });
+    } catch (e) {
+      var code = (e && e.code) || "upstream_error";
+      if (code === "cancelled") {
+        out.textContent = (e && e.text) || "(stopped)";
+        turns.pop();
+      } else if (FATAL[code]) {
+        showUnavailable(FATAL[code]);
+      } else {
+        out.textContent = (e && e.text) || "";
+        addTurn("sa-err", RETRYABLE[code] || RETRYABLE.upstream_error);
+        turns.pop();
+      }
+    } finally {
+      setBusy(false);
+      ctl = null;
+    }
+  }
+
+  // window.claude is injected by the claude.ai viewer. This page is also a
+  // self-unpacking bundle that replaces its own document, so poll briefly
+  // rather than reading window.claude once at script time.
+  (async function boot() {
+    for (var i = 0; i < 60 && !window.claude; i++) {
+      await new Promise(function (r) { setTimeout(r, 200); });
+    }
+    if (!window.claude || typeof window.claude.use !== "function") {
+      showUnavailable(
+        "The strategy analyser runs only when this dashboard is opened as a Claude artifact "
+        + "(it asks Claude directly from the page). Everything above is static and works anywhere."
+      );
+      return;
+    }
+    var sample;
+    try {
+      sample = await window.claude.use("sample");
+    } catch (e) {
+      sample = null;
+    }
+    if (!sample) {
+      showUnavailable(
+        "The strategy analyser isn't available in this view. Open the dashboard from Claude to use it."
+      );
+      return;
+    }
+    start(sample);
+  })();
+})();
+</script>

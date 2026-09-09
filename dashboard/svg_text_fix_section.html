@@ -1,0 +1,66 @@
+<!-- ===== Fix: make SVG axis labels render (static, build-time) =====
+     The Claude Design runtime renders every interpolated value wrapped in a
+     live-editing marker:
+
+         <text x="4" y="234" font-size="10"><span class="sc-interp">0</span></text>
+
+     That is fine in HTML but not inside SVG, where <span> is a foreign element
+     with no layout: the glyphs are never drawn. getComputedTextLength() returns
+     0 and the element's bounding box is 0x0, so EVERY axis label on both charts
+     is invisible - the speed scale in knots and the time-to-gun scale. This is
+     not a mobile-only problem; it happens at every viewport, in the untouched
+     export too.
+
+     The fix replaces each such span with a plain text node, which is what SVG
+     needs. A MutationObserver re-applies it because the charts are re-rendered
+     whenever the Start tab changes, which would otherwise reintroduce the spans.
+-->
+<script>
+(function () {
+  var SEL = "svg text span, svg text tspan.sc-interp";
+
+  function unwrap(root) {
+    var spans;
+    try {
+      spans = (root.querySelectorAll ? root : document).querySelectorAll(SEL);
+    } catch (e) {
+      return;
+    }
+    for (var i = 0; i < spans.length; i++) {
+      var s = spans[i];
+      // Only touch HTML spans; a real SVG <tspan> lays out correctly and is
+      // left alone.
+      if (s.namespaceURI === "http://www.w3.org/2000/svg" && s.tagName.toLowerCase() === "tspan") continue;
+      if (s.parentNode) s.parentNode.replaceChild(document.createTextNode(s.textContent), s);
+    }
+  }
+
+  function run() {
+    unwrap(document);
+    var obs = new MutationObserver(function (records) {
+      for (var i = 0; i < records.length; i++) {
+        var added = records[i].addedNodes;
+        for (var j = 0; j < added.length; j++) {
+          var n = added[j];
+          if (n.nodeType !== 1) continue;
+          // Cheap guard: only bother when the change is in or under an <svg>.
+          if (n.closest && (n.closest("svg") || n.querySelector && n.querySelector("svg text span"))) {
+            unwrap(document);
+            return;
+          }
+        }
+      }
+    });
+    obs.observe(document.body || document.documentElement, { childList: true, subtree: true });
+  }
+
+  // The page is a self-unpacking bundle that replaces its own document, so the
+  // body this script first sees may not be the final one; poll briefly for the
+  // rendered chart before installing the observer.
+  var tries = 0;
+  (function wait() {
+    if (document.querySelector("svg text") || tries++ > 40) return run();
+    setTimeout(wait, 150);
+  })();
+})();
+</script>

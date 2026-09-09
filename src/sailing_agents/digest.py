@@ -1,0 +1,297 @@
+"""Build the compact race digest the in-dashboard strategy analyser reasons over.
+
+The analyser sends this digest to Claude as text on every question, so it has a
+hard size budget (the `sample` capability caps input at 64 KiB total, and the
+conversation has to fit alongside it). Raw tracks are ~32k GPS fixes per boat
+and never belong here: only per-leg and per-start aggregates go in, plus an
+explicit statement of what the telemetry does NOT contain, so the analyser
+can say "not in this data" instead of inventing it.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+
+# Local time at the venue relative to UTC. Portugal is on WEST (UTC+1) from
+# late March to late October, which covers the September regatta dates.
+VENUE_UTC_OFFSET_H = 1
+
+
+def _utc_hhmm(ts_ms: int) -> str:
+    import datetime as dt
+
+    return dt.datetime.utcfromtimestamp(ts_ms / 1000).strftime("%H:%M:%S")
+
+
+def _local_hhmm(ts_ms: int) -> str:
+    import datetime as dt
+
+    t = dt.datetime.utcfromtimestamp(ts_ms / 1000) + dt.timedelta(hours=VENUE_UTC_OFFSET_H)
+    return t.strftime("%H:%M:%S")
+
+
+# The leg pipeline names boats after their source files while the start metrics
+# use the crews' own boat names. They must agree, or the analyser reads one boat
+# as two.
+BOAT_NAME_CANONICAL = {
+    "Team (uploaded, our boat)": "Team Sweden (Roman)",
+    "GSpot": "G-Spot",
+    "DIVA-NEU": "Diva-Neu",
+    "noticia": "Noticia",
+}
+
+
+def canonical_boat_name(label: str) -> str:
+    return BOAT_NAME_CANONICAL.get(label, label)
+
+
+def build_digest(
+    leg_report: dict,
+    start_metrics: dict | None = None,
+    start_line: dict | None = None,
+) -> dict:
+    """leg_report: reports/<date>_race_comparison_raw.json (our own pipeline).
+    start_metrics: the regattaData-shaped dict of per-start numbers, if present.
+    start_line: reports/start_line_analysis.json, if present.
+    """
+    boats = []
+    for label, obj in leg_report.items():
+        if "first_upwind_leg" not in obj:
+            continue
+        up = obj["first_upwind_leg"]
+        dn = obj["first_downwind_leg"]
+        boats.append({
+            "boat": canonical_boat_name(label),
+            "first_upwind": {
+                "duration_min": up["duration_min"],
+                "avg_sog_kn": up["avg_sog_kn"],
+                "max_sog_kn": up["max_sog_kn"],
+                "straight_line_m": up["straight_line_distance_m"],
+                "path_m": up["path_distance_m"],
+                "vmg_proxy_kn": up["avg_vmg_proxy_kn"],
+                "tacks_detected": up["num_tacks_or_gybes_detected"],
+            },
+            "first_downwind": {
+                "duration_min": dn["duration_min"],
+                "avg_sog_kn": dn["avg_sog_kn"],
+                "max_sog_kn": dn["max_sog_kn"],
+                "straight_line_m": dn["straight_line_distance_m"],
+                "path_m": dn["path_distance_m"],
+                "vmg_proxy_kn": dn["avg_vmg_proxy_kn"],
+                "gybes_detected": dn["num_tacks_or_gybes_detected"],
+            },
+        })
+
+    digest = {
+        "session": {
+            "date": "2026-09-07",
+            "venue": "Cascais, Portugal (approx 38.68N, 9.42W from GPS fixes)",
+            "local_time_offset_from_utc_h": VENUE_UTC_OFFSET_H,
+            "fleet_size_reported_by_user": 103,
+            "team_result_reported_by_user": "3rd of 103 (user-provided, NOT derived from telemetry)",
+            "scope_note": (
+                "The race was not sailed to a finish (per the team). Only the FIRST "
+                "UPWIND and FIRST DOWNWIND leg are analysed; later legs are excluded."
+            ),
+        },
+        "start_sequence": {
+            "race_start_events_utc": ["13:55:00", "14:10:00", "14:35:00", "14:50:00"],
+            "observed": (
+                "All 6 devices logged the same four RACE_START timer events within ~20ms "
+                "of each other. Each of the first three was followed ~2 min later by a "
+                "RACE_END+RESET pair; the 14:50 start had no RESET after it."
+            ),
+            "interpretation_inference": (
+                "Consistent with three general recalls/abandoned starts and a valid final "
+                "start at 14:50:00 UTC (15:50 local). This is an INFERENCE from timer "
+                "events, not a recorded race-committee signal."
+            ),
+        },
+        "legs": boats,
+        "not_in_this_data": [
+            "Measured wind: no wind-instrument rows (VKX 0x0A) in any file. Wind DIRECTION is "
+            "estimated from GPS geometry in the 'start_line' section - use those figures, state "
+            "that they are estimates, and never quote a measured wind. Wind SPEED is not available "
+            "by any method here.",
+            "True wind angle and true VMG: only as good as the estimated wind direction above. "
+            "The 'vmg_proxy_kn' figures are straight-line progress along each boat's own "
+            "track axis per unit time - NOT wind-referenced VMG.",
+            "Device-detected tack/gybe events: no shift-angle rows (VKX 0x06) in any file. "
+            "Tack counts here are inferred from speed dips in the GPS track.",
+            "Heel and pitch: the VKX 0x02 rows DO carry an orientation quaternion, but it "
+            "has not been converted to heel/pitch yet, so no heel figures exist here.",
+            "Finishing positions, elapsed times, points, and penalties: not in telemetry.",
+            "Mark positions: no reliable mark/line rows; leg boundaries are inferred from "
+            "each boat's own track reversal.",
+            "Current/tide, waves, and wind shifts during the legs.",
+        ],
+        "metric_definitions": {
+            "avg_sog_kn": "Mean GPS speed over ground across the leg, knots. Includes time lost in manoeuvres.",
+            "vmg_proxy_kn": "Straight-line start-to-end distance of the leg divided by leg time, in knots. A course-made-good rate, not wind-referenced VMG.",
+            "path_m": "Total distance sailed through the water track, metres.",
+            "straight_line_m": "Direct distance from leg start to leg end, metres. path_m minus straight_line_m is the extra distance sailed (tacking/gybing and any wandering).",
+            "speedAtGunKn": "GPS speed at the start gun, knots.",
+            "avgSpeedApproachKn": "Mean speed over the 3 minutes before the gun, knots.",
+            "distanceInWindowNm": "Distance sailed from 3 min before to 2 min after the gun, nautical miles.",
+            "distance_to_line_m": "Perpendicular distance to the start line at the gun. Positive = behind the line, negative = over early.",
+            "along_line_from_pin": "Where on the line the boat started: 0.0 = pin end, 1.0 = committee boat end.",
+        },
+    }
+
+    if start_line:
+        # Drop the raw mark coordinates: the analyser reasons about geometry,
+        # not positions, and they would only pad the prompt.
+        starts = []
+        for s in start_line.get("starts", []):
+            line = dict(s.get("line") or {})
+            line.pop("pin", None)
+            line.pop("committee_boat", None)
+            line.pop("square_wind_both_deg", None)
+            starts.append({
+                "start_number": s["start_number"],
+                "gun_local": s["gun_local"],
+                "was_valid_start": s["was_valid_start"],
+                "line": line,
+                "boats": s["boats"],
+            })
+        digest["start_line"] = {
+            "conventions": start_line.get("conventions"),
+            "wind_direction_estimates_deg_from": start_line.get("wind_direction_estimates_deg_from"),
+            "wind_estimate_caveats": start_line.get("wind_estimate_caveats"),
+            "starts": starts,
+        }
+
+    if start_metrics:
+        starts = []
+        for s in start_metrics.get("starts", []):
+            names = {b["key"]: b["name"] for b in start_metrics.get("boats", [])}
+            starts.append({
+                "start_number": s["idx"],
+                "gun_utc": _utc_hhmm(s["gunTimeUtc"]),
+                "gun_local": _local_hhmm(s["gunTimeUtc"]),
+                "boats": [
+                    {
+                        "boat": canonical_boat_name(names.get(b["key"], b["key"])),
+                        "speed_at_gun_kn": b["speedAtGunKn"],
+                        "max_speed_first_60s_kn": b["maxSpeedFirst60sKn"],
+                        "avg_speed_approach_kn": b["avgSpeedApproachKn"],
+                        "distance_in_window_nm": b["distanceInWindowNm"],
+                    }
+                    for b in s["boats"]
+                ],
+            })
+        digest["starts"] = starts
+
+    return digest
+
+
+def add_completed_races(digest: dict, fleet_report: dict, label: str) -> dict:
+    """Fold a day of COMPLETED races (fleet_report.py output) into the digest.
+
+    Kept separate from `build_digest` because the two describe different kinds
+    of day: `build_digest` covers a race that was abandoned after two legs,
+    this covers races sailed to a finish. The per-boat rows are trimmed to what
+    the analyser reasons about, since the full report carries more per-leg
+    detail than fits comfortably in the prompt.
+    """
+    races = []
+    for r in fleet_report.get("races", []):
+        races.append({
+            "race_number": r["race_number"],
+            "gun_local": r["gun_local"],
+            "boats_tracked": r["boats_tracked"],
+            "wind": r.get("wind"),
+            "order_at_last_mark": r.get("order_at_last_mark"),
+            "along_line_vs_beat1_time_correlation": r.get("along_line_vs_beat1_time_correlation"),
+            "correlation_meaning": r.get("correlation_meaning"),
+            "team_summary": r.get("team_summary"),
+            "boats": [{
+                "boat": x["boat"],
+                "marks_min": x["marks_min"],
+                "leg_min": x["leg_min"],
+                "leg_avg_sog_kn": x["leg_avg_sog_kn"],
+                "beat1_extra_distance_m": x["beat1"]["extra_distance_m"],
+                "beat1_tacks": x["beat1"]["tacks"],
+                "start_distance_to_line_m": (x["start"] or {}).get("distance_to_line_m"),
+                "start_along_line_from_pin": (x["start"] or {}).get("along_line_from_pin"),
+            } for x in r.get("rows", [])],
+        })
+
+    digest[label] = {
+        "summary": "Races sailed to a FINISH, so all legs are analysed (unlike the "
+                   "abandoned race in the sections above, where only the first two are).",
+        "method_notes": fleet_report.get("method_notes"),
+        "races": races,
+    }
+    digest["session"]["scope_note"] += (
+        f" NOTE: the 'legs', 'starts' and 'start_line' sections are the abandoned race. "
+        f"The '{label}' section covers completed races and supersedes them for questions "
+        f"about that day."
+    )
+    return digest
+
+
+def add_wind(digest: dict, wind: dict, label: str) -> dict:
+    """Attach decoded GRIB wind, and correct the 'no wind speed' gap it fills."""
+    target = digest.get(label)
+    if target is None:
+        target = digest[label] = {}
+    mv = wind.get("model_vs_observed", {})
+    target["wind"] = {
+        "source": "GRIB2 decoded at the race area: DWD ICON-EU (~7 km) and, where present, "
+                  "ECMWF IFS open data (0.25 deg).",
+        "icon_forecast_by_hour": wind.get("forecast"),
+        "ecmwf_forecast": (wind.get("ecmwf") or {}).get("forecast"),
+        "model_vs_observed": mv,
+        "headline": (
+            "The GRIB sat ~{} deg to the RIGHT of the wind the fleet actually raced in. The two "
+            "observed measures (committee line square, fleet beat bearing) are independent of the "
+            "model and of each other, so this is a real local bend, not error. Practical rule: "
+            "subtract that offset from the GRIB for this racecourse. The models DO get the trend "
+            "right even when the absolute bearing is wrong."
+        ).format(mv.get("mean_forecast_minus_observed_deg", "?")),
+    }
+    digest["not_in_this_data"] = [
+        x for x in digest.get("not_in_this_data", []) if not x.startswith("Measured wind")
+    ]
+    digest["not_in_this_data"].insert(0,
+        "Measured wind ON THE BOAT: none (no VKX 0x0A rows on any boat). Where a "
+        f"'{label}.wind' section exists there IS forecast wind including SPEED - use it, call it "
+        "a forecast, and apply the offset noted there. Otherwise no wind speed exists by any method.")
+    return digest
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("leg_report", help="reports/<date>_race_comparison_raw.json")
+    ap.add_argument("--start-metrics", help="JSON file of regattaData-shaped start metrics")
+    ap.add_argument("--start-line", help="reports/start_line_analysis.json")
+    ap.add_argument("--fleet-report", help="reports/<date>_fleet_report.json (completed races)")
+    ap.add_argument("--wind", help="reports/<date>_wind.json (decoded GRIB)")
+    ap.add_argument("--day-label", default="completed_races",
+                    help="key the completed-race day is stored under, e.g. today_2026_09_08")
+    ap.add_argument("-o", "--out", help="write digest here instead of stdout")
+    args = ap.parse_args(argv)
+
+    leg_report = json.load(open(args.leg_report))
+    start_metrics = json.load(open(args.start_metrics)) if args.start_metrics else None
+    start_line = json.load(open(args.start_line)) if args.start_line else None
+    digest = build_digest(leg_report, start_metrics, start_line)
+    if args.fleet_report:
+        digest = add_completed_races(digest, json.load(open(args.fleet_report)), args.day_label)
+    if args.wind:
+        digest = add_wind(digest, json.load(open(args.wind)), args.day_label)
+    text = json.dumps(digest, indent=1)
+
+    if args.out:
+        with open(args.out, "w") as f:
+            f.write(text)
+        print(f"wrote {args.out} ({len(text.encode())} bytes)")
+    else:
+        print(text)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

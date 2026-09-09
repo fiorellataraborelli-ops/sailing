@@ -41,12 +41,25 @@ Done and validated:
 
 **Not done — and one active defect:**
 
-> `tools/analyse_legs.py` does **not** produce trustworthy leg splits. It returned
-> identical first-leg durations (42.13 min) for all 13 boats, which is the search-band
-> boundary being hit, not the boats agreeing. The VMG sign error and the gybe
-> misclassification in it are fixed; the leg detection is not. **Do not use its leg
-> output.** The leg tables in the debrief PDF come from the previously validated mark
-> detections in `data/analysis.json` instead.
+> A separate leg-splitting script was written and **failed** — it returned identical
+> first-leg durations (42.13 min) for all 13 boats, which is a search-band boundary
+> being hit, not the boats agreeing. It has been deleted rather than left in the tree,
+> because `src/sailing_agents/race_multi_leg.py` already does this properly, by track
+> reversal, and produced the reports in `reports/`. Two lessons from the failure are
+> worth keeping:
+>
+> - Anchor on the **last** `RACE_START` event, not the first. `race_legs.py`
+>   already does this; the ad-hoc script did not, and every leg was offset by the
+>   ~30 minutes between the recalled sequence and the actual gun.
+> - Classify a tack against a gybe by the **point of sail either side of the
+>   crossing**, not by the instantaneous heading at the crossing, which is always
+>   near the wind axis and so always reads as a tack.
+>
+> What remains genuinely missing is **wind-referenced VMG**: `_leg_stats` reports
+> `vmg_proxy_kn`, a straight-line rate. `race_multi_leg.analyse()` already accepts a
+> `wind_deg` argument, and the measured per-leg winds are now known (race 1:
+> 317/323/313/317; race 2: 314/321/313/313), so this is a matter of feeding them
+> through and computing the true along-wind speed component.
 
 Also outstanding:
 - Per-leg VMG, best/worst moments, places gained per leg (blocked on the above)

@@ -1,0 +1,38 @@
+<!-- ===== Wind: forecast vs the water (static, build-time) ===== -->
+<style>
+#wx-wrap{margin:28px 40px 0;border:1px solid var(--bh-grey-line);}
+#wx-head{background:var(--bh-black);color:var(--bh-white);padding:16px 20px;}
+#wx-body{padding:20px;}
+#wx-tiles{display:flex;gap:30px;flex-wrap:wrap;padding-bottom:16px;margin-bottom:18px;border-bottom:1px solid var(--bh-grey-line);}
+.wx-t{font-size:11px;color:var(--bh-grey-700);}
+.wx-t b{display:block;font-size:22px;color:var(--bh-black);font-weight:600;font-variant-numeric:tabular-nums;margin:2px 0 1px;}
+.wx-t span{font-size:10px;color:var(--bh-grey-400);}
+.wx-table{width:100%;border-collapse:collapse;font-size:11.5px;}
+.wx-table th{text-align:right;padding:7px 8px;font-weight:600;color:var(--bh-black);border-bottom:1px solid var(--bh-black);white-space:nowrap;}
+.wx-table th:first-child,.wx-table td:first-child{text-align:left;}
+.wx-table td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--bh-grey-100);font-variant-numeric:tabular-nums;color:var(--bh-grey-700);}
+.wx-obs td{color:var(--bh-ultramarine);font-weight:600;}
+#wx-note{font-size:11px;color:var(--bh-grey-700);margin-top:14px;line-height:1.55;}
+#wx-note b{color:var(--bh-black);}
+</style>
+<div id="wx-wrap">
+  <div id="wx-head">
+    <div style="font-size:13px;font-weight:600;">Wind &mdash; forecast vs. the water</div>
+    <div style="font-size:11px;color:var(--bh-grey-100);margin-top:4px;">ICON-EU 7 km and ECMWF IFS 0.25&deg;, decoded at 38.68 N 9.42 W, against the wind the fleet actually sailed</div>
+  </div>
+  <div id="wx-body">
+    <div id="wx-tiles">
+      <div class="wx-t">Wind on the water<b>323&deg;</b><span>from the line and the beat</span></div>
+      <div class="wx-t">Speed<b>11&ndash;12 kn</b><span>ICON-EU forecast</span></div>
+      <div class="wx-t">Gusts<b>22 kn</b><span>about 2x the mean</span></div>
+      <div class="wx-t">GRIB error<b>+11&deg;</b><span>model sits right of reality</span></div>
+      <div class="wx-t">Pressure<b>-2.3 hPa</b><span>1023 &rarr; 1020 over the day</span></div>
+    </div>
+    <table class="wx-table"><thead><tr><th>Source</th><th>Race 1 dir</th><th>Race 2 dir</th><th>Speed</th><th>vs. water</th></tr></thead><tbody>
+      <tr><td>ICON-EU 06z (7 km)</td><td>337&deg;</td><td>332&deg;</td><td>11.5 kn</td><td>+12.2 / +9.9&deg;</td></tr>
+      <tr><td>ECMWF IFS 06z (25 km)</td><td>345&deg;</td><td>343&deg;</td><td>12.2 kn</td><td>+20.5 / +21.2&deg;</td></tr>
+      <tr class="wx-obs"><td>Measured on the water</td><td>324&deg;</td><td>322&deg;</td><td>&mdash;</td><td>&mdash;</td></tr>
+    </tbody></table>
+    <div id="wx-note"><b>Both models sit right of the racecourse.</b> The committee's line square and the fleet's beat bearing are independent of each other and of the models, and they agree with each other far more closely than either agrees with a GRIB. That is the Nortada bending left into Cascais Bay, which a 7&nbsp;km cell cannot resolve &mdash; and the finer ICON grid is about half as wrong as ECMWF. <b>Working rule: take ICON and subtract ~10&deg;.</b><br>The models do get the <i>trend</i> right: ICON backs 5.7&deg; between the two races and the fleet backed 6.4&deg;. Use them for when a shift arrives, not for the absolute bearing. Wind speed is the one thing GPS cannot give and the GRIB can.</div>
+  </div>
+</div>

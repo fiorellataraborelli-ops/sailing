@@ -1,0 +1,109 @@
+<!-- ===== Mobile readability (static, build-time) =====
+     The dashboard was laid out for a desktop viewport: the Claude Design
+     template sets its type in inline styles from 10px up, and the page keeps
+     40px side margins. On a phone that leaves body text at 10-12px and, worse,
+     squeezes the chart SVGs so hard that their axis labels - 10 units inside a
+     1150-unit viewBox scaled to ~310px - render at roughly 3px.
+
+     Two things are done below, only under a phone-width media query so the
+     desktop layout is untouched:
+
+       1. Side margins drop from 40px to 14px, which widens the content by
+          about 17% before any type changes.
+       2. Every inline font-size in the template is lifted to a floor of ~13px,
+          matched by attribute selectors on the inline style since the template's
+          elements carry no classes of their own. SVG text is raised in USER
+          UNITS, because it scales with the viewBox rather than the page.
+
+     `!important` is unavoidable here: the values being overridden are inline
+     styles, which a plain rule cannot beat.
+-->
+<style>
+@media (max-width: 640px) {
+
+  /* --- 1. reclaim horizontal space ------------------------------------- */
+  [style*="margin:32px 40px"],
+  [style*="margin:28px 40px"],
+  [style*="margin:24px 40px"] {
+    margin-left: 14px !important;
+    margin-right: 14px !important;
+  }
+  [style*="padding:28px 40px"],
+  [style*="padding:20px 40px"] {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  #sl-wrap, #wx-wrap { margin-left: 14px !important; margin-right: 14px !important; }
+
+  /* --- 2. lift the template's inline type to a readable floor ---------- */
+  [style*="font-size:10px"],
+  [style*="font-size: 10px"] { font-size: 13px !important; }
+  [style*="font-size:10.5px"],
+  [style*="font-size: 10.5px"] { font-size: 13px !important; }
+  [style*="font-size:11px"],
+  [style*="font-size: 11px"] { font-size: 13px !important; }
+  [style*="font-size:11.5px"],
+  [style*="font-size: 11.5px"] { font-size: 13.5px !important; }
+  [style*="font-size:12px"],
+  [style*="font-size: 12px"] { font-size: 14px !important; }
+  [style*="font-size:12.5px"],
+  [style*="font-size: 12.5px"] { font-size: 14px !important; }
+  [style*="font-size:13px"],
+  [style*="font-size: 13px"] { font-size: 14.5px !important; }
+
+  /* The page headline can shrink a little to buy room for everything else. */
+  h1[style*="font-size:30px"],
+  h1[style*="font-size: 30px"] { font-size: 22px !important; line-height: 1.2 !important; }
+
+  /* The template ellipsises the boat name on one line; once the type is
+     bigger it no longer fits, so let it wrap instead of being cut off. */
+  [style*="text-overflow: ellipsis"],
+  [style*="text-overflow:ellipsis"] {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  /* --- 3. SVG text is in user units, so it needs a much larger number --- */
+  svg text { font-size: 26px !important; }
+  /* The x-axis labels sit only 26 user units below the lowest y-axis label, so
+     at the larger mobile size they collide in the bottom-left corner. Only the
+     x-axis labels are centre-anchored, which makes them selectable on their own. */
+  svg text[text-anchor="middle"] { transform: translate(0, 14px); }
+
+  /* --- 4. my own sections ---------------------------------------------- */
+  #sa-title, #sl-head div:first-child, #wx-head div:first-child { font-size: 15px !important; }
+  #sa-sub, #sl-head div:last-child, #wx-head div:last-child { font-size: 13px !important; }
+
+  .sl-t { font-size: 13.5px !important; }
+  .sl-m { font-size: 13px !important; }
+  .sl-row { font-size: 13.5px !important; padding: 6px 0 !important; }
+  .sl-grid { grid-template-columns: 1fr !important; gap: 14px !important; }
+  /* Each row now carries three figures, which will not fit one phone line
+     beside the boat name; stack the name above them. */
+  .sl-row { flex-wrap: wrap !important; }
+  .sl-row .sl-v { flex: 1 1 100% !important; }
+  #sl-foot, #sa-foot, #wx-note { font-size: 12.5px !important; line-height: 1.6 !important; }
+
+  .wx-t { font-size: 12.5px !important; }
+  .wx-t b { font-size: 20px !important; }
+  .wx-t span { font-size: 12.5px !important; }
+  #wx-tiles { gap: 18px !important; }
+  .wx-table { font-size: 13px !important; }
+  .wx-table th, .wx-table td { padding: 8px 6px !important; }
+
+  .sa-chip { font-size: 13px !important; padding: 9px 13px !important; }
+  #sa-input { font-size: 15px !important; }   /* 16px-ish stops iOS zooming on focus */
+  .sa-btn { font-size: 14px !important; }
+  .sa-turn { font-size: 14px !important; }
+
+  /* --- 5. wide tables scroll rather than crush ------------------------- */
+  #wx-wrap .wx-table { display: block; overflow-x: auto; white-space: nowrap; }
+}
+
+/* Very narrow phones: stack the analyser input above its buttons. */
+@media (max-width: 420px) {
+  #sa-form { flex-wrap: wrap !important; }
+  #sa-input { flex: 1 1 100% !important; }
+}
+</style>

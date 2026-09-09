@@ -1,102 +1,121 @@
-# Cascais Race Brief — Swedish Team
+# Sailing — Cascais J/70 Worlds 2026
 
-Wind and telemetry brief for the J/70 World Championship, Cascais, September 2026.
-Static site: one `index.html`, one JSON data file, no build step.
+Race analysis for the **Swedish team** at the J/70 World Championship, Cascais,
+September 2026. Two halves:
 
-Live wind is loaded at runtime, newest source first:
+- **`src/sailing_agents/`** — the analysis pipeline. Parses Vakaros VKX telemetry
+  and turns it into per-leg performance data.
+- **`index.html`** — the brief the team reads. Static, self-updating, deployed on
+  Vercel from this branch.
 
-1. `data/wind.json` — refreshed every three hours by GitHub Actions
-2. Open-Meteo direct — live, if the host allows the call
-3. the snapshot embedded in `index.html` — always works, may be stale
-
-Whichever answers first wins, and the page names its source under the day tabs.
+New competitor logs arrive daily through the shared Google Drive folder `Sailing`
+(id `1IYNZ3gopcq7Wjr7lT9Ob6ajs0DiaBuQn`). The regatta runs to Friday 11 September.
 
 ---
 
-## Deploy to Netlify
+## The brief (`index.html`)
 
-**1. Push this to GitHub.**
+Open it directly — no server needed. Wind is loaded at runtime, newest source first:
 
-```bash
-cd <this folder>
-git init -b main
-git add .
-git commit -m "Cascais race brief: site, wind refresh, analysis tools"
-git remote add origin https://github.com/fiorellataraborelli-ops/sailing.git
-git push -u origin main
-```
+1. `data/wind.json` — refreshed every three hours by GitHub Actions
+2. Open-Meteo direct — live, when the host allows the call
+3. the snapshot embedded in the file — always works, may be stale
 
-The repo currently has only the branch `claude/sailing-race-data-agents-hf37ju` and no
-`main`. Pushing `main` as above creates it; set it as the default branch in
-**Settings → Branches** so Netlify and Actions pick it up.
+The page names its source under the day tabs, so you can always see how fresh it is.
 
-**2. Connect Netlify.** app.netlify.com → *Add new site* → *Import an existing project*
-→ GitHub → pick `sailing`. `netlify.toml` already sets everything, so leave the build
-command empty and the publish directory as `.`. Netlify redeploys on every push, which
-includes the three-hourly wind commits — so the site refreshes itself.
+### Deploy on Vercel
 
-**3. Protect it.** This is client race data. In Netlify:
-*Site configuration → Access & security → Visitor access → Password protect*, or set
-**Site visibility → Private** on a paid plan. `robots.txt` and the `X-Robots-Tag`
-header already keep it out of search engines, but those are not access control.
+vercel.com → *Add New* → *Project* → *Import Git Repository* → `sailing`.
+Connect it to **`main`**. There is no build step:
 
-## The three-hourly refresh
+| Setting | Value |
+|---|---|
+| Framework Preset | **Other** |
+| Build Command | *leave empty* |
+| Output Directory | `.` |
+| Install Command | *leave empty* |
+
+`vercel.json` sets the cache and robots headers. Vercel redeploys on every push,
+including the three-hourly wind commits, so the site refreshes itself.
+
+**Protect it.** This is client race data. *Project → Settings → Deployment
+Protection* → **Vercel Authentication**, or **Password Protection** on Pro. Note
+that every push also mints its own preview URL, public unless protection is on.
+`robots.txt` and the `X-Robots-Tag` header keep the site out of search engines,
+but neither is access control.
+
+### The three-hourly refresh
 
 `.github/workflows/wind-refresh.yml` runs `tools/fetch_wind.py`, writes
-`data/wind.json`, and commits only when the forecast has actually moved.
+`data/wind.json`, and commits only when the forecast has actually moved. It runs on
+GitHub's servers, so nothing needs to be open locally. Trigger it by hand from
+**Actions → Wind refresh → Run workflow**. If its push is rejected, enable
+**Settings → Actions → General → Workflow permissions → Read and write**.
 
-- Runs on GitHub's servers, so nothing needs to be open on your laptop.
-- Trigger it by hand from **Actions → Wind refresh → Run workflow**.
-- GitHub cron is UTC and best-effort; a run can land a few minutes late.
-- It needs `contents: write`, which the workflow declares. If the push is rejected,
-  enable **Settings → Actions → General → Workflow permissions → Read and write**.
+---
 
-## The bias correction, and when it does not apply
+## The analysis pipeline
+
+- `src/sailing_agents/vkx_parser.py` — the canonical VKX reader, written against the
+  [published format spec](https://github.com/vakaros/vkx): GPS fixes, race timer
+  events, line position, shift angle, wind, speed-through-water, depth, temperature,
+  load.
+- `src/sailing_agents/race_legs.py` — finds the **real** race start and segments the
+  first upwind and downwind legs from the GPS track alone.
+- `src/sailing_agents/race_multi_leg.py` — full multi-leg segmentation by track
+  reversal; per-leg duration, distance, average and max SOG, and a VMG *proxy*.
+- `src/sailing_agents/start_line.py`, `start_line_report.py` — start-line geometry
+  from the VKX line-position rows: line length, bearing, distance to line at the gun,
+  position along the line.
+- `src/sailing_agents/wind_grib.py` — GRIB decoding for ICON-EU and ECMWF.
+- `src/sailing_agents/fleet_report.py`, `digest.py`, `regatta_data.py` — fleet
+  aggregation and the data the dashboard reads.
+- `tools/fetch_wind.py` — builds `data/wind.json`. Standalone; imports nothing above.
+
+Reports live in `reports/`. `docs/Cascais-Debrief-8-Sep.pdf` is the shareable debrief.
+
+### Finding the race start
+
+Vakaros logs a `RACE_START` **every time a start sequence reaches zero**, including
+general recalls. `find_final_race_start` therefore takes the *last* one. This matters:
+on 8 September the loggers recorded a sequence expiring at 13:05 local while the race
+actually got away at 13:34:52 — roughly half an hour apart. Anchor on the wrong event
+and every "at the gun" figure is measured at the wrong instant.
+
+### The wind bias correction
 
 The GRIB sits **+18.6° to the right** of the wind this fleet actually races in,
-measured against the event's own reports (+19.1° in race 1, +18.0° in race 2 on
+measured against the event's own race reports (+19.1° in race 1, +18.0° in race 2 on
 8 September). The Nortada bends left into Cascais Bay and a 7 km grid cell cannot
 resolve it.
 
-**The correction is only valid in a 10–14 kn gradient Nortada.** Both
-`tools/fetch_wind.py` and the page withhold a corrected bearing when the breeze is
-under 8 kn or the models disagree by more than 30°, because a thermally driven light
-day bends differently. Friday 11 September is exactly that case: 2–8 kn with up to
-111° of model disagreement, so the page shows a dash rather than a false bearing.
+**Only valid in a 10–14 kn gradient Nortada.** Both `tools/fetch_wind.py` and the page
+withhold a corrected bearing below 8 kn or above 30° of inter-model spread, because a
+thermally driven light day bends differently. Friday 11 September is exactly that case —
+2–8 kn with up to 111° of model disagreement — so the page shows a dash rather than a
+false bearing. Recalibrate as more races are sailed; see `docs/ANALYSIS-BRIEF.md`.
 
-Recalibrate as more races are sailed — see `docs/ANALYSIS-BRIEF.md`.
+---
 
-## Layout
+## Known limitations
 
-```
-index.html                     the brief; open it directly, no server needed
-data/wind.json                 refreshed every 3 h by Actions
-data/analysis.json             decoded telemetry + measured race figures
-tools/fetch_wind.py            builds data/wind.json
-tools/vkx.py                   Vakaros .vkx binary decoder
-tools/analyse_legs.py          leg splitting — SEE THE WARNING IN docs/ANALYSIS-BRIEF.md
-docs/ANALYSIS-BRIEF.md         what the analysis must cover, and what is unfinished
-docs/Cascais-Debrief-8-Sep.pdf the shareable debrief
-.github/workflows/wind-refresh.yml
-netlify.toml
-```
+State these before drawing conclusions.
 
-## The VKX format
-
-Reverse-engineered; there was no public decoder. Pages of ~2 KB, each opening with an
-8-byte header (`ff 05 01 00` + uint32 block number) and closing with a 3-byte
-terminator (`fe` + uint16 page length). Records never straddle a page.
-
-Record `0x02` (45 bytes) is the useful one: type byte, uint64 millisecond timestamp,
-int32 latitude and longitude scaled by 1e-7, float32 SOG in m/s, float32 COG in
-**radians**, a 4-byte reserved field, then a unit orientation quaternion as 4 float32
-(norm verified at 0.99993 — so heel and pitch are derivable, and not yet computed).
-
-Other lengths: `0x03`=21, `0x04`=14 (race timer; payload byte 0 == 3 marks expiry),
-`0x05`=18 (start-line position), `0x07`=13, `0x08`=14, `0x0b`=17, `0x0c`=13,
-`0x0e`=17, `0x10`=13, `0x21`=53.
-
-There is **no boat name, sail number or device serial anywhere in a `.vkx` file.**
-Identity comes only from the filename. Team Sweden is the `vakaros *.vkx` files,
-confirmed by exact byte-size match against `data/raw/team/team_*.vkx` and
-cross-checked on max boat speed against the five other named boats.
+- **No boat logs a wind instrument.** Every measured bearing comes from GPS geometry or
+  the event's own analysis, and no measured wind *speed* exists at all. TUR 442 and TYRA
+  already feed NMEA speed-through-water, depth and temperature into the Atlas — a
+  masthead feed on that bus would retire the correction entirely.
+- **True wind-referenced VMG is not computed yet.** `vmg_proxy_kn` is straight-line
+  progress per unit time, not VMG. The team ranks this the most important metric.
+- **Mark positions are inferred** from track reversals, not recorded, so extra-distance
+  figures carry unknown error.
+- **No official finishing positions.** Order shown is at the last rounding. The final
+  leg is excluded because the loggers' RACE_END is synced fleet-wide and so is not a
+  finish signal.
+- **20 of the 34 boats have no telemetry.** Every fleet-relative figure is a 14-boat
+  sample. `MidlifeCrisis` (the `MLC USA 26 primary` file) logs at ~10 Hz — the best in
+  the fleet — and is in no analysis yet.
+- **Heel and pitch** are derivable from the orientation quaternion, and never computed.
+- **No boat identity inside a `.vkx` file** — no name, sail number or serial. Identity
+  comes only from the filename. Team Sweden is `data/raw/team/team_*.vkx`, confirmed by
+  byte-size match and cross-checked on max boat speed.
