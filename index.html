@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Cascais Race Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ink:#F6F8FA; --surface:#FFFFFF; --raise:#FFFFFF; --line:#D9E2EA; --grid:#EDF2F6;
+  --text:#0D1B26; --muted:#57708A; --faint:#8098AE;
+  --accent:#D9531E; --cool:#0B7A85; --good:#1E8A4E; --warn:#A66A00; --crit:#BE3A31;
+  --shadow:0 1px 2px rgba(13,27,38,.06),0 8px 24px -12px rgba(13,27,38,.18);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#0A1520; --surface:#101F2E; --raise:#15273A; --line:#25394E; --grid:#16283A;
+    --text:#E9F1F8; --muted:#93AAC0; --faint:#6D869E;
+    --accent:#FF7A3D; --cool:#4FD1C5; --good:#45C97D; --warn:#F0B429; --crit:#F0605B;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#0A1520; --surface:#101F2E; --raise:#15273A; --line:#25394E; --grid:#16283A;
+  --text:#E9F1F8; --muted:#93AAC0; --faint:#6D869E;
+  --accent:#FF7A3D; --cool:#4FD1C5; --good:#45C97D; --warn:#F0B429; --crit:#F0605B;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--ink);color:var(--text);
+  font:400 15px/1.55 'IBM Plex Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+  -webkit-text-size-adjust:100%;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 18px 72px;}
+h1,h2,h3{margin:0;text-wrap:balance;font-weight:700;letter-spacing:-.015em;}
+.mono{font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;}
+.eyebrow{font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+
+/* ---------- masthead ---------- */
+header.top{padding:34px 0 22px;border-bottom:1px solid var(--line);}
+header.top h1{font-size:clamp(26px,5.2vw,40px);line-height:1.08;margin:10px 0 8px;}
+.sub{color:var(--muted);font-size:15px;max-width:60ch;}
+.stamp{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px;font-size:13px;color:var(--muted);}
+.stamp b{color:var(--text);font-weight:600;}
+
+/* ---------- day switch ---------- */
+.daybar{position:sticky;top:0;z-index:30;background:var(--ink);
+  padding:12px 0;border-bottom:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface);}
+.seg button{appearance:none;border:0;background:transparent;color:var(--muted);cursor:pointer;
+  font:600 13px/1 'IBM Plex Sans',sans-serif;padding:11px 18px;}
+.seg button[aria-pressed="true"]{background:var(--text);color:var(--ink);}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+
+/* ---------- modules ---------- */
+section.mod{margin-top:34px;}
+.modhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+.modhead h2{font-size:19px;}
+.modhead p{margin:0;color:var(--muted);font-size:13.5px;max-width:66ch;}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow);}
+
+/* ---------- conditions hero ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:26px;align-items:center;}
+.rose{width:100%;max-width:260px;margin:0 auto;display:block;}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:14px;}
+.rd b{display:block;font:600 30px/1 'IBM Plex Mono',monospace;letter-spacing:-.02em;}
+.rd span{display:block;font-size:12.5px;color:var(--muted);margin-top:5px;}
+.rd.acc b{color:var(--accent);} .rd.cool b{color:var(--cool);}
+.scrub{margin-top:20px;}
+input[type=range]{width:100%;accent-color:var(--accent);height:26px;}
+.ctlrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px;}
+.btn{appearance:none;border:1px solid var(--line);background:var(--raise);color:var(--text);
+  font:600 13px/1 'IBM Plex Sans',sans-serif;padding:11px 16px;border-radius:9px;cursor:pointer;}
+.btn:hover{border-color:var(--muted);}
+.btn.solid{background:var(--text);color:var(--ink);border-color:var(--text);}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.clock{font:600 14px/1 'IBM Plex Mono',monospace;color:var(--muted);}
+
+/* ---------- beats ---------- */
+.beats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:18px;}
+.beat{border:1px solid var(--line);border-radius:11px;padding:13px 14px;background:var(--raise);}
+.beat span{display:block;font-size:12px;color:var(--muted);}
+.beat b{display:block;font:600 22px/1.1 'IBM Plex Mono',monospace;margin-top:5px;}
+
+/* ---------- tables ---------- */
+.rail{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:11px;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:660px;}
+thead th{position:sticky;top:0;background:var(--surface);text-align:right;white-space:nowrap;
+  font:600 12.5px/1 'IBM Plex Sans',sans-serif;color:var(--muted);padding:13px 12px;
+  border-bottom:1px solid var(--line);cursor:pointer;user-select:none;}
+thead th:first-child,tbody td:first-child{text-align:left;position:sticky;left:0;background:var(--surface);z-index:2;}
+thead th:first-child{z-index:3;}
+thead th:hover{color:var(--text);}
+tbody td{text-align:right;padding:11px 12px;border-bottom:1px solid var(--grid);
+  font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;font-size:13px;}
+tbody td:first-child{font-family:'IBM Plex Sans',sans-serif;font-weight:500;}
+tbody tr{cursor:pointer;}
+tbody tr:hover td{background:var(--grid);}
+tbody tr:hover td:first-child{background:var(--grid);}
+tbody tr.sel td,tbody tr.sel td:first-child{background:var(--accent);color:#fff;}
+tbody tr.team td{font-weight:700;}
+.pos{color:var(--faint);margin-right:8px;}
+tbody tr.sel .pos{color:#fff;}
+
+/* ---------- chips ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 14px;}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  font:500 12.5px/1 'IBM Plex Sans',sans-serif;padding:9px 12px;border-radius:999px;cursor:pointer;}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
+.chip.tm{border-color:var(--text);color:var(--text);font-weight:700;}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+/* ---------- calculator ---------- */
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;}
+.verdict{border-left:3px solid var(--accent);padding:12px 0 12px 15px;}
+.verdict b{display:block;font:700 21px/1.2 'IBM Plex Sans',sans-serif;}
+.verdict span{color:var(--muted);font-size:13.5px;}
+.lbl{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:4px;}
+.lbl b{font-family:'IBM Plex Mono',monospace;color:var(--text);}
+
+/* ---------- misc ---------- */
+.note{color:var(--muted);font-size:13px;line-height:1.65;margin-top:14px;}
+.note b{color:var(--text);}
+details.meth{margin-top:16px;border:1px solid var(--line);border-radius:11px;background:var(--surface);}
+details.meth summary{cursor:pointer;padding:14px 16px;font-weight:600;font-size:14px;}
+details.meth[open] summary{border-bottom:1px solid var(--line);}
+details.meth .body{padding:14px 16px;color:var(--muted);font-size:13.5px;line-height:1.7;}
+details.meth li{margin-bottom:7px;}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:12.5px;line-height:1.7;}
+.pill{display:inline-block;padding:3px 9px;border-radius:999px;font:600 12.5px/1.5 'IBM Plex Mono',monospace;}
+.pill.up{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good);}
+.pill.dn{background:color-mix(in srgb,var(--crit) 16%,transparent);color:var(--crit);}
+.pill.nu{background:var(--grid);color:var(--muted);}
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;}
+  .wrap{padding:0 14px 56px;}
+  .rd b{font-size:26px;}
+  body{font-size:15px;}
+  table{font-size:13.5px;}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Vakaros Atlas telemetry &middot; J/70 Cascais</div>
+  <h1>Cascais Race Brief</h1>
+  <p class="sub">Every figure below is decoded from the fleet's own VKX logs or from live model data at the race area. Wind bearings are corrected for the bias the fleet itself measured.</p>
+  <div class="stamp">
+    <span>Race area <b class="mono">38.68 N &nbsp;9.42 W</b></span>
+    <span>Fleet <b id="s-fleet" class="mono">&mdash;</b></span>
+    <span>Model bias <b class="mono" id="s-bias">&mdash;</b></span>
+    <span>Tacking angle <b class="mono" id="s-tack">&mdash;</b></span>
+  </div>
+</header>
+
+<div class="daybar">
+  <div class="seg" id="daysel" role="group" aria-label="Forecast day"></div>
+  <span class="clock" id="dayhint"></span>
+</div>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Conditions on the racecourse</h2>
+    <p>Drag the scrubber through the afternoon. The grey needle is the raw model; the coloured needle is what the fleet will actually sail.</p>
+  </div>
+  <div class="card">
+    <div class="hero">
+      <svg class="rose" viewBox="0 0 240 240" role="img" aria-label="Wind direction compass">
+        <circle cx="120" cy="120" r="100" fill="none" stroke="var(--line)"/>
+        <circle cx="120" cy="120" r="74" fill="none" stroke="var(--line)" stroke-dasharray="2 5"/>
+        <g id="ticks"></g>
+        <g font-family="IBM Plex Mono,monospace" font-size="13" font-weight="600"
+           fill="var(--muted)" text-anchor="middle">
+          <text x="120" y="20">N</text><text x="228" y="125">E</text>
+          <text x="120" y="234">S</text><text x="12" y="125">W</text>
+        </g>
+        <g id="n-raw" style="transition:transform .4s ease;transform-origin:120px 120px;">
+          <line x1="120" y1="34" x2="120" y2="176" stroke="var(--faint)" stroke-width="2.5"/>
+          <polygon points="120,186 111,164 129,164" fill="var(--faint)"/>
+        </g>
+        <g id="n-cor" style="transition:transform .4s ease;transform-origin:120px 120px;">
+          <line x1="120" y1="30" x2="120" y2="178" stroke="var(--accent)" stroke-width="5"/>
+          <polygon points="120,192 108,166 132,166" fill="var(--accent)"/>
+        </g>
+        <circle cx="120" cy="120" r="5" fill="var(--text)"/>
+      </svg>
+      <div>
+        <div class="readout">
+          <div class="rd"><b class="mono" id="r-raw">&mdash;</b><span>raw model</span></div>
+          <div class="rd acc"><b class="mono" id="r-cor">&mdash;</b><span>corrected TWD</span></div>
+          <div class="rd"><b class="mono" id="r-kn">&mdash;</b><span>knots</span></div>
+          <div class="rd"><b class="mono" id="r-gu">&mdash;</b><span>gust</span></div>
+          <div class="rd cool"><b class="mono" id="r-sp">&mdash;</b><span>model spread</span></div>
+        </div>
+        <div class="scrub">
+          <input type="range" id="hr" min="0" max="0" step="1" value="0" aria-label="Hour of the afternoon">
+          <div class="ctlrow">
+            <button class="btn solid" id="play" type="button">Play afternoon</button>
+            <span class="clock" id="clock"></span>
+          </div>
+        </div>
+        <div class="beats">
+          <div class="beat"><span>Starboard tack heading</span><b class="mono" id="b-stb">&mdash;</b></div>
+          <div class="beat"><span>Port tack heading</span><b class="mono" id="b-prt">&mdash;</b></div>
+          <div class="beat"><span>Square line bearing</span><b class="mono" id="b-line">&mdash;</b></div>
+          <div class="beat"><span>Pressure</span><b class="mono" id="b-mslp">&mdash;</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="note" id="trend"></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Start-line calculator</h2>
+    <p>Set the bearing the committee lays and the line length, and read the bias at the scrubbed hour. The committee squares to the model; the fleet sails the corrected wind, and the gap is worth metres.</p>
+  </div>
+  <div class="card">
+    <div class="calc">
+      <div>
+        <div class="lbl"><span>Line bearing</span><b id="v-brg">&mdash;</b></div>
+        <input type="range" id="c-brg" min="0" max="180" step="1" value="54">
+        <div class="lbl" style="margin-top:16px;"><span>Line length</span><b id="v-len">&mdash;</b></div>
+        <input type="range" id="c-len" min="200" max="1600" step="10" value="1000">
+        <div class="note" id="c-hint"></div>
+      </div>
+      <div>
+        <div class="verdict">
+          <span>Favoured end</span>
+          <b id="c-end">&mdash;</b>
+          <span id="c-gain"></span>
+        </div>
+        <div class="beats" style="margin-top:16px;">
+          <div class="beat"><span>Line square to</span><b class="mono" id="c-sq">&mdash;</b></div>
+          <div class="beat"><span>Wind off square</span><b class="mono" id="c-off">&mdash;</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>08 September &mdash; races sailed to a finish</h2>
+    <p>Sort any column. Tap a boat to follow it through both races. Mark roundings come from each boat's own track; the synced RACE_END is never used for ranking, so the final leg is excluded.</p>
+  </div>
+  <div class="card">
+    <div class="chips" id="racetabs"></div>
+    <div class="note" style="margin:0 0 14px;" id="racemeta"></div>
+    <div class="beats" style="margin:0 0 16px;" id="racetiles"></div>
+    <div class="chips" id="boatchips"></div>
+    <div class="rail"><table id="rt"><thead><tr id="rt-h"></tr></thead><tbody id="rt-b"></tbody></table></div>
+    <div class="note" id="racenote"></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Fleet telemetry</h2>
+    <p>Decoded straight from the 20 VKX files. Upwind and downwind averages split at 8 knots.</p>
+  </div>
+  <div class="card">
+    <div class="chips" id="fleettabs"></div>
+    <div class="rail"><table id="ft"><thead><tr id="ft-h"></tr></thead><tbody id="ft-b"></tbody></table></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>Measured on the water vs. the model</h2>
+    <p>Wind measured across the fleet by the event's own race reports, against the GRIB for the same moment. The line was never square &mdash; which is why an earlier estimate built on &ldquo;line square&rdquo; understated the error.</p>
+  </div>
+  <div class="card">
+    <div class="rail"><table id="mv"><thead><tr id="mv-h"></tr></thead><tbody id="mv-b"></tbody></table></div>
+    <div class="note" id="mv-note"></div>
+    <h3 style="font-size:14px;margin:22px 0 10px;">Wind by leg, as measured</h3>
+    <div class="rail"><table id="lg"><thead><tr id="lg-h"></tr></thead><tbody id="lg-b"></tbody></table></div>
+    <div class="note">The downwind legs read consistently right of the upwinds &mdash; 323&deg; against 317&deg; in race 1, 321&deg; against 314&deg; in race 2. Whether that is a real gradient across the run or an artefact of deriving wind from downwind tracks, it is the same sign in both races.</div>
+    <h3 style="font-size:14px;margin:22px 0 10px;">Start line, as measured</h3>
+    <div class="rail"><table id="sl"><thead><tr id="sl-h"></tr></thead><tbody id="sl-b"></tbody></table></div>
+    <div class="note" id="sl-note"></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
+    <h2>What the telemetry does not cover</h2>
+    <p>34 boats raced. The Drive folder holds logs for 14 of them, so every fleet-relative figure above is measured against a 41% sample, not the whole fleet.</p>
+  </div>
+  <div class="card">
+    <div class="note" id="cov" style="margin-top:0;"></div>
+  </div>
+</section>
+
+<details class="meth">
+  <summary>How this was produced, and what is not in it</summary>
+  <div class="body">
+    <ul>
+      <li><b>Telemetry</b> &mdash; 20 Vakaros Atlas <code>.vkx</code> logs decoded from the Drive folder. Position, SOG and COG at 0.5&nbsp;s; positions are int32 degrees &times; 1e-7, COG in radians, plus a unit orientation quaternion on every fix.</li>
+      <li><b>Wind</b> &mdash; today from DWD ICON-EU 06z (7&nbsp;km) and ECMWF IFS 06z (0.25&deg;); tomorrow from a live three-model consensus (ICON-EU, ECMWF IFS, GFS) at the race area.</li>
+      <li><b>The correction</b> &mdash; the mean of the committee line square and the fleet's first-beat bearing, compared with the forecast at the midpoint of each beat. Both inputs are independent of the model.</li>
+      <li><b>No wind instrument</b> &mdash; no boat logged one, so every observed bearing is inferred from GPS geometry and no measured wind speed exists.</li>
+      <li><b>Not derived from telemetry</b> &mdash; finishing positions, elapsed times, points and penalties. Mark positions are inferred from track reversals, not recorded.</li>
+      <li><b>Manoeuvre counts</b> &mdash; from speed dips. Upwind tack counts are reliable; downwind gybe counts over-count, because surfing makes speed oscillate.</li>
+      <li><b>Heel and pitch</b> &mdash; derivable from the quaternion, but not yet computed.</li>
+    </ul>
+  </div>
+</details>
+
+<footer id="foot"></footer>
+</div>
+
+<script>
+const D = {"meta": {"venue": "Cascais, Portugal", "pos": "38.68 N  9.42 W", "team": "Team Sweden (Roman)", "bias": 18.6, "tack": 80.5, "bias_old": 11.0}, "today": {"icon": [{"utc": 11, "dir": 341.3, "kn": 11.7, "gust": 22.4}, {"utc": 12, "dir": 338.1, "kn": 11.5, "gust": 22.5}, {"utc": 13, "dir": 333.7, "kn": 11.4, "gust": 22.1}, {"utc": 14, "dir": 332.4, "kn": 11.3, "gust": 22.0}, {"utc": 15, "dir": 327.9, "kn": 11.0, "gust": 21.6}, {"utc": 16, "dir": 326.8, "kn": 11.9, "gust": 22.4}, {"utc": 17, "dir": 325.7, "kn": 11.1, "gust": 22.4}], "ecmwf": [{"utc": 12, "dir": 344.9, "kn": 12.2, "mslp": 1022.8}, {"utc": 15, "dir": 342.8, "kn": 11.9, "mslp": 1021.2}, {"utc": 18, "dir": 341.6, "kn": 11.3, "mslp": 1020.5}], "mvo": [{"race_number": 1, "compared_at_utc_hour": 12.35, "forecast_direction_deg": 336.6, "forecast_speed_kn": 11.48, "forecast_gust_kn": 22.34, "observed_direction_deg": 324.4, "observed_basis": "mean of the committee line square (324.0) and the fleet's first-beat bearing (324.9), compared at the midpoint of the first beat", "forecast_minus_observed_deg": 12.2}, {"race_number": 2, "compared_at_utc_hour": 14.19, "forecast_direction_deg": 331.5, "forecast_speed_kn": 11.25, "forecast_gust_kn": 21.91, "observed_direction_deg": 321.6, "observed_basis": "mean of the committee line square (324.8) and the fleet's first-beat bearing (318.5), compared at the midpoint of the first beat", "forecast_minus_observed_deg": 9.9}]}, "tomorrow": [{"hr": 11, "raw": 341.9996952201138, "cor": 330.9996952201138, "sp": 3.0003047798862212, "kn": 10.366666666666665, "gust": 23.3, "mslp": 1018.6}, {"hr": 12, "raw": 337.6656878139716, "cor": 326.6656878139716, "sp": 4.334312186028399, "kn": 10.6, "gust": 23.9, "mslp": 1018.3333333333333}, {"hr": 13, "raw": 336.9998984376572, "cor": 325.9998984376572, "sp": 2.00010156234282, "kn": 10.9, "gust": 24.7, "mslp": 1017.9}, {"hr": 14, "raw": 335.3332279826744, "cor": 324.3332279826744, "sp": 2.666772017325627, "kn": 11.533333333333333, "gust": 26.0, "mslp": 1017.3333333333334}, {"hr": 15, "raw": 332.3349908640192, "cor": 321.3349908640192, "sp": 5.334990864019176, "kn": 12.233333333333333, "gust": 27.6, "mslp": 1016.7}, {"hr": 16, "raw": 333.66670428043915, "cor": 322.66670428043915, "sp": 1.6667042804391485, "kn": 12.933333333333334, "gust": 28.8, "mslp": 1016.3}, {"hr": 17, "raw": 335.333329572529, "cor": 324.333329572529, "sp": 0.66667042747099, "kn": 13.233333333333333, "gust": 29.2, "mslp": 1016.1333333333333}, {"hr": 18, "raw": 336.3330925501716, "cor": 325.3330925501716, "sp": 2.6669074498283862, "kn": 13.366666666666667, "gust": 29.4, "mslp": 1015.9666666666667}], "races": [{"n": 1, "gun": "13:05", "tracked": 13, "sq": 324.0, "beat": 324.9, "length": 1003.7, "brg": 54.0, "corr": 0.55, "order": ["Patakin 3", "Team Sweden (Roman)", "GTG New 2026", "Lady in red 2", "noticia", "Ba ba", "Phantom7", "joust70", "Yupi", "Florida 65", "J70 Let it be", "Mag", "Dime Piece"], "team": {"position_at_each_mark": [3, 2, 2], "gap_to_leader_min": [0.7, 0.69, 1.01], "beat1_avg_sog_vs_fleet_kn": -0.08, "beat1_extra_distance_vs_fleet_m": -113.8, "beat1_tacks_vs_fleet_median": 0}, "boats": [{"b": "Patakin 3", "m": [32.0, 48.8, 74.8], "up": 5.92, "dn": 12.16, "ex": 1134, "tk": 0, "dl": 6.5, "al": 0.28}, {"b": "Team Sweden (Roman)", "m": [32.7, 49.5, 75.8], "up": 5.88, "dn": 11.67, "ex": 1249, "tk": 2, "dl": 5.2, "al": 0.45}, {"b": "GTG New 2026", "m": [32.5, 50.0, 76.4], "up": 5.98, "dn": 11.7, "ex": 1300, "tk": 1, "dl": 5.8, "al": 0.65}, {"b": "Lady in red 2", "m": [33.5, 50.3, 77.0], "up": 5.84, "dn": 11.44, "ex": 1324, "tk": 2, "dl": 5.9, "al": 0.36}, {"b": "noticia", "m": [33.3, 50.3, 77.2], "up": 5.91, "dn": 11.58, "ex": 1367, "tk": 2, "dl": 4.3, "al": 0.91}, {"b": "Ba ba", "m": [32.7, 49.9, 77.4], "up": 5.93, "dn": 11.83, "ex": 1268, "tk": 2, "dl": 7.4, "al": 0.59}, {"b": "Phantom7", "m": [34.3, 50.5, 77.7], "up": 5.95, "dn": 11.73, "ex": 1507, "tk": 7, "dl": 13.0, "al": 0.91}, {"b": "joust70", "m": [33.4, 51.1, 77.8], "up": 5.83, "dn": 11.82, "ex": 1250, "tk": 1, "dl": 4.9, "al": 0.87}, {"b": "Yupi", "m": [33.7, 51.4, 78.0], "up": 6.04, "dn": 11.57, "ex": 1460, "tk": 3, "dl": 17.2, "al": 0.94}, {"b": "Florida 65", "m": [32.9, 51.4, 78.4], "up": 5.96, "dn": 11.52, "ex": 1345, "tk": 0, "dl": 4.8, "al": 0.44}, {"b": "J70 Let it be", "m": [32.9, 51.3, 78.7], "up": 5.97, "dn": 10.86, "ex": 1330, "tk": 0, "dl": 2.2, "al": 0.89}, {"b": "Mag", "m": [34.0, 52.5, 78.8], "up": 6.08, "dn": 10.99, "ex": 1596, "tk": 2, "dl": 14.0, "al": 0.71}, {"b": "Dime Piece", "m": [33.1, 51.3, 79.0], "up": 6.11, "dn": 11.37, "ex": 1468, "tk": 0, "dl": 4.3, "al": 0.98}]}, {"n": 2, "gun": "14:55", "tracked": 12, "sq": 324.8, "beat": 318.5, "length": 1005.6, "brg": 54.8, "corr": 0.36, "order": ["Ba ba", "Yupi", "joust70", "Patakin 3", "noticia", "Mag", "Phantom7", "Florida 65", "Lady in red 2", "J70 Let it be", "Dime Piece", "Team Sweden (Roman)"], "team": {"position_at_each_mark": [11, 12, 12], "gap_to_leader_min": [2.12, 3.65, 4.7], "beat1_avg_sog_vs_fleet_kn": -0.02, "beat1_extra_distance_vs_fleet_m": 140.3, "beat1_tacks_vs_fleet_median": 4}, "boats": [{"b": "Ba ba", "m": [33.0, 48.8, 75.9], "up": 5.75, "dn": 12.34, "ex": 1198, "tk": 0, "dl": 5.2, "al": 0.47}, {"b": "Yupi", "m": [33.4, 49.8, 77.2], "up": 5.66, "dn": 11.74, "ex": 1110, "tk": 2, "dl": 6.7, "al": 0.36}, {"b": "joust70", "m": [34.5, 50.8, 77.4], "up": 5.66, "dn": 12.18, "ex": 1340, "tk": 3, "dl": 4.3, "al": 0.13}, {"b": "Patakin 3", "m": [33.9, 50.5, 77.7], "up": 5.61, "dn": 11.65, "ex": 1168, "tk": 1, "dl": 13.6, "al": 0.08}, {"b": "noticia", "m": [33.3, 50.1, 78.0], "up": 5.77, "dn": 11.82, "ex": 1225, "tk": 0, "dl": 3.5, "al": 0.26}, {"b": "Mag", "m": [34.9, 51.1, 78.3], "up": 5.63, "dn": 12.11, "ex": 1361, "tk": 2, "dl": 15.5, "al": 0.09}, {"b": "Phantom7", "m": [35.0, 51.5, 78.8], "up": 5.77, "dn": 12.1, "ex": 1495, "tk": 4, "dl": 18.3, "al": 0.35}, {"b": "Florida 65", "m": [35.1, 51.2, 79.1], "up": 5.76, "dn": 12.29, "ex": 1545, "tk": 2, "dl": 13.7, "al": 0.38}, {"b": "Lady in red 2", "m": [34.5, 51.2, 79.3], "up": 5.65, "dn": 11.94, "ex": 1346, "tk": 2, "dl": 3.1, "al": 0.3}, {"b": "J70 Let it be", "m": [35.3, 51.8, 79.9], "up": 5.82, "dn": 11.26, "ex": 1635, "tk": 1, "dl": 10.8, "al": 0.91}, {"b": "Dime Piece", "m": [34.2, 51.3, 80.0], "up": 5.79, "dn": 11.66, "ex": 1435, "tk": 2, "dl": 10.9, "al": 0.51}, {"b": "Team Sweden (Roman)", "m": [35.1, 52.4, 80.6], "up": 5.7, "dn": 11.81, "ex": 1491, "tk": 6, "dl": 11.1, "al": 0.93}]}], "day1": {"starts": [{"n": 1, "gun": "14:55:00", "valid": false, "length": 982, "brg": 39.6, "sq": 309.6, "boats": [{"b": "Team Sweden (Roman)", "dl": -0.6, "al": 0.846, "sog": 5.7}, {"b": "Diva-Neu", "dl": 1.0, "al": 0.004, "sog": 5.2}, {"b": "G-Spot", "dl": 1.0, "al": 0.359, "sog": 5.9}, {"b": "Noticia", "dl": 1.1, "al": 0.022, "sog": 5.8}, {"b": "TUR 442", "dl": 2.5, "al": 0.572, "sog": 5.2}, {"b": "TYRA", "dl": 10.5, "al": 0.395, "sog": 4.9}]}, {"n": 2, "gun": "15:10:00", "valid": false, "length": 977, "brg": 38.9, "sq": 308.9, "boats": [{"b": "Noticia", "dl": 0.9, "al": 0.829, "sog": 5.6}, {"b": "Team Sweden (Roman)", "dl": 2.8, "al": 0.852, "sog": 5.7}, {"b": "TYRA", "dl": 3.9, "al": 0.007, "sog": 4.7}, {"b": "G-Spot", "dl": 4.8, "al": 1.015, "sog": 6.2}, {"b": "Diva-Neu", "dl": 5.5, "al": -0.004, "sog": 4.5}, {"b": "TUR 442", "dl": 16.0, "al": 0.333, "sog": 4.9}]}, {"n": 3, "gun": "15:35:00", "valid": false, "length": 985, "brg": 31.8, "sq": 301.8, "boats": [{"b": "Diva-Neu", "dl": -2.1, "al": 0.464, "sog": 6.2}, {"b": "Noticia", "dl": 2.2, "al": 0.331, "sog": 4.9}, {"b": "G-Spot", "dl": 2.9, "al": 0.052, "sog": 5.8}, {"b": "TUR 442", "dl": 4.0, "al": 0.024, "sog": 2.7}, {"b": "Team Sweden (Roman)", "dl": 7.8, "al": 0.991, "sog": 5.2}, {"b": "TYRA", "dl": 21.2, "al": 0.011, "sog": 2.4}]}, {"n": 4, "gun": "15:50:00", "valid": true, "length": 986, "brg": 30.4, "sq": 300.4, "boats": [{"b": "TUR 442", "dl": 2.6, "al": 0.056, "sog": 4.5}, {"b": "Noticia", "dl": 3.3, "al": 0.026, "sog": 6.4}, {"b": "G-Spot", "dl": 3.6, "al": 0.911, "sog": 5.6}, {"b": "Team Sweden (Roman)", "dl": 7.5, "al": 0.941, "sog": 5.2}, {"b": "TYRA", "dl": 8.9, "al": 0.034, "sog": 5.6}, {"b": "Diva-Neu", "dl": 16.7, "al": 0.961, "sog": 6.2}]}]}, "fleet": [{"file": "Bábá 08-09-2026.vkx", "day": "2026-09-08", "t0": "11:34", "t1": "15:49", "fixes": 30524, "nm": 30.6, "mx": 15.9, "avg": 7.25, "upAvg": 5.58, "dnAvg": 12.19}, {"file": "DIVA-NEU 7.9.2026.vkx", "day": "2026-09-07", "t0": "12:53", "t1": "17:01", "fixes": 29692, "nm": 22.2, "mx": 16.6, "avg": 5.43, "upAvg": 4.91, "dnAvg": 10.4}, {"file": "Dime Piece 9-8-2026.vkx", "day": "2026-09-08", "t0": "10:32", "t1": "16:06", "fixes": 40135, "nm": 37.7, "mx": 16.9, "avg": 6.8, "upAvg": 5.59, "dnAvg": 11.99}, {"file": "Florida 65 9-8-2026.vkx", "day": "2026-09-08", "t0": "10:29", "t1": "15:57", "fixes": 39326, "nm": 37.8, "mx": 16.9, "avg": 6.96, "upAvg": 5.49, "dnAvg": 12.39}, {"file": "GSpot  7-9-2026.vkx", "day": "2026-09-07", "t0": "11:39", "t1": "16:08", "fixes": 32303, "nm": 22.0, "mx": 16.7, "avg": 5.03, "upAvg": 4.67, "dnAvg": 10.19}, {"file": "GTG New 2026 9-8-2026.vkx", "day": "2026-09-08", "t0": "10:43", "t1": "15:32", "fixes": 34082, "nm": 34.5, "mx": 16.3, "avg": 7.21, "upAvg": 5.48, "dnAvg": 12.44}, {"file": "J70 Let it be  8-9-2026.vkx", "day": "2026-09-08", "t0": "10:54", "t1": "16:17", "fixes": 38571, "nm": 35.4, "mx": 16.2, "avg": 6.63, "upAvg": 5.35, "dnAvg": 11.44}, {"file": "Lady in red 2 9-8-2026.vkx", "day": "2026-09-08", "t0": "10:45", "t1": "15:57", "fixes": 37499, "nm": 36.0, "mx": 17.0, "avg": 6.97, "upAvg": 5.55, "dnAvg": 12.38}, {"file": "MLC USA 26 primary 9-8-2026.vkx", "day": "2026-09-08", "t0": "10:40", "t1": "15:54", "fixes": 187933, "nm": 37.8, "mx": 16.5, "avg": 7.24, "upAvg": 5.73, "dnAvg": 12.18}, {"file": "Mag 9-8-2026.vkx", "day": "2026-09-08", "t0": "10:39", "t1": "15:49", "fixes": 37182, "nm": 36.4, "mx": 17.0, "avg": 7.11, "upAvg": 5.57, "dnAvg": 12.38}, {"file": "Patakin_3 8-9-2026.vkx", "day": "2026-09-08", "t0": "10:27", "t1": "16:05", "fixes": 40617, "nm": 38.1, "mx": 16.2, "avg": 6.8, "upAvg": 5.38, "dnAvg": 12.26}, {"file": "Phantom7 8.9.2026.vkx", "day": "2026-09-08", "t0": "10:44", "t1": "15:50", "fixes": 36741, "nm": 35.9, "mx": 17.3, "avg": 7.13, "upAvg": 5.57, "dnAvg": 12.19}, {"file": "TUR 442 07.09.2026.vkx", "day": "2026-09-07", "t0": "12:35", "t1": "16:44", "fixes": 29853, "nm": 23.5, "mx": 16.3, "avg": 5.71, "upAvg": 5.36, "dnAvg": 10.36}, {"file": "TYRA VAKAROS2 2026-09-07.vkx", "day": "2026-09-07", "t0": "11:57", "t1": "16:53", "fixes": 35531, "nm": 26.2, "mx": 16.0, "avg": 5.37, "upAvg": 5.02, "dnAvg": 10.7}, {"file": "Yupi 8-9-2026.vkx", "day": "2026-09-08", "t0": "10:39", "t1": "15:55", "fixes": 37936, "nm": 36.6, "mx": 16.7, "avg": 7.03, "upAvg": 5.47, "dnAvg": 12.1}, {"file": "joust70 08-09-2026.vkx", "day": "2026-09-08", "t0": "10:33", "t1": "15:42", "fixes": 37078, "nm": 36.8, "mx": 17.0, "avg": 7.2, "upAvg": 5.64, "dnAvg": 12.37}, {"file": "noticia 9-7-2026.vkx", "day": "2026-09-07", "t0": "12:27", "t1": "16:50", "fixes": 31520, "nm": 23.6, "mx": 15.6, "avg": 5.43, "upAvg": 5.11, "dnAvg": 10.26}, {"file": "noticia 9-8-2026.vkx", "day": "2026-09-08", "t0": "10:32", "t1": "15:48", "fixes": 37979, "nm": 36.9, "mx": 16.5, "avg": 7.05, "upAvg": 5.5, "dnAvg": 12.33}, {"file": "vakaros 7-9-2026.vkx", "day": "2026-09-07", "t0": "12:22", "t1": "16:54", "fixes": 32605, "nm": 26.1, "mx": 16.9, "avg": 5.8, "upAvg": 4.82, "dnAvg": 12.25}, {"file": "vakaros 8-9-2026.vkx", "day": "2026-09-08", "t0": "11:02", "t1": "16:07", "fixes": 36573, "nm": 35.2, "mx": 16.3, "avg": 6.95, "upAvg": 5.49, "dnAvg": 12.36}], "ib": {"source": "ib-sailing.com race report, 2026-09 J70 Worlds", "fleet": 34, "names": ["Sardonyx", "Magatron", "Dime", "Nautique", "Noticia", "Arete", "Progress", "Yupi", "Fantom", "Garm", "VTarte", "JCurve", "Marnatura", "MidlifeCrisis", "Joust", "LiquidSun", "Sassy", "Denizcik", "Tyra", "WarCanoe", "LadyInRed", "Catapult", "Diva", "MooreDRV", "ToNessa", "Phantom7", "Baba", "SolidFun", "Stampede", "GoodToGo", "Jamaica", "Patakin", "RelativeObscurity", "LetItBe"], "races": [{"n": 1, "date": "2026-09-08", "start_local": "13:34:52", "setting": 318, "bias_deg": 6, "bias_m": 107, "favoured": "Pin", "line_m": 1001, "legs": {"uw1": 317, "dw1": 323, "uw2": 313, "dw2": 317}, "top_vmg": [["Nautiq", 4.74], ["Marnat", 4.73], ["Letitb", 4.72]], "calc_m": 105}, {"n": 2, "date": "2026-09-08", "start_local": null, "setting": 313, "bias_deg": 12, "bias_m": 206, "favoured": "Pin", "line_m": 1007, "legs": {"uw1": 314, "dw1": 321, "uw2": 313, "dw2": 313}, "top_vmg": [["Baba", 4.45], ["Jamaica", 4.51], ["Stampede", 4.48]], "calc_m": 209}], "race99": {"date": "2026-09-07", "boats": 26, "note": "the abandoned day"}, "bias_rows": [{"race": 1, "forecast": 336.6, "measured": 317.5, "bias": 19.1, "old_observed": 324.4, "old_bias": 12.2}, {"race": 2, "forecast": 331.5, "measured": 313.5, "bias": 18.0, "old_observed": 321.6, "old_bias": 9.9}]}};
+const $ = id => document.getElementById(id);
+const deg = v => Math.round(v) + '°';
+const norm = a => ((a % 360) + 360) % 360;
+const diff = (a,b) => ((a - b + 540) % 360) - 180;   // signed a-b in (-180,180]
+
+/* ---------------- day series ---------------- */
+/* Wind is loaded at runtime, newest source first:
+     1. data/wind.json  — refreshed every 3 h by .github/workflows/wind-refresh.yml
+     2. Open-Meteo direct — live, if the host allows the call
+     3. the snapshot embedded in this file — always works, may be stale
+   Whichever answers first wins, and the source is shown under the day tabs. */
+const MODELS = 'icon_eu,ecmwf_ifs025,gfs_seamless';
+const OM = 'https://api.open-meteo.com/v1/forecast?latitude=38.68&longitude=-9.42'
+  + '&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m,pressure_msl'
+  + '&wind_speed_unit=kn&timezone=Europe%2FLisbon&forecast_days=5&models=' + MODELS;
+const LAST_DAY = '2026-09-11';        // the regatta ends Friday
+const MIN_KN = 8;                     // below this the bias correction is invalid
+
+let DAYS = [], dayIdx = 0, hrIdx = 0, timer = null, STAMP = '';
+const BIAS = D.meta.bias, TACK = D.meta.tack;
+
+function label(date){
+  const d = new Date(date + 'T12:00:00');
+  const today = new Date().toISOString().slice(0,10);
+  const names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const mon = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return names[d.getDay()] + ' ' + d.getDate() + ' ' + mon[d.getMonth()]
+       + (date === today ? ' · today' : '');
+}
+function fromWindJson(w){
+  return w.days.map(d => ({
+    key: d.date, label: label(d.date), date: d.date,
+    rows: d.rows.map(r => ({
+      hr: r.hr, raw: r.raw, kn: r.kn, gust: r.gust, sp: r.sp, mslp: r.mslp,
+      cor: r.cor, trust: r.trust !== false
+    }))
+  }));
+}
+function circMean(a){
+  const x = a.reduce((t,v)=>t+Math.cos(v*Math.PI/180),0);
+  const y = a.reduce((t,v)=>t+Math.sin(v*Math.PI/180),0);
+  return (Math.atan2(y,x)*180/Math.PI+360)%360;
+}
+function fromOpenMeteo(js){
+  const h = js.hourly, ms = MODELS.split(','), by = {};
+  h.time.forEach((stamp,i) => {
+    const [date,hh] = stamp.split('T'), hr = +hh.slice(0,2);
+    if (hr < 11 || hr > 18 || date > LAST_DAY) return;
+    const col = p => ms.map(m => h[p+'_'+m][i]).filter(v => v != null);
+    const dirs = col('wind_direction_10m'), sp = col('wind_speed_10m'),
+          gu = col('wind_gusts_10m'), pr = col('pressure_msl');
+    if (!dirs.length) return;
+    const raw = circMean(dirs), m = circMean(dirs);
+    const sprd = Math.max(...dirs.map(v => Math.abs(((v-m+180)%360)-180)));
+    const kn = sp.reduce((a,b)=>a+b,0)/sp.length;
+    const trust = kn >= MIN_KN && sprd <= 30;
+    (by[date] = by[date] || []).push({
+      hr, raw:+raw.toFixed(1), kn:+kn.toFixed(1), gust:Math.max(...gu),
+      sp:+sprd.toFixed(1), mslp:+(pr.reduce((a,b)=>a+b,0)/pr.length).toFixed(1),
+      cor: trust ? +(((raw-BIAS)%360+360)%360).toFixed(1) : null, trust
+    });
+  });
+  return Object.keys(by).sort().map(d => ({key:d, label:label(d), date:d, rows:by[d]}));
+}
+function embedded(){
+  const mk = (rows, date) => ({key:date, label:label(date), date, rows: rows.map(r => ({
+    hr: r.hr != null ? r.hr : r.utc + 1, raw: r.raw != null ? r.raw : r.dir,
+    kn: r.kn, gust: r.gust, sp: r.sp != null ? r.sp : null, mslp: r.mslp != null ? r.mslp : null,
+    cor: null, trust: true
+  }))});
+  const out = [mk(D.today.icon, '2026-09-08')];
+  if (D.tomorrow && D.tomorrow.length) out.push(mk(D.tomorrow, '2026-09-09'));
+  out.forEach(d => d.rows.forEach(r => { r.cor = +(((r.raw-BIAS)%360+360)%360).toFixed(1); }));
+  return out;
+}
+
+async function loadWind(){
+  const tries = [
+    ['data/wind.json', async () => {
+      const r = await fetch('data/wind.json', {cache:'no-store'});
+      if (!r.ok) throw 0;
+      const w = await r.json();
+      return {days: fromWindJson(w), src: 'data/wind.json', at: w.generated};
+    }],
+    ['Open-Meteo live', async () => {
+      const r = await fetch(OM, {cache:'no-store'});
+      if (!r.ok) throw 0;
+      return {days: fromOpenMeteo(await r.json()), src: 'Open-Meteo, live', at: null};
+    }],
+  ];
+  for (const [, fn] of tries){
+    try {
+      const got = await fn();
+      if (got.days && got.days.length){
+        DAYS = got.days;
+        const today = new Date().toISOString().slice(0,10);
+        dayIdx = Math.max(0, DAYS.findIndex(d => d.date >= today));
+        hrIdx = 0; stamp(got.src, got.at); syncDay(); return;
+      }
+    } catch (e) { /* try the next source */ }
+  }
+  DAYS = embedded();
+  dayIdx = DAYS.length - 1;
+  stamp('embedded snapshot — may be stale', null);
+  syncDay();
+}
+function stamp(src, at){
+  STAMP = src + (at ? ' · ' + at.replace('T',' ').replace('Z',' UTC') : '');
+  if ($('dayhint')) $('dayhint').textContent = STAMP;
+}
+
+function series(){ return DAYS[dayIdx].rows; }
+function cur(){ return series()[Math.min(hrIdx, series().length-1)]; }
+
+function drawDays(){
+  const w = $('daysel'); w.innerHTML = '';
+  DAYS.forEach((d,i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = d.label;
+    b.setAttribute('aria-pressed', i === dayIdx);
+    b.onclick = () => { dayIdx = i; hrIdx = 0; stop(); syncDay(); };
+    w.appendChild(b);
+  });
+  if (STAMP) $('dayhint').textContent = STAMP;
+}
+function syncDay(){
+  const s = series();
+  $('hr').max = String(s.length - 1);
+  $('hr').value = String(hrIdx);
+  drawDays(); paint(); calc();
+}
+
+/* ---------------- compass + readouts ---------------- */
+function ticks(){
+  let g = '';
+  for (let a = 0; a < 360; a += 15){
+    const r1 = a % 45 === 0 ? 88 : 94, w = a % 45 === 0 ? 2 : 1;
+    const rad = (a - 90) * Math.PI / 180;
+    g += `<line x1="${120+Math.cos(rad)*r1}" y1="${120+Math.sin(rad)*r1}" x2="${120+Math.cos(rad)*100}" y2="${120+Math.sin(rad)*100}" stroke="var(--line)" stroke-width="${w}"/>`;
+  }
+  $('ticks').innerHTML = g;
+}
+
+function paint(){
+  const h = cur();
+  const cor = h.cor != null ? h.cor : norm(h.raw - BIAS);
+  const ok  = h.trust !== false && h.cor != null;
+  $('r-raw').textContent = deg(h.raw);
+  $('r-cor').textContent = ok ? deg(cor) : '—';
+  $('r-kn').textContent  = h.kn.toFixed(1);
+  $('r-gu').textContent  = h.gust.toFixed(1);
+  $('r-sp').textContent  = h.sp == null ? '—' : h.sp.toFixed(1) + '°';
+  $('n-raw').style.transform = `rotate(${h.raw}deg)`;
+  $('n-cor').style.transform = `rotate(${cor}deg)`;
+  $('n-cor').style.opacity = ok ? '1' : '0.25';
+  $('b-stb').textContent  = ok ? deg(norm(cor - TACK/2)) : '—';
+  $('b-prt').textContent  = ok ? deg(norm(cor + TACK/2)) : '—';
+  $('b-line').textContent = ok ? deg(norm(cor + 90))      : '—';
+  $('b-mslp').textContent = h.mslp == null ? '—' : h.mslp.toFixed(1);
+  $('clock').textContent  = String(h.hr).padStart(2,'0') + ':00 local';
+
+  const s = series(), good = s.filter(x => x.trust !== false && x.cor != null);
+  if (!good.length){
+    $('trend').innerHTML = `<b>Direction is not meaningful today.</b> The models disagree by up to ` +
+      `${Math.max(...s.map(x=>x.sp||0)).toFixed(0)}° and the breeze never reaches ${MIN_KN} kn, which is what ` +
+      `no gradient looks like. The ${BIAS.toFixed(1)}° correction was calibrated on a 10–14 kn Nortada and ` +
+      `does not apply here — sail what you see on the water.`;
+    return;
+  }
+  const a = good[0].cor, b = good[good.length-1].cor;
+  const d = diff(b, a), hrs = good[good.length-1].hr - good[0].hr;
+  const knd = s[s.length-1].kn - s[0].kn;
+  $('trend').innerHTML =
+    `<b>Across the window</b> the corrected breeze runs ${deg(a)} → ${deg(b)} ` +
+    `(<span class="pill ${d < -1 ? 'dn' : d > 1 ? 'up' : 'nu'}">${d >= 0 ? '+' : ''}${d.toFixed(1)}°` +
+    `${hrs ? ', ' + (d/hrs >= 0 ? '+' : '') + (d/hrs).toFixed(2) + '°/h' : ''}</span>), ` +
+    `and it ${knd >= 0 ? 'builds' : 'eases'} from ${s[0].kn.toFixed(1)} to ${s[s.length-1].kn.toFixed(1)} kn ` +
+    `<span class="pill ${knd > 0.5 ? 'up' : knd < -0.5 ? 'dn' : 'nu'}">${knd >= 0 ? '+' : ''}${knd.toFixed(1)} kn</span>. ` +
+    `Gusts average ${(s.reduce((t,x) => t + x.gust/x.kn, 0)/s.length).toFixed(2)}× the mean. ` +
+    (d < -1 ? 'A left-backing breeze pays the left of the beat.'
+            : d > 1 ? 'A right-veering breeze pays the right of the beat.'
+                    : 'Direction is close to steady — sail pressure, not shifts.');
+}
+
+$('hr').addEventListener('input', e => { hrIdx = +e.target.value; paint(); calc(); });
+function stop(){ if (timer){ clearInterval(timer); timer = null; $('play').textContent = 'Play afternoon'; } }
+$('play').onclick = () => {
+  if (timer) return stop();
+  $('play').textContent = 'Pause';
+  timer = setInterval(() => {
+    hrIdx = (hrIdx + 1) % series().length;
+    $('hr').value = String(hrIdx); paint(); calc();
+    if (hrIdx === series().length - 1) stop();
+  }, 950);
+};
+
+/* ---------------- start-line calculator ---------------- */
+function calc(){
+  const brg = +$('c-brg').value, len = +$('c-len').value;
+  const h0 = cur(), cor = h0.cor != null ? h0.cor : norm(h0.raw - BIAS);
+  const sq  = norm(brg - 90);            // wind the line is square to (pin→boat bearing, less 90)
+  const off = diff(cor, sq);             // negative => wind left of square
+  const gain = Math.abs(len * Math.sin(off * Math.PI / 180));
+  $('v-brg').textContent = deg(brg);
+  $('v-len').textContent = len + ' m';
+  $('c-sq').textContent  = deg(sq);
+  $('c-off').textContent = (off >= 0 ? '+' : '') + off.toFixed(1) + '°';
+  const end = Math.abs(off) < 1.5 ? 'Square' : (off < 0 ? 'Pin' : 'Committee boat');
+  $('c-end').textContent = end;
+  $('c-gain').textContent = end === 'Square'
+    ? 'Neither end pays more than a boat length.'
+    : `${gain.toFixed(0)} m of advantage over the full line — about ${(gain/12).toFixed(0)} boat lengths.`;
+  $('c-hint').innerHTML = `If the committee squares to the <i>raw</i> model instead of the corrected wind, ` +
+    `the line sits ${BIAS.toFixed(0)}° off and the pin pays ` +
+    `<b>${(len*Math.sin(BIAS*Math.PI/180)).toFixed(0)} m</b>. On the day the committee laid ` +
+    `${D.ib.races.map(r=>r.bias_deg+'°').join(' and ')} of pin bias, worth ` +
+    `${D.ib.races.map(r=>r.bias_m+' m').join(' and ')} — this formula reproduces both within 2%.`;
+}
+$('c-brg').addEventListener('input', calc);
+$('c-len').addEventListener('input', calc);
+
+/* ---------------- race explorer ---------------- */
+let rIdx = 0, sel = null, sk = null, sd = 1;
+const RC = [
+  ['b','Boat',0],['m0','M1 min',1],['m1','M2 min',1],['m2','M3 min',1],
+  ['up','Beat kn',1],['dn','Run kn',1],['ex','Extra m',1],['tk','Tacks',1],
+  ['dl','To line m',1],['al','Pin→boat',1]
+];
+const rv = (b,k) => k[0] === 'm' && k.length === 2 ? b.m[+k[1]] : b[k];
+
+function drawRace(){
+  const r = D.races[rIdx];
+  const tabs = $('racetabs'); tabs.innerHTML = '';
+  D.races.forEach((x,i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.textContent = `Race ${x.n} · gun ${x.gun}`;
+    b.setAttribute('aria-pressed', i === rIdx);
+    b.onclick = () => { rIdx = i; sk = null; drawRace(); };
+    tabs.appendChild(b);
+  });
+  $('racemeta').innerHTML = `Line ${Math.round(r.length)} m, bearing ${deg(r.brg)}, square to ${deg(r.sq)} ` +
+    `· first beat sailed ${deg(r.beat)} · ${r.tracked} boats tracked`;
+  const t = r.team, g = t.gap_to_leader_min;
+  $('racetiles').innerHTML = [
+    ['Team Sweden at marks', t.position_at_each_mark.join(' → ')],
+    ['Gap to leader', g[g.length-1].toFixed(2) + ' min'],
+    ['Beat 1 speed vs fleet', (t.beat1_avg_sog_vs_fleet_kn>=0?'+':'') + t.beat1_avg_sog_vs_fleet_kn.toFixed(2) + ' kn'],
+    ['Beat 1 extra distance', (t.beat1_extra_distance_vs_fleet_m>=0?'+':'') + Math.round(t.beat1_extra_distance_vs_fleet_m) + ' m'],
+    ['Beat 1 tacks vs median', (t.beat1_tacks_vs_fleet_median>=0?'+':'') + t.beat1_tacks_vs_fleet_median]
+  ].map(x => `<div class="beat"><span>${x[0]}</span><b class="mono">${x[1]}</b></div>`).join('');
+
+  const cw = $('boatchips'); cw.innerHTML = '';
+  const all = document.createElement('button');
+  all.type='button'; all.className='chip'; all.textContent='All boats';
+  all.setAttribute('aria-pressed', !sel); all.onclick = () => { sel = null; drawRace(); };
+  cw.appendChild(all);
+  r.order.forEach(n => {
+    const b = document.createElement('button');
+    b.type='button'; b.className = 'chip' + (n === D.meta.team ? ' tm' : '');
+    b.textContent = n; b.setAttribute('aria-pressed', sel === n);
+    b.onclick = () => { sel = sel === n ? null : n; drawRace(); };
+    cw.appendChild(b);
+  });
+
+  const hd = $('rt-h'); hd.innerHTML = '';
+  RC.forEach(([k,t2,num]) => {
+    const th = document.createElement('th');
+    th.textContent = t2 + (sk === k ? (sd > 0 ? ' ↑' : ' ↓') : '');
+    th.tabIndex = 0;
+    if (sk === k) th.setAttribute('aria-sort', sd > 0 ? 'ascending' : 'descending');
+    const go = () => { if (sk === k) sd = -sd; else { sk = k; sd = 1; } drawRace(); };
+    th.onclick = go;
+    th.onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } };
+    hd.appendChild(th);
+  });
+
+  let rows = r.boats.map(b => ({ b, pos: r.order.indexOf(b.b) + 1 }));
+  if (sk) rows.sort((x,y) => {
+    const a = rv(x.b, sk), c = rv(y.b, sk);
+    return sd * (typeof a === 'string' ? a.localeCompare(c) : a - c);
+  });
+  else rows.sort((x,y) => x.pos - y.pos);
+
+  const tb = $('rt-b'); tb.innerHTML = '';
+  rows.forEach(({b,pos}) => {
+    const tr = document.createElement('tr');
+    tr.className = b.b === sel ? 'sel' : (b.b === D.meta.team ? 'team' : '');
+    tr.onclick = () => { sel = sel === b.b ? null : b.b; drawRace(); };
+    tr.innerHTML = [`<span class="pos">${pos}</span>${b.b}`, b.m[0].toFixed(1), b.m[1].toFixed(1),
+      b.m[2].toFixed(1), b.up.toFixed(2), b.dn.toFixed(2), b.ex, b.tk, b.dl.toFixed(1), b.al.toFixed(2)]
+      .map(c => `<td>${c}</td>`).join('');
+    tb.appendChild(tr);
+  });
+
+  $('racenote').innerHTML = `<b>Start position against time to the windward mark:</b> r = ${r.corr.toFixed(2)}. ` +
+    `Positive means boats starting nearer the committee-boat end took longer up the first beat — the pin end paid, ` +
+    `which is what a left-backing breeze does.`;
+}
+
+/* ---------------- fleet ---------------- */
+let fDay = null, fk = 'nm', fd = -1;
+const FC = [['file','Boat / file',0],['t0','From',0],['t1','To',0],['fixes','Fixes',1],
+            ['nm','Distance nm',1],['mx','Max kn',1],['avg','Avg kn',1],
+            ['upAvg','Upwind kn',1],['dnAvg','Downwind kn',1]];
+function drawFleet(){
+  const days = [...new Set(D.fleet.map(f => f.day))].sort();
+  if (fDay === null) fDay = days[days.length-1];
+  const w = $('fleettabs'); w.innerHTML = '';
+  days.forEach(d => {
+    const b = document.createElement('button');
+    b.type='button'; b.className='chip'; b.textContent = d;
+    b.setAttribute('aria-pressed', d === fDay);
+    b.onclick = () => { fDay = d; drawFleet(); };
+    w.appendChild(b);
+  });
+  const hd = $('ft-h'); hd.innerHTML = '';
+  FC.forEach(([k,t]) => {
+    const th = document.createElement('th');
+    th.textContent = t + (fk === k ? (fd > 0 ? ' ↑' : ' ↓') : '');
+    th.tabIndex = 0;
+    const go = () => { if (fk === k) fd = -fd; else { fk = k; fd = -1; } drawFleet(); };
+    th.onclick = go;
+    th.onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); go(); } };
+    hd.appendChild(th);
+  });
+  const rows = D.fleet.filter(f => f.day === fDay).sort((a,b) => {
+    const x = a[fk], y = b[fk];
+    return fd * (typeof x === 'string' ? x.localeCompare(y) : x - y);
+  });
+  const tb = $('ft-b'); tb.innerHTML = '';
+  rows.forEach(f => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = [f.file.replace(/\.vkx$/,''), f.t0, f.t1, f.fixes.toLocaleString('en-GB'),
+      f.nm.toFixed(1), f.mx.toFixed(1), f.avg.toFixed(2), f.upAvg.toFixed(2), f.dnAvg.toFixed(2)]
+      .map(c => `<td>${c}</td>`).join('');
+    tb.appendChild(tr);
+  });
+}
+
+/* ---------------- measured vs model ---------------- */
+function rowsOut(id, cells){ document.getElementById(id).innerHTML = cells.map(c => `<td>${c}</td>`).join(''); }
+function head(id, hs){ document.getElementById(id).innerHTML = hs.map(h => `<th>${h}</th>`).join(''); }
+
+function drawMv(){
+  const IB = D.ib;
+  head('mv-h', ['Race','GRIB forecast','Measured','Error','Old estimate','Old error']);
+  $('mv-b').innerHTML = IB.bias_rows.map(r =>
+    `<tr><td>Race ${r.race}</td>` + [
+      deg(r.forecast), deg(r.measured),
+      `<span class="pill dn">+${r.bias.toFixed(1)}°</span>`,
+      deg(r.old_observed), `+${r.old_bias.toFixed(1)}°`
+    ].map(c => `<td>${c}</td>`).join('') + '</tr>').join('');
+  $('mv-note').innerHTML = `<b>The GRIB sits +${BIAS.toFixed(1)}° right of the wind the fleet actually raced</b> ` +
+    `— tighter across the two races (${IB.bias_rows.map(r=>'+'+r.bias.toFixed(1)+'°').join(' and ')}) than the ` +
+    `+${D.meta.bias_old.toFixed(1)}° estimated earlier. That earlier figure averaged the committee's line square with the ` +
+    `fleet's beat bearing, which assumed a square line. The report shows the line was ` +
+    `${IB.races.map(r=>r.bias_deg+'°').join(' then ')} off square, so the estimate was pulled toward the model by ` +
+    `roughly that much. Bearings on this page now subtract the measured figure.`;
+
+  head('lg-h', ['Race','Setting','1st upwind','1st downwind','2nd upwind','2nd downwind']);
+  $('lg-b').innerHTML = IB.races.map(r =>
+    `<tr><td>Race ${r.n}</td>` + [deg(r.setting), deg(r.legs.uw1), deg(r.legs.dw1),
+      deg(r.legs.uw2), deg(r.legs.dw2)].map(c => `<td>${c}</td>`).join('') + '</tr>').join('');
+
+  head('sl-h', ['Race','Line length','Bias','Advantage','Favoured','My formula']);
+  $('sl-b').innerHTML = IB.races.map(r =>
+    `<tr><td>Race ${r.n}</td>` + [r.line_m + ' m', deg(r.bias_deg), r.bias_m + ' m',
+      r.favoured, r.calc_m + ' m'].map(c => `<td>${c}</td>`).join('') + '</tr>').join('');
+  $('sl-note').innerHTML = `<b>Pin favoured in both races</b>, by ${IB.races.map(r=>r.bias_m+' m').join(' and ')} ` +
+    `— and race 2's 206 m on a 1007 m line is a fifth of the line's length. The calculator above, given the same ` +
+    `line and bias, returns ${IB.races.map(r=>r.calc_m+' m').join(' and ')}: within 2% of the report's own figures, ` +
+    `so the maths in this page is sound. It also matches what the telemetry said independently — boats starting ` +
+    `nearer the committee boat took longer up the first beat in both races.`;
+}
+
+function drawCov(){
+  const have = D.fleet.filter(f => f.day === '2026-09-08').length;
+  const IB = D.ib;
+  $('cov').innerHTML =
+    `<b>${IB.fleet} boats raced; ${have} logs are in hand.</b> The event reports name the full fleet: ` +
+    `${IB.names.join(', ')}. Two of those resolve puzzles in the folder — <b>MidlifeCrisis</b> is the ` +
+    `<code>MLC USA 26 primary</code> file, which logs at roughly 10 Hz against everyone else's 2 Hz, and ` +
+    `<b>ToNessa</b> is the one file that sits in the GitHub repo but never reached the Drive folder. ` +
+    `Neither appears in any race analysis yet.<br><br>` +
+    `<b>A start time that does not reconcile.</b> The report puts race 1 at ${IB.races[0].start_local} local, ` +
+    `but every Atlas logged its race-timer expiry at exactly 13:05:00 local, and all of them within about ` +
+    `20 ms of each other. Devices that agree to 20 ms are synced to each other, not hand-set — but they are ` +
+    `plainly not synced to the committee's gun, which was ~30 minutes later. The most likely reading is that ` +
+    `13:05 was an earlier sequence and the race got away at ${IB.races[0].start_local}. Until that is settled, ` +
+    `treat any "at the gun" figure from the telemetry as measured at the wrong instant.`;
+}
+
+/* ---------------- boot ---------------- */
+$('s-fleet').textContent = D.fleet.length + ' boats';
+$('s-bias').textContent  = '+' + BIAS.toFixed(1) + '°';
+$('s-tack').textContent  = TACK.toFixed(1) + '°';
+$('foot').innerHTML = `Vakaros Atlas VKX telemetry decoded from the Sailing drive folder at 0.5 s — ` +
+  `20 logs across 07 and 08 September 2026, Cascais. Today’s wind from DWD ICON-EU 06z and ECMWF IFS 06z; ` +
+  `tomorrow’s from a live ICON-EU / ECMWF IFS / GFS consensus at 38.68 N 9.42 W. ` +
+  `Corrected bearings subtract the ${BIAS.toFixed(1)}° right-bias measured against the event's own race reports ` +
+  `(ib-sailing.com, 34-boat fleet), which supersede an earlier ${D.meta.bias_old.toFixed(0)}° estimate built on the committee line square.`;
+ticks(); drawRace(); drawFleet(); drawMv(); drawCov(); loadWind();
+</script>
+
+</body>
+</html>

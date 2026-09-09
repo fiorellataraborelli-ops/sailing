@@ -1,0 +1,40 @@
+name: Wind refresh
+
+# Every three hours during the regatta. GitHub's cron is UTC and is best-effort
+# on busy runners, so a run can land a few minutes late — that is fine here.
+on:
+  schedule:
+    - cron: '0 */3 * * *'
+  workflow_dispatch:        # lets you trigger it by hand from the Actions tab
+
+permissions:
+  contents: write           # needed to commit the refreshed data back
+
+concurrency:
+  group: wind-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch the race-area wind
+        run: python tools/fetch_wind.py
+
+      - name: Commit if the forecast moved
+        run: |
+          git config user.name  "wind-bot"
+          git config user.email "wind-bot@users.noreply.github.com"
+          if git diff --quiet -- data/wind.json; then
+            echo "forecast unchanged — nothing to commit"
+          else
+            git add data/wind.json
+            git commit -m "wind: refresh $(date -u '+%Y-%m-%d %H:%MZ')"
+            git push
+          fi
