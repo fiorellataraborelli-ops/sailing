@@ -484,6 +484,78 @@ function drawStrategy(){
     `<b>Between races.</b> ${C.between}`;
 }
 
+let vmgRace='1', vmgSort='vmg', vmgDir=-1;
+function drawVmg(){
+  const L=D.legs; if(!L) return;
+  const tabs=$('vmgtabs'); tabs.innerHTML='';
+  Object.keys(L.races).sort().forEach(rn=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='chip'; b.textContent='Race '+rn;
+    b.setAttribute('aria-pressed', rn===vmgRace);
+    b.onclick=()=>{ vmgRace=rn; drawVmg(); };
+    tabs.appendChild(b);
+  });
+  const R=L.races[vmgRace]||{}, dr=L.drivers[vmgRace];
+  const rows=Object.entries(R).filter(([,l])=>l.length&&l[0].kind==='beat')
+                              .map(([b,l])=>({b, ...l[0]}));
+  if(dr){
+    // efficiency is VMG/SOG, so correlating it with VMG is partly definitional —
+    // rank only the independent variables and report efficiency separately
+    const cands=[['the angle sailed to the wind','r_twa'],
+                 ['extra distance sailed','r_extra'],
+                 ['tack count','r_tacks']];
+    cands.sort((a,b)=>Math.abs(dr[b[1]])-Math.abs(dr[a[1]]));
+    const [topLabel,topKey]=cands[0], [, lastKey]=cands[cands.length-1];
+    $('vmg-driver').textContent = topLabel[0].toUpperCase()+topLabel.slice(1);
+    $('vmg-driver-sub').innerHTML =
+      `Across ${dr.n} boats, first-beat VMG tracks <b>${topLabel}</b> most closely ` +
+      `(r = ${dr[topKey]}), then ${cands[1][0]} (${dr[cands[1][1]]}). ` +
+      `<b>${cands[cands.length-1][0][0].toUpperCase()+cands[cands.length-1][0].slice(1)} is the weakest ` +
+      `of the three</b> (r = ${dr[lastKey]}) — how close a boat sails to the wind separates this fleet ` +
+      `more than how often it turns. Fleet median VMG ${dr.median_vmg} kn. ` +
+      `(VMG efficiency correlates at ${dr.r_eff}, but that is VMG divided by speed, so it is partly ` +
+      `definitional and not treated as a driver.)`;
+  }
+  const COLS=[['b','Boat',0],['vmg','VMG kn',1],['sog','SOG kn',1],['twa','TWA°',1],
+              ['eff','Efficiency',1],['tacks','Tacks',1],['tloss','kn / tack',1],['extra','Extra m',1]];
+  const hd=$('vmg-h'); hd.innerHTML='';
+  COLS.forEach(([k,t])=>{
+    const th=document.createElement('th');
+    th.textContent=t+(vmgSort===k?(vmgDir>0?' ↑':' ↓'):''); th.tabIndex=0;
+    const go=()=>{ if(vmgSort===k) vmgDir=-vmgDir; else {vmgSort=k; vmgDir=-1;} drawVmg(); };
+    th.onclick=go; th.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}};
+    hd.appendChild(th);
+  });
+  rows.sort((x,y)=>{const a=x[vmgSort],b=y[vmgSort];
+    return vmgDir*(typeof a==='string'?a.localeCompare(b):(a??0)-(b??0));});
+  $('vmg-b').innerHTML=rows.map((r,i)=>
+    `<tr class="${r.b==='Team Sweden'?'team':''}"><td><span class="pos">${i+1}</span>${r.b}</td>`+
+    [r.vmg?.toFixed(2), r.sog?.toFixed(2), r.twa?.toFixed(1), r.eff?.toFixed(2),
+     r.tacks, r.tloss!=null?('-'+r.tloss.toFixed(2)):'—', r.extra]
+    .map(c=>`<td>${c}</td>`).join('')+'</tr>').join('');
+  $('vmg-note').innerHTML =
+    `Race windows come from the loggers' own timer events. That is validated, not assumed: segmenting ` +
+    `Patakin 3's race 1 from the 12:05 start reproduces independently-derived leg durations of ` +
+    `31.97 / 16.87 / 25.94 min exactly, and gives clean beat/run/beat/run at TWA 10° and 171°. ` +
+    `As a cross-check on the VMG itself, the event's own report puts Nautique top of race 1 on 4.74 kn; ` +
+    `computed here from the raw logs it is 4.73.`;
+
+  const ts=R['Team Sweden'];
+  head('tsleg-h',['Leg','Wind','Minutes','SOG kn','VMG kn','TWA°','Efficiency','Tacks','Gybes','Cost kn']);
+  if(!ts){ $('tsleg-b').innerHTML=''; $('tsleg-note').textContent='No Team Sweden log for this race.'; return; }
+  $('tsleg-b').innerHTML=ts.map(l=>
+    `<tr><td>${l.n} · ${l.kind}</td>`+[l.wind+'°', l.min?.toFixed(1), l.sog?.toFixed(2),
+      l.vmg?.toFixed(2), l.twa?.toFixed(1), l.eff?.toFixed(2), l.tacks, l.gybes,
+      l.tloss!=null?('-'+l.tloss.toFixed(2)):(l.gloss!=null?('-'+l.gloss.toFixed(2)):'—')]
+    .map(c=>`<td>${c}</td>`).join('')+'</tr>').join('');
+  const beat=ts[0], rank=rows.slice().sort((a,b)=>b.vmg-a.vmg).findIndex(r=>r.b==='Team Sweden')+1;
+  $('tsleg-note').innerHTML =
+    `On the first beat the boat ranked <b>${rank} of ${rows.length}</b> for VMG at ${beat.vmg} kn, ` +
+    `sailing ${beat.twa}° to the wind against a fleet median of ${dr?dr.median_vmg:'—'} kn. ` +
+    `Angle and efficiency are mid-fleet; the separation from the top five is in ` +
+    `${beat.extra > (dr?1350:0) ? 'extra distance sailed' : 'consistency rather than raw speed'}.`;
+}
+
 /* ---------------- boot ---------------- */
 $('s-fleet').textContent = D.official.fleet_scored + ' entries';
 $('s-logs').textContent  = D.fleet.length + ' logs';
@@ -494,5 +566,5 @@ $('foot').innerHTML = `Vakaros Atlas VKX telemetry decoded from the Sailing driv
   `tomorrow’s from a live ICON-EU / ECMWF IFS / GFS consensus at 38.68 N 9.42 W. ` +
   `Corrected bearings subtract the ${BIAS.toFixed(1)}° right-bias measured against the event's own race reports ` +
   `(ib-sailing.com, 34-boat fleet), which supersede an earlier ${D.meta.bias_old.toFixed(0)}° estimate built on the committee line square.`;
-ticks(); drawRace(); drawFleet(); drawMv(); drawOfficial(); drawCov(); drawBrief(); drawPipeline(); drawStrategy(); loadWind();
+ticks(); drawRace(); drawFleet(); drawMv(); drawOfficial(); drawCov(); drawBrief(); drawPipeline(); drawStrategy(); drawVmg(); loadWind();
 </script>

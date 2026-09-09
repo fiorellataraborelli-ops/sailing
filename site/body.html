@@ -137,6 +137,26 @@
 
 <section class="mod">
   <div class="modhead">
+    <h2>Leg analysis &mdash; wind-referenced VMG</h2>
+    <p>Speed made good along the wind axis, computed per leg against the wind the event measured on that leg. Not a straight-line proxy: this is the component of boat speed actually pointing where the leg is going.</p>
+  </div>
+  <div class="card">
+    <div class="chips" id="vmgtabs"></div>
+    <div class="verdict" style="margin-bottom:16px;">
+      <span>What separated the fleet on the first beat</span>
+      <b id="vmg-driver">&mdash;</b>
+      <span id="vmg-driver-sub"></span>
+    </div>
+    <div class="rail"><table id="vmg"><thead><tr id="vmg-h"></tr></thead><tbody id="vmg-b"></tbody></table></div>
+    <div class="note" id="vmg-note"></div>
+    <h3 style="font-size:14px;margin:22px 0 8px;">Team Sweden, leg by leg</h3>
+    <div class="rail"><table id="tsleg"><thead><tr id="tsleg-h"></tr></thead><tbody id="tsleg-b"></tbody></table></div>
+    <div class="note" id="tsleg-note"></div>
+  </div>
+</section>
+
+<section class="mod">
+  <div class="modhead">
     <h2>Official results</h2>
     <p id="off-p">Scored positions, not derived from telemetry &mdash; pulled straight from the event's own results page.</p>
   </div>
