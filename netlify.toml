@@ -3,6 +3,24 @@
   publish = "."
   command = ""
 
+# The client's design is the site now. A 200 rewrite serves it at the root without
+# changing the URL, and leaves the earlier brief reachable rather than overwritten.
+[[redirects]]
+  from = "/"
+  to = "/race-analysis.html"
+  status = 200
+
+[[redirects]]
+  from = "/brief"
+  to = "/index.html"
+  status = 200
+
+# The page is rebuilt from payload.json on every data update, so never let a CDN pin it.
+[[headers]]
+  for = "/race-analysis.html"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
 # wind.json is rewritten every three hours, so never let a CDN pin it.
 [[headers]]
   for = "/data/wind.json"
