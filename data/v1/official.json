@@ -100,7 +100,11 @@
    "Yupi"
   ],
   "team_day9": false,
-  "note": "Decoded 9 Sep from ~/Downloads/Sailing Files. Two byte-identical duplicates skipped. Day assigned from the decoded timestamps, not the filenames — the download scrambled those, and several boats have a higher-numbered file for the EARLIER day."
+  "note": "Decoded 9 Sep from ~/Downloads/Sailing Files. Two byte-identical duplicates skipped. Day assigned from the decoded timestamps, not the filenames — the download scrambled those, and several boats have a higher-numbered file for the EARLIER day.",
+  "day9_races": [
+   "12:55:00Z",
+   "16:20:00Z"
+  ]
  },
  "event": {
   "dates": "4–12 September 2026",

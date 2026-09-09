@@ -27,6 +27,15 @@
    "bias_m": 137,
    "calc_m": 140,
    "favoured": "Pin"
+  },
+  {
+   "race": 4,
+   "setting": 331,
+   "line_m": 1051,
+   "bias_deg": 3,
+   "bias_m": 60,
+   "calc_m": 55,
+   "favoured": "Pin"
   }
  ]
 }

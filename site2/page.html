@@ -268,9 +268,22 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="note" style="margin-top:0;" id="sl-note"></p>
   </section>
 
+  <section id="race4" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">04</span><h2>Wednesday&rsquo;s race, measured</h2></div>
+      <div class="seg" id="r4-view"></div>
+    </div>
+    <p class="lede" id="r4-lede"></p>
+    <div class="tiles" style="margin-bottom:18px;" id="r4-tiles"></div>
+    <div class="gridhead" id="r4-head"></div>
+    <div class="scroller" id="r4-rows"></div>
+    <div class="insight" style="margin-top:16px;"><div class="k">What the analyst wrote</div><p id="r4-note"></p></div>
+    <p class="note" id="r4-read"></p>
+  </section>
+
   <section id="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">04</span><h2>Fleet snapshot</h2></div>
+      <div class="title"><span class="n">05</span><h2>Fleet snapshot</h2></div>
       <div class="seg" id="fleet-days"></div>
     </div>
     <p class="fine" style="margin:0 0 12px;" id="fleet-note"></p>
@@ -282,7 +295,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="maneuvers" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">05</span><h2>Point of sail &amp; manoeuvres</h2></div>
+      <div class="title"><span class="n">06</span><h2>Point of sail &amp; manoeuvres</h2></div>
       <div class="seg" id="man-races"></div>
     </div>
     <div class="seg scroll" id="man-boats" style="margin-bottom:20px;"></div>
@@ -326,7 +339,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="vmg" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">06</span><h2>Leg analysis &mdash; VMG</h2></div>
+      <div class="title"><span class="n">07</span><h2>Leg analysis &mdash; VMG</h2></div>
       <div class="seg" id="vmg-races"></div>
     </div>
     <p class="lede">Speed made good along the wind axis, computed fix by fix against the wind the event measured on that leg. The coaching brief calls this the most important number on the page, and it is the one a straight-line proxy gets wrong.</p>
@@ -347,7 +360,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="compare" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">07</span><h2>Competitor velocity</h2></div>
+      <div class="title"><span class="n">08</span><h2>Competitor velocity</h2></div>
       <div class="seg scroll" id="cmp-metric"></div>
     </div>
     <p class="lede">Every boat this analysis has a speed for, on one axis. Each dot is a boat; the
@@ -365,7 +378,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="segments" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">08</span><h2>Speed segments, 9 Sep</h2></div>
+      <div class="title"><span class="n">09</span><h2>Speed segments, 9 Sep</h2></div>
       <div class="seg" id="seg-sort"></div>
     </div>
     <p class="lede">Maximum speed held across a rolling window. The columns get harder left to right: anyone can touch 20 knots for an instant, holding it for a minute is a different thing.</p>
@@ -377,7 +390,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="kpi" class="reveal rd-card">
-    <div class="title" style="margin-bottom:6px;"><span class="n">09</span><h2>Top five against Garm</h2></div>
+    <div class="title" style="margin-bottom:6px;"><span class="n">10</span><h2>Top five against Garm</h2></div>
     <p class="lede">The championship leaders on the KPIs that matter, joined from three independent sources &mdash; scored results, the 9 September speed segments, and VMG computed here from the raw logs.</p>
     <div class="gridhead" style="grid-template-columns:1.5fr .5fr .6fr .8fr .7fr .8fr .7fr;">
       <span>Boat</span><span>Pos</span><span>Pts</span><span>Gained</span><span>Peak</span><span>Hold</span><span>VMG</span>
@@ -387,14 +400,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="coach" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">10</span><h2>Coach's read</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">11</span><h2>Coach's read</h2></div>
     <p class="cg" style="font-weight:600;font-style:italic;font-size:22px;line-height:1.35;color:var(--ink);background:var(--mint);border-radius:14px;padding:16px 18px;margin:0 0 16px;">&ldquo;Start at the pin, then get right immediately.&rdquo;</p>
     <div id="coach-points"></div>
     <p class="note" id="coach-mech"></p>
   </section>
 
   <section id="analyser" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">11</span><h2>Ask the analyser</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">12</span><h2>Ask the analyser</h2></div>
     <div id="chatlog" style="margin-bottom:12px;"></div>
     <div class="chips" id="chips"></div>
     <form class="ask" id="askform">
@@ -506,11 +519,11 @@ function drawWindTue(){
     `</div></div>`;
 
   const drift = L.dw1 - L.uw1;
+  const B = D.bias.rows.map(x => (x.bias > 0 ? '+' : '') + x.bias.toFixed(1) + '°').join(', ');
   $('w-note').innerHTML =
     `<b>The model was ${r.bias.toFixed(1)}° right of the water at the gun.</b> ` +
-    `Not once — across the three races it ran +19.1°, +18.0° and +11.2°, shrinking through the ` +
-    `afternoon, which is why the page treats +${D.meta.bias}° as a centre rather than a fixed offset. ` +
-    `${D.wind.note}<br><br>` +
+    `And it is not a fixed offset — across the four races measured so far it ran ${B}, falling every ` +
+    `single time. ${D.wind.note}<br><br>` +
     `Within the race the downwind legs read ${Math.abs(drift)}° ${drift > 0 ? 'right' : 'left'} of ` +
     `the upwinds (${L.dw1}° against ${L.uw1}°). The same sign shows in every race, so it is either a ` +
     `real gradient down the course or an artefact of deriving wind from downwind tracks — worth ` +
@@ -535,16 +548,26 @@ function drawWindWed(){
   $('w-kgu').textContent = 'Gust';
   $('w-ksp').textContent = 'Model spread';
   $('w-legs').innerHTML = '';
+  const b4 = D.bias.rows[D.bias.rows.length - 1];
+  const meas = D.race4.wind_uw1;
   $('w-note').innerHTML =
-    `<b>Race 4 was sailed today, but the event has published no wind analysis for it yet</b> — so ` +
-    `unlike Tuesday there is nothing measured to check this against. This is the three-model ` +
-    `consensus with Tuesday's calibration applied. ` +
+    `<b>Wednesday's race is now measured too, and it changes the correction.</b> The fleet sailed ` +
+    `the first beat in <b>${meas}°</b> against a forecast of ${b4.forecast}° — an error of just ` +
+    `<b>+${b4.bias.toFixed(1)}°</b>, against +19.1° on Tuesday morning. ` +
+    `The bias is decaying, not oscillating, so the honest correction for today is the same-day ` +
+    `measurement, not Tuesday's.<br><br>` +
     (r.cor == null
-      ? `At this hour it is withheld: ${sp(r.kn)} with ${r.sp.toFixed(0)}° between the models is not ` +
-        `something a sea-breeze correction can be trusted on.`
-      : `At the tacking angle of ${D.meta.tack}°, ${deg(r.cor)} puts starboard at ` +
-        `<b>${((r.cor - D.meta.tack / 2 + 360) % 360).toFixed(0)}°</b> and port at ` +
-        `<b>${((r.cor + D.meta.tack / 2) % 360).toFixed(0)}°</b>.`);
+      ? `The correction is withheld at this hour anyway: ${sp(r.kn)} with ${r.sp.toFixed(0)}° between ` +
+        `the models is not something any calibration can be trusted on.`
+      : `The lime needle carries the +${D.meta.bias}° calibrated on Tuesday, which is what was applied ` +
+        `when this forecast was written; the beat was actually sailed at ${meas}°, ` +
+        `${Math.abs(r.cor - meas).toFixed(0)}° ${r.cor > meas ? 'right' : 'left'} of the needle. At the ` +
+        `${D.meta.tack}° tacking angle, ${meas}° puts starboard at ` +
+        `<b>${((meas - D.meta.tack / 2 + 360) % 360).toFixed(0)}°</b> and port at ` +
+        `<b>${((meas + D.meta.tack / 2) % 360).toFixed(0)}°</b>.`) +
+    `<br><br><span style="color:var(--faint);">Two races were sailed on Wednesday — guns at 12:55 and ` +
+    `16:20 UTC, agreed to the second by all three loggers that synced. The event has published a ` +
+    `report for the first only.</span>`;
 }
 
 /* ---------------- performance gap ---------------- */
@@ -591,6 +614,82 @@ function drawStart(){
     `${(r.bias_m / r.line_m * 100).toFixed(0)}% of the line's length, free, before anyone has sailed a metre. ` +
     `Our own geometry, working only from the line bearing and the measured wind, gives ${r.calc_m} m: ` +
     `<b>${err.toFixed(1)}% from the event's published figure.</b> The pin was favoured in every race of the regatta.`;
+}
+
+/* ---------------- race 4, from the event's own report ---------------- */
+let r4View = 'beat';
+function drawR4(){
+  const R = D.race4;
+  seg($('r4-view'), [{key:'gun', label:'At the gun'}, {key:'beat', label:'First beat'}], r4View,
+      k => { r4View = k; drawR4(); });
+  const idx = (cols, name) => cols.indexOf(name);
+  const rowOf = (rows, cols, boat) => rows.find(r => r[0] === boat);
+
+  if (r4View === 'gun'){
+    const C = R.start_cols, rows = R.start;
+    const g = rowOf(rows, C, 'Garm');
+    $('r4-lede').textContent =
+      'Every boat at the gun: how far from the line, how late across it, and how far behind the ' +
+      'leader thirty and sixty seconds later. Sorted worst to best, so the boats that lost the ' +
+      'start are at the top.';
+    $('r4-tiles').innerHTML = [
+      ['Garm off the line', g[1] + ' m'], ['Late across', g[2] + ' s'],
+      ['Behind at +60 s', g[5] + ' m'], ['Rank at +60 s', (rows.findIndex(r => r[0] === 'Garm') + 1) + ' of ' + rows.length],
+    ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
+    $('r4-head').style.gridTemplateColumns = '1.6fr .7fr .7fr .8fr .8fr .8fr .7fr';
+    $('r4-head').innerHTML = ['Boat', 'Off line', 'Late', 'At gun', '+30 s', '+60 s', 'SOG']
+      .map(x => `<span>${x}</span>`).join('');
+    $('r4-rows').innerHTML = rows.map(r =>
+      `<div class="grid ${r[0] === 'Garm' ? 'team' : ''}" style="grid-template-columns:1.6fr .7fr .7fr .8fr .8fr .8fr .7fr;">
+        <span>${esc(r[0])}</span><span class="tnum">${r[1]} m</span><span class="tnum">${r[2]} s</span>
+        <span class="tnum">${r[3]}</span><span class="tnum">${r[4]}</span>
+        <span class="tnum" style="font-weight:700;">${r[5]}</span><span class="tnum">${r[7]}</span></div>`).join('');
+    $('r4-read').innerHTML =
+      `<b>Garm was not the problem at the gun.</b> ${g[1]} m off the line and ${g[2]} s late is a ` +
+      `respectable start in a 30-boat fleet — 20th at +60 s, but only ${Math.abs(g[5])} m behind the ` +
+      `leader when the worst boat was 118 m back. The bias used column shows how much of the line's ` +
+      `${R.start_line.bias_m} m of pin advantage each boat actually took: Garm banked ` +
+      `${g[6]} m of it.<br><br><span style="color:var(--faint);">Distances are to the leader, so ` +
+      `negative means behind. Progress is the reference boat at 0.</span>`;
+  } else {
+    const rows = R.uw1;
+    const g = rowOf(rows, R.uw1_cols, 'Garm');
+    const best = rows[0];
+    $('r4-lede').textContent =
+      `The first beat, wind measured at ${R.wind_uw1}°T. Start rank against end rank is the whole ` +
+      `story of a leg — and this is the only place the event publishes heel and pitch, both of which ` +
+      `the Atlas already records and nobody else is reading.`;
+    $('r4-tiles').innerHTML = [
+      ['Garm, start of beat', g[2] + 'th'], ['End of beat', g[3] + 'rd'],
+      ['Net on the beat', (g[4] > 0 ? '+' : '\u2212') + Math.abs(g[4])], ['SOG rank', '30 of 30'],
+    ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
+    $('r4-head').style.gridTemplateColumns = '1.5fr .6fr .6fr .6fr .7fr .7fr .7fr .7fr .7fr';
+    $('r4-head').innerHTML = ['Boat', 'Time', 'Start', 'End', 'Net', 'SOG', 'VMG', 'Heel', 'Pitch']
+      .map(x => `<span>${x}</span>`).join('');
+    $('r4-rows').innerHTML = rows.map(r =>
+      `<div class="grid ${r[0] === 'Garm' ? 'team' : ''}" style="grid-template-columns:1.5fr .6fr .6fr .6fr .7fr .7fr .7fr .7fr .7fr;">
+        <span>${esc(r[0])}</span><span class="tnum">${r[1]}</span><span class="tnum">${r[2]}</span>
+        <span class="tnum">${r[3]}</span>
+        <span class="tnum" style="font-weight:700;color:${r[4] > 0 ? 'var(--deep)' : r[4] < 0 ? 'var(--red)' : 'inherit'};">${r[4] > 0 ? '+' : ''}${r[4]}</span>
+        <span class="tnum">${r[8].toFixed(2)}</span><span class="tnum">${r[9].toFixed(2)}</span>
+        <span class="tnum">${r[11].toFixed(1)}°</span><span class="tnum">${r[12].toFixed(1)}°</span></div>`).join('');
+    $('r4-read').innerHTML =
+      `<b>Garm started the beat 11th and finished it 23rd — a net loss of ${Math.abs(g[4])} places, ` +
+      `on the leg that decides the race.</b> ` +
+      `And this time the boat was slow with it: ${g[8].toFixed(2)} kn of speed over ground is ` +
+      `<b>30th of 30</b>, dead last, at a true wind angle (${g[10].toFixed(1)}°) that is mid-fleet. ` +
+      `That is a different failure from Tuesday, where the angle and the speed were both fine and only ` +
+      `the position was wrong.<br><br>` +
+      `<b>${best[0]} shows the alternative.</b> Fastest beat in the fleet, and it got there by sailing ` +
+      `the shortest distance — ${best[5].toLocaleString()} m against Garm's ${g[5].toLocaleString()} m — ` +
+      `at the tightest angle (${best[10].toFixed(1)}°) with the fewest manoeuvres (${best[7]} against ${g[7]}). ` +
+      `Magatron did the opposite and gained 24 places from 27th. Both worked; sitting between them did not.` +
+      `<br><br><span style="color:var(--faint);">Heel and pitch are the event's figures, derived from the ` +
+      `same orientation quaternion the Atlas writes on every fix. Garm's ${g[11].toFixed(1)}° of heel is ` +
+      `27th of 30 — the boat was sailing flatter than the fleet in a breeze where the quick boats were ` +
+      `heeling 17–19°.</span>`;
+  }
+  $('r4-note').textContent = R.note;
 }
 
 /* ---------------- fleet ---------------- */
@@ -887,7 +986,7 @@ function say(q, a){
 }
 
 /* ---------------- nav + reveal ---------------- */
-const SECTIONS = [['wind','Wind'],['gap','Perf. gap'],['start','Start line'],['fleet','Fleet'],
+const SECTIONS = [['wind','Wind'],['gap','Perf. gap'],['start','Start line'],['race4','Race 4'],['fleet','Fleet'],
                   ['maneuvers','Manoeuvres'],['vmg','VMG'],['compare','Compare'],['segments','Segments'],['kpi','Top 5'],
                   ['coach','Coach'],['analyser','Analyser']];
 function drawNav(){
@@ -911,7 +1010,7 @@ function drawNav(){
 }
 
 function drawAll(){
-  drawSummary(); drawWind(); drawGap(); drawStart(); drawFleet();
+  drawSummary(); drawWind(); drawGap(); drawStart(); drawR4(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
 drawAll(); drawChat(); drawNav();

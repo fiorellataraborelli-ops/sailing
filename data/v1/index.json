@@ -1,7 +1,7 @@
 {
  "dataset": "J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry",
  "version": "v1",
- "generated_utc": "2026-09-09T22:10:21Z",
+ "generated_utc": "2026-09-09T23:06:41Z",
  "base_url": "https://github.com/fiorellataraborelli-ops/sailing/tree/main/data/v1",
  "licence_note": "Telemetry belongs to the boats that recorded it. Scored results and race analysis are the event organisers'. Published here for the teams involved.",
  "conventions": {
@@ -160,7 +160,7 @@
    "name": "bias",
    "json": "bias.json",
    "csv": "bias.csv",
-   "rows": 3,
+   "rows": 4,
    "about": "GRIB forecast against wind measured on the water, per race. This is where the +16.1 deg correction comes from, and it is not a constant.",
    "fields": {
     "race": "Race number",
@@ -175,7 +175,7 @@
    "name": "startline",
    "json": "startline.json",
    "csv": "startline.csv",
-   "rows": 3,
+   "rows": 4,
    "about": "Line geometry per race, with the event's published advantage beside the one our own formula produces from the geometry alone.",
    "fields": {
     "race": "Race number",
@@ -191,7 +191,7 @@
    "name": "wind_by_leg",
    "json": "wind_by_leg.json",
    "csv": "wind_by_leg.csv",
-   "rows": 3,
+   "rows": 4,
    "about": "Wind bearing measured on each leg of each race by the event.",
    "fields": {
     "race": "Race number",

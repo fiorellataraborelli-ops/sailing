@@ -230,6 +230,16 @@ def main():
       'segments': {'rows': segs, 'caveat': D['segments']['caveat']},
       'kpi': {'rows': D['kpi']['rows'], 'note': D['kpi']['note']},
       'coach': {'start': D['coach']['start'], 'mechanism': D['coach']['mechanism']},
+      'race4': {
+        'date': D['race4']['date'], 'boats': D['race4']['boats'],
+        'coverage': D['race4']['coverage'], 'note': D['race4']['analyst_note'],
+        'wind_uw1': D['race4']['wind_uw1'], 'start_line': D['race4']['start_line'],
+        'gun_utc': '12:55:00Z',
+        'start_cols': D['race4']['start_cols'], 'start': D['race4']['start'],
+        'uw1_cols': D['race4']['uw1_cols'], 'uw1': D['race4']['uw1'],
+      },
+      'bias': {'rows': D['ib']['bias_rows'], 'trend': D['ib']['bias_trend'],
+               'note': D['ib']['bias_note']},
       'compare': build_compare(D),
       'qa': qa,
     }
