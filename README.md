@@ -6,7 +6,7 @@ September 2026. Two halves:
 - **`src/sailing_agents/`** — the analysis pipeline. Parses Vakaros VKX telemetry
   and turns it into per-leg performance data.
 - **`index.html`** — the brief the team reads. Static, self-updating, deployed on
-  Vercel from this branch.
+  Netlify from this branch.
 
 New competitor logs arrive daily through the shared Google Drive folder `Sailing`
 (id `1IYNZ3gopcq7Wjr7lT9Ob6ajs0DiaBuQn`). The regatta runs to Friday 11 September.
@@ -23,26 +23,19 @@ Open it directly — no server needed. Wind is loaded at runtime, newest source 
 
 The page names its source under the day tabs, so you can always see how fresh it is.
 
-### Deploy on Vercel
+### Deploy on Netlify
 
-vercel.com → *Add New* → *Project* → *Import Git Repository* → `sailing`.
-Connect it to **`main`**. There is no build step:
+app.netlify.com → *Add new site* → *Import an existing project* → GitHub → `sailing`.
+Connect it to **`main`**. `netlify.toml` sets everything, so leave the build command
+empty and the publish directory as `.`.
 
-| Setting | Value |
-|---|---|
-| Framework Preset | **Other** |
-| Build Command | *leave empty* |
-| Output Directory | `.` |
-| Install Command | *leave empty* |
+Netlify redeploys on every push, including the three-hourly wind commits, so the site
+refreshes itself.
 
-`vercel.json` sets the cache and robots headers. Vercel redeploys on every push,
-including the three-hourly wind commits, so the site refreshes itself.
-
-**Protect it.** This is client race data. *Project → Settings → Deployment
-Protection* → **Vercel Authentication**, or **Password Protection** on Pro. Note
-that every push also mints its own preview URL, public unless protection is on.
-`robots.txt` and the `X-Robots-Tag` header keep the site out of search engines,
-but neither is access control.
+**Protect it.** This is client race data. *Site configuration → Access & security →
+Visitor access → Password protect*, or **Site visibility → Private** on a paid plan.
+`robots.txt` and the `X-Robots-Tag` header keep the site out of search engines, but
+neither is access control.
 
 ### The three-hourly refresh
 

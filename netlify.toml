@@ -1,0 +1,23 @@
+# Static site: nothing to build, just publish the repo root.
+[build]
+  publish = "."
+  command = ""
+
+# wind.json is rewritten every three hours, so never let a CDN pin it.
+[[headers]]
+  for = "/data/wind.json"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
+# The brief carries client race data. Keep it out of search results.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
