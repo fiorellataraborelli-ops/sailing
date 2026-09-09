@@ -24,7 +24,8 @@ folder `Sailing` (id `1IYNZ3gopcq7Wjr7lT9Ob6ajs0DiaBuQn`).
 
 ## 3. Race analysis
 - Overall strategy: boat position against wind shifts
-- Choice of downwind mark, left or right
+- Choice of downwind mark, left or right — the coach reports the right-hand gate came out
+  considerably further upwind with the left shift at the bottom; see `COACH-NOTES.md`
 - Whatever else a full J/70 Worlds race analysis should carry
 - Official start list and results
 - **Course and course markers, GPS position of the roundings**
