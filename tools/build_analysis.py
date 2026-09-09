@@ -131,25 +131,23 @@ def main():
 
     # Wind, measured, grouped by the day it was actually sailed.
     #
-    # This used to mix the event's measured wind for Tuesday with wind.json's hourly
-    # forecast for Wednesday. Two things broke that: the 23:03 refresh rolled wind.json
-    # forward to 10-12 September and dropped the 9th entirely, leaving the Wednesday tab
-    # empty; and race 4 is a Wednesday race that was being listed under Tuesday, because
-    # the races were taken in order rather than by date. Both are gone now — every figure
-    # here is measured, and each race sits under the day it was sailed.
+    # Wednesday used to come from wind.json's hourly forecast. The 23:03 refresh rolled that
+    # file forward to 10-12 September and dropped the 9th, leaving the tab empty; and race 4
+    # was appearing under Tuesday because races were taken in order rather than by date.
+    # Every figure here is now measured, and each race sits under the day it was sailed.
     guns = {r['n']: r['gun'] for r in D['races']}
     bias_by_race = {b['race']: b for b in D['ib']['bias_rows']}
-    wind_days = {}
+    by_day = {}
     for r in D['ib']['races']:
         b = bias_by_race.get(r['n'], {})
-        wind_days.setdefault(r['date'], []).append({
+        by_day.setdefault(r['date'], []).append({
             # the loggers' gun, not the event's published one: race 1's report says
             # 13:34:52, which puts every tracked boat mid-race
             'n': r['n'], 'gun': guns.get(r['n']) or r.get('start_local'),
             'forecast': b.get('forecast'), 'measured': b.get('measured'),
             'bias': b.get('bias'), 'setting': r['setting'], 'legs': r['legs']})
-    wind = [{'date': d, 'label': DAY_LABEL.get(d, d), 'races': rs}
-            for d, rs in sorted(wind_days.items())]
+    wind_days = [{'date': d, 'label': DAY_LABEL.get(d, d), 'races': rs}
+                 for d, rs in sorted(by_day.items())]
 
     # start line, from the event's published geometry
     startline = [{'race': r['n'], 'setting': r['setting'], 'line_m': r['line_m'],
@@ -220,10 +218,13 @@ def main():
                    'team': {'pos': t['pos'], 'sail': t['sail'], 'boat': t['boat'],
                             'skipper': t['skipper'], 'pts': t['pts'], 'gain': t['gain_total'],
                             'races': [t['r1'], t['r2'], t['r3'], t['r4']]}},
-      'wind': {'days': wind},
+      'wind': {'days': wind_days, 'note': D['coach']['mechanism']},
       'fleet': fleet,
       'dayLabel': DAY_LABEL, 'dayNote': DAY_NOTE,
       'startline': startline,
+      'races': [{'n': r['n'], 'boats': [{**{k: b[k] for k in ('b', 'up', 'dn', 'ex', 'dl')},
+                                         'tk': leg_tacks(D, r['n'], b['b'])}
+                                        for b in r['boats']]} for r in D['races']],
       'legs': {'races': D['legs']['races'], 'drivers': D['legs']['drivers']},
       'segments': {'rows': segs, 'caveat': D['segments']['caveat']},
       'kpi': {'rows': D['kpi']['rows'], 'note': D['kpi']['note']},
@@ -236,25 +237,27 @@ def main():
         'start_cols': D['race4']['start_cols'], 'start': D['race4']['start'],
         'uw1_cols': D['race4']['uw1_cols'], 'uw1': D['race4']['uw1'],
       },
+      'bias': {'rows': D['ib']['bias_rows'], 'trend': D['ib']['bias_trend'],
+               'note': D['ib']['bias_note']},
       'compare': build_compare(D),
       'qa': qa,
     }
 
     html = open(os.path.join(ROOT, 'site2/page.html'), encoding='utf-8').read()
     html = html.replace('__DATA__', json.dumps(payload, ensure_ascii=False, separators=(',', ':')))
-    # one image now: the page is a data page, and three decorative photos were 240 KB
-    # of payload a phone had to download before it could read a number.
-    html = html.replace('__HERO__', data_uri(os.path.join(IMG, 'hero.jpg')))
+    for tok, fn in (('__HERO__', 'hero.jpg'), ('__IMG1__', 'crew.jpg'),
+                    ('__IMG2__', 'hiking.jpg'), ('__IMG3__', 'prize.jpg')):
+        html = html.replace(tok, data_uri(os.path.join(IMG, fn)))
 
     # guards against the regressions this page has already had once
     checks = {
       'no placeholder standings': '38th' not in html and '>75<' not in html,
       'the real fleet size': str(D['official']['fleet_scored']) in html,
       'no unfilled bindings': '{{' not in html and '__' not in html.replace('__DATA__', ''),
-      'wind days all raced': all(d['date'] in RACED and d['races'] for d in wind),
+      'wind days all raced': all(d['date'] in RACED and d['races'] for d in wind_days),
       'no unraced days': '2026-09-10' not in html and '2026-09-11' not in html
                          and '2026-09-12' not in html and '2026-09-07' not in html,
-      'the hero inlined': html.count('data:image/jpeg;base64,') == 1,
+      'every image inlined': html.count('data:image/jpeg;base64,') == 4,
     }
     bad = [k for k, v in checks.items() if not v]
     if bad:
