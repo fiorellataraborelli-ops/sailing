@@ -17,6 +17,12 @@
   --color-accent-400:#e1ad66; --color-accent-500:#c28d41; --color-accent-600:#a06f24;
   --color-accent-700:#7d5411; --color-accent-800:#5a3b0a; --color-accent-900:#3a270d;
 
+  /* Semantic "cost" tone — a brick-red shifted well away from the bronze
+     brand accent, so a loss reads as a loss and never competes with it. */
+  --color-loss:#a34a35;
+  --color-loss-700:#7e3627;
+  --color-loss-100:color-mix(in srgb, var(--color-loss) 12%, var(--color-bg));
+
   --font-heading:"Cormorant Garamond", Georgia, serif;
   --font-body:"Lora", Georgia, serif;
 
@@ -106,6 +112,21 @@ a{color:var(--color-accent)}
 .startline-top b{font-family:var(--font-heading);font-weight:600;font-size:20px;color:var(--color-accent-700)}
 .startline-meta{display:flex;gap:var(--space-4);font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums}
 
+.rank-track{position:relative;height:5px;border-radius:3px;background:var(--color-neutral-200);margin:2px 0 3px}
+.rank-fill{position:absolute;top:0;left:0;height:100%;border-radius:3px;background:color-mix(in srgb, var(--color-accent) 45%, transparent)}
+.rank-mark{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;background:var(--color-accent);border:2px solid var(--color-bg);transform:translate(-50%,-50%);box-shadow:0 0 0 1px var(--color-accent)}
+.rank-scale{display:flex;justify-content:space-between;font-size:10px;color:var(--color-neutral-500);font-variant-numeric:tabular-nums}
+
+.wind-error-badge{
+  display:inline-flex;align-self:flex-start;align-items:baseline;gap:3px;margin-top:6px;padding:2px 8px;
+  border-radius:10px;background:var(--color-loss-100);color:var(--color-loss-700);
+  font-family:var(--font-heading);font-weight:600;font-size:11px;
+}
+
+.speed-bar{height:3px;border-radius:2px;background:var(--color-neutral-200);margin-top:3px;overflow:hidden}
+.speed-bar-fill{height:100%;border-radius:2px;background:var(--color-accent-500)}
+.boat-card.team .speed-bar-fill{background:var(--color-accent)}
+
 .seg{display:inline-flex;overflow:hidden;border:1px solid var(--color-divider);border-radius:var(--radius-md)}
 .seg.full{width:100%}
 .seg-opt{
@@ -133,7 +154,7 @@ a{color:var(--color-accent)}
 .loss-row{display:flex;gap:var(--space-4)}
 .loss{flex:1}
 .loss .lbl{font-size:11px;color:var(--color-neutral-600)}
-.loss .val{font-family:var(--font-heading);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.loss .val{font-family:var(--font-heading);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--color-loss-700)}
 
 .card-title{font-family:var(--font-heading);font-weight:600;font-size:17px;line-height:1.2}
 .coach-pt{display:flex;gap:8px;font-size:13px;line-height:1.45}
@@ -196,7 +217,9 @@ a{color:var(--color-accent)}
     <h6>Official result</h6>
     <div class="card">
       <div class="startline-top"><span>Overall, after 2 races</span><b id="officialHeadline">38th of 100</b></div>
-      <div class="startline-meta" style="flex-wrap:wrap" id="officialMeta"><span>Race 1: 16th</span><span>Race 2: 59th</span><span>75 net pts</span></div>
+      <div class="rank-track"><div class="rank-fill" id="rankFill"></div><div class="rank-mark" id="rankMark"></div></div>
+      <div class="rank-scale"><span>1st</span><span id="rankFleetSize">100th</span></div>
+      <div class="startline-meta" style="flex-wrap:wrap;margin-top:2px" id="officialMeta"><span>Race 1: 16th</span><span>Race 2: 59th</span><span>75 net pts</span></div>
       <div class="hr" style="margin:2px 0"></div>
       <p class="note" id="officialNote">cncascais.com official results, updated 9 Sep 09:25 local.</p>
     </div>
@@ -209,6 +232,7 @@ a{color:var(--color-accent)}
         <svg viewBox="0 0 120 120" style="width:104px;height:104px;flex:none" aria-hidden="true">
           <circle cx="60" cy="60" r="52" fill="none" stroke="var(--color-divider)"></circle>
           <circle cx="60" cy="60" r="38" fill="none" stroke="var(--color-divider)" stroke-dasharray="2 4"></circle>
+          <g id="windTicks" stroke="var(--color-neutral-400)" stroke-width="1"></g>
           <g font-family="Lora, serif" font-size="9" fill="var(--color-neutral-600)" text-anchor="middle">
             <text x="60" y="12">N</text><text x="112" y="63">E</text><text x="60" y="116">S</text><text x="8" y="63">W</text>
           </g>
@@ -227,6 +251,7 @@ a{color:var(--color-accent)}
           <div class="wind-stat hero"><span>Observed TWD</span><b id="windCorLabel">322&deg;</b></div>
           <div class="wind-stat"><span>Speed</span><b id="windSpeed">11.3 kn</b></div>
           <div class="wind-stat"><span>Gust</span><b id="windGust">21.9 kn</b></div>
+          <div class="wind-error-badge" id="windErrorBadge">&Delta; 9.9&deg; right of model</div>
         </div>
       </div>
       <div class="hr"></div>
@@ -382,6 +407,11 @@ import { DATA as REGATTA } from './regatta_data.js';
   var windRawLabelEl = document.getElementById('windRawLabel');
   var windCorLabelEl = document.getElementById('windCorLabel');
   var windNoteEl = document.getElementById('windNote');
+  var windErrorBadgeEl = document.getElementById('windErrorBadge');
+  var windTicksEl = document.getElementById('windTicks');
+  var rankFillEl = document.getElementById('rankFill');
+  var rankMarkEl = document.getElementById('rankMark');
+  var rankFleetSizeEl = document.getElementById('rankFleetSize');
   var fleetGrid = document.getElementById('fleetGrid');
   var unitSeg = document.getElementById('unitSeg');
   var boatSeg = document.getElementById('boatSeg');
@@ -422,6 +452,22 @@ import { DATA as REGATTA } from './regatta_data.js';
     officialHeadlineEl.textContent = ordinal(OFFICIAL.pos) + ' of ' + OFFICIAL.fleetScored;
     officialMetaEl.innerHTML = '<span>Race 1: ' + ordinal(OFFICIAL.r1) + '</span><span>Race 2: ' + ordinal(OFFICIAL.r2) + '</span><span>' + OFFICIAL.pts + ' net pts</span>';
     officialNoteEl.textContent = OFFICIAL.source + ', updated ' + OFFICIAL.updated + '.';
+
+    var pct = (OFFICIAL.pos / OFFICIAL.fleetScored) * 100;
+    rankFillEl.style.width = pct + '%';
+    rankMarkEl.style.left = pct + '%';
+    rankFleetSizeEl.textContent = ordinal(OFFICIAL.fleetScored);
+  }
+
+  function renderCompassTicks(){
+    var ticks = [];
+    for (var deg = 0; deg < 360; deg += 30) {
+      var rad = (deg * Math.PI) / 180;
+      var x1 = 60 + 45 * Math.sin(rad), y1 = 60 - 45 * Math.cos(rad);
+      var x2 = 60 + 51 * Math.sin(rad), y2 = 60 - 51 * Math.cos(rad);
+      ticks.push('<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '"></line>');
+    }
+    windTicksEl.innerHTML = ticks.join('');
   }
 
   function renderWind(unit){
@@ -435,11 +481,13 @@ import { DATA as REGATTA } from './regatta_data.js';
       ' kn at the Race 2 gun; the committee’s line-square and the fleet’s own first-beat bearing put the true wind at ' +
       round1(WIND.observedDeg) + '° — a ' + round1(WIND.errorDeg) + '° right-side model error, in line with both of Sept 8’s races (' +
       WIND.rangeLo + '–' + WIND.rangeHi + '°, mean ' + WIND.meanDeg + '°).';
+    windErrorBadgeEl.textContent = 'Δ ' + round1(Math.abs(WIND.errorDeg)) + '° ' + (WIND.errorDeg >= 0 ? 'right' : 'left') + ' of model';
   }
 
   renderBoatSeg();
   renderChips();
   renderMasthead();
+  renderCompassTicks();
 
   function render(){
     var unit = state.speedUnit;
@@ -450,10 +498,12 @@ import { DATA as REGATTA } from './regatta_data.js';
       el.classList.toggle('active', el.dataset.unit === unit);
     });
 
+    var maxAvgKn = Math.max.apply(null, BOATS.map(function(b){ return b.avgKn; }));
     fleetGrid.innerHTML = BOATS.map(function(b){
       return '<div class="boat-card' + (b.isTeam ? ' team' : '') + '">' +
-        '<div class="name">' + esc(b.name) + '</div>' +
+        '<div class="name">' + esc(b.name) + (b.isTeam ? ' <span style="color:var(--color-accent);font-weight:400">— team</span>' : '') + '</div>' +
         '<div class="row"><span>Avg</span><b>' + knToUnit(b.avgKn, unit) + '</b></div>' +
+        '<div class="speed-bar"><div class="speed-bar-fill" style="width:' + ((b.avgKn / maxAvgKn) * 100).toFixed(0) + '%"></div></div>' +
         '<div class="row"><span>Max</span><b>' + knToUnit(b.maxKn, unit) + '</b></div>' +
         '<div class="row"><span>Dist</span><b>' + b.distNm.toFixed(1) + ' nm</b></div>' +
         '</div>';
