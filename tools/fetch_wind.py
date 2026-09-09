@@ -10,7 +10,9 @@ import json, math, os, statistics as st, subprocess, urllib.request, datetime
 
 LAT, LON = 38.68, -9.42
 MODELS = ['icon_eu', 'ecmwf_ifs025', 'gfs_seamless']
-BIAS = 18.6          # deg; GRIB sits this far RIGHT of the wind the fleet races
+BIAS = 16.1          # deg; mean of three measured races (+19.1, +18.0, +11.2).
+                     # Not a constant: it shrank through 8 Sep as the model backed
+                     # further than the water did. Re-derive it as races are added.
 TACK = 80.5          # deg; the fleet's own measured tacking angle
 MIN_KN_FOR_BIAS = 8  # below this the correction is not valid (see README)
 HOURS = range(11, 19)
