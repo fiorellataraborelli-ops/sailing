@@ -177,19 +177,29 @@ a{color:var(--color-accent)}
 }
 </style>
 
-<div class="stage-caption">Team Sweden · J/70 Worlds — race telemetry</div>
+<div class="stage-caption">SWE 1121 Garm · J/70 Worlds — post-race analysis</div>
 
 <div class="phone">
 
   <div class="topbar">
-    <div class="status"><span class="dot"></span><span id="statusLabel">Live — Race 2</span></div>
-    <div class="elapsed" id="elapsedLabel">38:12 elapsed</div>
+    <div class="status"><span class="dot"></span><span id="statusLabel">Post-race review</span></div>
+    <div class="elapsed" id="elapsedLabel">8 Sep &middot; complete</div>
   </div>
 
   <div class="masthead">
-    <div class="kicker">Team Sweden &middot; J/70 Worlds</div>
-    <h1>Cascais — Race 2</h1>
-    <p class="dek">Decoded from the fleet's own VKX logs and the live wind model. Bearings are corrected for the bias the fleet itself measured today.</p>
+    <div class="kicker">SWE 1121 &middot; Garm &middot; Per Roman &middot; J/70 Worlds</div>
+    <h1>Cascais — Races 1 &amp; 2</h1>
+    <p class="dek">Decoded from the fleet's own VKX logs and the ICON-EU wind model, with bearings corrected for the bias the fleet itself measured on the water.</p>
+  </div>
+
+  <div class="section" style="padding-top:0">
+    <h6>Official result</h6>
+    <div class="card">
+      <div class="startline-top"><span>Overall, after 2 races</span><b>38th of 100</b></div>
+      <div class="startline-meta" style="flex-wrap:wrap"><span>Race 1: 16th</span><span>Race 2: 59th</span><span>75 net pts</span></div>
+      <div class="hr" style="margin:2px 0"></div>
+      <p class="note">cncascais.com official results, updated 9 Sep 09:25 local.</p>
+    </div>
   </div>
 
   <div class="section">
@@ -202,25 +212,25 @@ a{color:var(--color-accent)}
           <g font-family="Lora, serif" font-size="9" fill="var(--color-neutral-600)" text-anchor="middle">
             <text x="60" y="12">N</text><text x="112" y="63">E</text><text x="60" y="116">S</text><text x="8" y="63">W</text>
           </g>
-          <g style="transform:rotate(341deg);transform-origin:60px 60px">
+          <g style="transform:rotate(331.5deg);transform-origin:60px 60px">
             <line x1="60" y1="20" x2="60" y2="86" stroke="var(--color-neutral-400)" stroke-width="1.5"></line>
             <polygon points="60,90 55,80 65,80" fill="var(--color-neutral-400)"></polygon>
           </g>
-          <g style="transform:rotate(322deg);transform-origin:60px 60px">
+          <g style="transform:rotate(321.6deg);transform-origin:60px 60px">
             <line x1="60" y1="17" x2="60" y2="89" stroke="var(--color-accent)" stroke-width="2.5"></line>
             <polygon points="60,95 52,78 68,78" fill="var(--color-accent)"></polygon>
           </g>
           <circle cx="60" cy="60" r="3" fill="var(--color-text)"></circle>
         </svg>
         <div class="wind-stats">
-          <div class="wind-stat"><span>Raw model</span><b>341&deg;</b></div>
-          <div class="wind-stat hero"><span>Corrected TWD</span><b>322&deg;</b></div>
-          <div class="wind-stat"><span>Speed</span><b id="windSpeed">12.4 kn</b></div>
-          <div class="wind-stat"><span>Gust</span><b id="windGust">15.8 kn</b></div>
+          <div class="wind-stat"><span>Forecast (Race 2 gun)</span><b>332&deg;</b></div>
+          <div class="wind-stat hero"><span>Observed TWD</span><b>322&deg;</b></div>
+          <div class="wind-stat"><span>Speed</span><b id="windSpeed">11.3 kn</b></div>
+          <div class="wind-stat"><span>Gust</span><b id="windGust">21.9 kn</b></div>
         </div>
       </div>
       <div class="hr"></div>
-      <p class="note">Corrected for the +18.6&deg; right-side bias the fleet's own first-beat bearing measured against the GRIB &mdash; valid only in this 10&ndash;14 kn gradient Nortada.</p>
+      <p class="note">The ICON-EU forecast ran 331.5&deg;/11.3 kn at the Race 2 gun; the committee's line-square and the fleet's own first-beat bearing put the true wind at 321.6&deg; &mdash; a 9.9&deg; right-side model error, in line with both of Sept 8's races (9.9&ndash;12.2&deg;, mean 11.0&deg;).</p>
     </div>
   </div>
 
@@ -281,7 +291,7 @@ a{color:var(--color-accent)}
     </div>
   </div>
 
-  <div class="sourcenote">Vakaros Atlas telemetry &middot; Cascais, Portugal &middot; 38.68N 9.42W</div>
+  <div class="sourcenote">Vakaros VKX telemetry &amp; cncascais.com official results &middot; Cascais, Portugal &middot; 38.68N 9.42W</div>
 
 </div>
 
@@ -305,9 +315,10 @@ a{color:var(--color-accent)}
   ];
 
   var QA = [
+    { label:"How did we finish?", q:"How did we finish?", a:"16th in Race 1, 59th in Race 2 — 75 net points, 38th of 100 overall (cncascais.com official results, updated 9 Sep 09:25 local)." },
     { label:"Upwind VMG vs Patakin?", q:"How's our upwind VMG vs Patakin?", a:"Team Sweden's upwind VMG is 4.3 kn, just under Patakin 3's 4.37 kn — a 0.07 kn gap held over 63% of the beat." },
     { label:"Tack loss trend?", q:"What's our tack loss trend?", a:"86 maneuvers logged: 51 tacks averaging 1.02 kn lost, 35 gybes averaging 2.35 kn lost — gybe losses are the bigger lever right now." },
-    { label:"Wind bias right now?", q:"Where's the wind bias right now?", a:"Corrected TWD is running 322°, about 18.6° left of the raw model. Right side has been paying all session." }
+    { label:"Wind bias right now?", q:"Where's the wind bias right now?", a:"At the Race 2 gun the forecast ran 331.5° against an observed 321.6° — a 9.9° right-side model error, consistent with both of Sept 8's races (9.9–12.2°). Right side has been paying all session." }
   ];
 
   var state = { selectedBoatKey:'roman', speedUnit:'knots', messages:[] };
@@ -340,8 +351,8 @@ a{color:var(--color-accent)}
   function render(){
     var unit = state.speedUnit;
 
-    windSpeedEl.textContent = knToUnit(12.4, unit);
-    windGustEl.textContent = knToUnit(15.8, unit);
+    windSpeedEl.textContent = knToUnit(11.25, unit);
+    windGustEl.textContent = knToUnit(21.91, unit);
 
     Array.prototype.forEach.call(unitSeg.querySelectorAll('.seg-opt'), function(el){
       el.classList.toggle('active', el.dataset.unit === unit);
