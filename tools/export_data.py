@@ -42,7 +42,7 @@ FIELDS = {
     'hold': 'The 60 s figure divided by the peak — how much of the headline number survives a minute',
     'rank0': 'Rank on peak', 'rank60': 'Rank on the 60 s figure', 'rankhold': 'Rank on hold'},
   'kpi': {
-    'boat': 'Boat', 'pos': 'Overall position', 'pts': 'Net points', 'team': 'True for the client boat',
+    'boat': 'Boat', 'pos': 'Overall position', 'pts': 'Total points — no discard has been applied at four races', 'team': 'True for the client boat',
     'gain': 'Places won between the first windward mark and the finish, summed over races',
     'peak': f'Instantaneous peak speed on 9 Sep, {KN}', 's60': f'Best speed held 60 s on 9 Sep, {KN}',
     'hold': 'Hold ratio', 'vmg': f'Mean upwind VMG from this boat\'s own log, {KN}',
@@ -72,7 +72,7 @@ FIELDS = {
     'calc_m': 'The same advantage from our own geometry: line_m x sin(bias_deg)',
     'favoured': 'Favoured end'},
   'official': {
-    'pos': 'Overall position', 'sail': 'Sail number', 'boat': 'Boat', 'pts': 'Net points',
+    'pos': 'Overall position', 'sail': 'Sail number', 'boat': 'Boat', 'pts': 'Total points — no discard has been applied at four races',
     'r': 'Finishing position in each race', 'gain': 'Places won after the first windward mark'},
 }
 

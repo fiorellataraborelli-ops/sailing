@@ -223,6 +223,7 @@ def main():
       'official': {'fleet': D['official']['fleet_scored'], 'races': D['official']['races_scored'],
                    # only the field the page prints; the event's end date is not shown
                    'event': {'dates': D['official']['event']['dates']},
+                   'day9_races': D['official']['telemetry'].get('day9_races', []),
                    'team': {'pos': t['pos'], 'sail': t['sail'], 'boat': t['boat'],
                             'skipper': t['skipper'], 'pts': t['pts'], 'gain': t['gain_total'],
                             'races': [t['r1'], t['r2'], t['r3'], t['r4']]}},
@@ -259,6 +260,14 @@ def main():
       'no unraced days': '2026-09-10' not in html and '2026-09-11' not in html
                          and '2026-09-12' not in html and '2026-09-07' not in html,
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,
+      # a phone lays the page out at 980 px without this, and shrinks everything
+      'a viewport declared': 'name="viewport" content="width=device-width' in html,
+      # nothing supplies a charset when Netlify serves this file raw
+      'a charset declared': html.lstrip().startswith('<meta charset="utf-8">'),
+      # every boat's points equal the sum of its finishes, so nothing is discarded yet
+      # and the page must not present these figures as net
+      'points not called net': ('Net points' not in html
+                               if sum([t['r1'], t['r2'], t['r3'], t['r4']]) == t['pts'] else True),
     }
     bad = [k for k, v in checks.items() if not v]
     if bad:

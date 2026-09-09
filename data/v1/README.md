@@ -2,7 +2,7 @@
 
 J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry
 
-Generated 2026-09-09T23:19:37Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
+Generated 2026-09-09T23:52:28Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
 
 ## Conventions
 
@@ -108,7 +108,7 @@ Generated 2026-09-09T23:19:37Z. Every file here is a projection of the same anal
 |---|---|
 | `boat` | Boat |
 | `pos` | Overall position |
-| `pts` | Net points |
+| `pts` | Total points — no discard has been applied at four races |
 | `team` | True for the client boat |
 | `gain` | Places won between the first windward mark and the finish, summed over races |
 | `peak` | Instantaneous peak speed on 9 Sep, knots |
@@ -124,7 +124,7 @@ Generated 2026-09-09T23:19:37Z. Every file here is a projection of the same anal
 | `pos` | Overall position |
 | `sail` | Sail number |
 | `boat` | Boat |
-| `pts` | Net points |
+| `pts` | Total points — no discard has been applied at four races |
 | `r` | Finishing position in each race |
 | `gain` | Places won after the first windward mark |
 

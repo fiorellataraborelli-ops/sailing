@@ -314,7 +314,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   <section id="summary" data-tab="team" class="rd-card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
       <div>
-        <div style="font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;">Official result</div>
+        <div style="font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;">Standing after 4 races</div>
         <div class="cg" style="font-weight:700;font-size:34px;margin-top:2px;" id="sum-pos">&mdash;</div>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;" id="sum-stats"></div>
@@ -569,15 +569,26 @@ function seg(el, items, active, onPick){
 function drawSummary(){
   const t = D.official.team, e = D.official.event;
   $('sum-pos').innerHTML = `${ord(t.pos)}<span style="font-size:15px;color:var(--faint);font-family:Lora,serif;font-weight:500;"> / ${D.official.fleet}</span>`;
-  const stats = [['Net points', t.pts], ['Races', t.races.join(' · ')],
+  // Every boat's points equal the sum of its races, so no discard has been applied.
+  // Calling this "net" would imply the series is settled; it is not.
+  const discard = Math.max(...t.races);
+  const stats = [['Total points', t.pts], ['Races', t.races.join(' · ')],
                  ['Places gained', '+' + t.gain]];
   $('sum-stats').innerHTML = stats.map(([k, v], i) =>
     `<div style="text-align:right;"><div style="font-size:12px;color:var(--faint);font-weight:600;">${k}</div>` +
     `<div class="tnum ${i === 2 ? 'rd-pill' : 'cg'}" style="font-weight:700;font-size:20px;${i === 2 ? 'padding:2px 12px;' : ''}">${v}</div></div>`).join('');
-  $('sum-note').textContent =
-    `${t.sail} ${t.boat}, ${t.skipper}. ${D.official.races} races scored of a ${D.official.fleet}-boat ` +
-    `championship, ${e.dates}. Places gained counts positions won between the first windward mark ` +
-    `and the finish — the largest recovery in the top of the fleet.`;
+  $('sum-note').innerHTML =
+    `<b>Provisional.</b> ${t.sail} ${t.boat}, ${t.skipper}. ${D.official.races} races scored of a ` +
+    `${D.official.fleet}-boat championship running ${e.dates}, so this is a mid-series standing, ` +
+    `not a result.<br><br>` +
+    `<b>No discard has been applied yet</b> — every boat's points still equal the sum of its finishes. ` +
+    `Garm's discard would be the ${discard} from race 2, worth more than any other boat in the top of ` +
+    `the fleet: ${t.pts} becomes <b>${t.pts - discard}</b>. The position that follows cannot be worked ` +
+    `out from here, because only the top five and Garm are in the results held.<br><br>` +
+    `Places gained counts positions won between the first windward mark and the finish.` +
+    (D.official.day9_races && D.official.day9_races.length > D.official.races - 3
+      ? ` A second race window appears in Wednesday's logs at ${D.official.day9_races[1]} that is not ` +
+        `in these standings, so they are at least one race behind the water.` : '');
   $('herosub').textContent = `Team Sweden · ${t.sail} ${t.boat} · J/70 Worlds, Cascais`;
   $('foot').innerHTML =
     `Built on ${D.meta.logs} Vakaros Atlas VKX logs · ib-sailing race reports · cncascais.com results · ` +
@@ -1039,7 +1050,7 @@ function initShell(){
   if (!$('tabbar')) return;
   document.body.dataset.screen = tab;
   setTab(tab, true);
-  $('ab-stat').textContent = `${D.official.team.pos} / ${D.official.fleet}`;
+  $('ab-stat').textContent = `${ord(D.official.team.pos)} of ${D.official.fleet}`;
   // rows are rebuilt whenever a control changes, so re-stamp on any click inside the page
   document.addEventListener('click', () => setTimeout(stampLabels, 0), true);
   addEventListener('resize', stampLabels);
