@@ -1,0 +1,429 @@
+<title>Race Day</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root{
+  --color-bg:#f3f2f2;
+  --color-surface:#eae9e9;
+  --color-text:#201f1d;
+  --color-accent:#b68235;
+  --color-divider:color-mix(in srgb, #201f1d 16%, transparent);
+
+  --color-neutral-100:#f8f4f4; --color-neutral-200:#eae7e7; --color-neutral-300:#d7d3d3;
+  --color-neutral-400:#bab6b6; --color-neutral-500:#9b9797; --color-neutral-600:#7d7979;
+  --color-neutral-700:#605d5d; --color-neutral-800:#444141; --color-neutral-900:#2d2b2b;
+
+  --color-accent-100:#fff3e4; --color-accent-200:#ffe3bf; --color-accent-300:#facb8d;
+  --color-accent-400:#e1ad66; --color-accent-500:#c28d41; --color-accent-600:#a06f24;
+  --color-accent-700:#7d5411; --color-accent-800:#5a3b0a; --color-accent-900:#3a270d;
+
+  --font-heading:"Cormorant Garamond", Georgia, serif;
+  --font-body:"Lora", Georgia, serif;
+
+  --space-1:4.6px; --space-2:9.2px; --space-3:13.8px; --space-4:18.4px; --space-6:27.6px; --space-8:36.8px;
+  --radius-sm:2px; --radius-md:4px; --radius-lg:7px;
+
+  --shadow-sm:0 1px 2px color-mix(in srgb, #2d2b2b 14%, transparent);
+  --shadow-md:0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
+  --shadow-lg:0 20px 48px color-mix(in srgb, #2d2b2b 38%, transparent);
+
+  --stage-bg:#242220;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--stage-bg);
+  font-family:var(--font-body);
+  color:var(--color-text);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding:var(--space-8) var(--space-4);
+}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-heading);font-weight:600;line-height:1.12;letter-spacing:-0.01em;margin:0}
+p{margin:0}
+a{color:var(--color-accent)}
+
+.stage-caption{
+  position:fixed; top:var(--space-4); left:0; right:0; text-align:center;
+  font-family:var(--font-body); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+  color:color-mix(in srgb, var(--color-neutral-100) 55%, transparent);
+}
+
+.phone{
+  width:100%; max-width:430px; min-height:calc(100vh - var(--space-8) * 2);
+  background:var(--color-bg); color:var(--color-text);
+  border-radius:22px; overflow:hidden;
+  box-shadow:var(--shadow-lg), 0 0 0 8px color-mix(in srgb, #000 55%, transparent);
+  padding-bottom:var(--space-8);
+}
+
+@keyframes rd-pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+
+.topbar{
+  position:sticky; top:0; z-index:10; display:flex; align-items:center; justify-content:space-between;
+  gap:var(--space-2); padding:var(--space-3) var(--space-4); background:var(--color-bg);
+  border-bottom:1px solid var(--color-divider);
+}
+.status{
+  display:flex; align-items:center; gap:7px; font-family:var(--font-heading); font-weight:600;
+  font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--color-accent-700);
+}
+.status .dot{width:7px;height:7px;border-radius:50%;background:var(--color-accent);animation:rd-pulse 1.6s ease-in-out infinite}
+.elapsed{font-size:12px; color:var(--color-neutral-600); font-variant-numeric:tabular-nums}
+
+.masthead{padding:var(--space-6) var(--space-4) var(--space-4)}
+.kicker{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent);margin-bottom:var(--space-1)}
+.masthead h1{font-size:30px;margin-bottom:var(--space-1)}
+.masthead .dek{font-size:13px;color:var(--color-neutral-700);line-height:1.5}
+
+.section{padding:0 var(--space-4) var(--space-6)}
+.section h6{
+  font-size:13px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-neutral-600);
+  margin-bottom:var(--space-2);
+}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-2)}
+.section-head h6{margin:0}
+
+.card{
+  display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-3);
+  border-radius:var(--radius-md);border:1px solid var(--color-divider);background:transparent;
+  box-shadow:var(--shadow-sm);
+}
+.hr{height:1px;border:0;background:var(--color-divider);margin:var(--space-1) 0}
+
+.wind-row{display:flex;gap:var(--space-4);align-items:center}
+.wind-stats{flex:1;display:flex;flex-direction:column;gap:5px}
+.wind-stat{display:flex;justify-content:space-between;font-size:12px;color:var(--color-neutral-600)}
+.wind-stat b{font-family:var(--font-heading);font-weight:600;color:var(--color-text);font-variant-numeric:tabular-nums}
+.wind-stat.hero{color:var(--color-accent-700)}
+.wind-stat.hero b{font-size:16px;color:var(--color-accent-700)}
+.note{margin:0;font-size:12px;color:var(--color-neutral-700);line-height:1.5}
+
+.startline-top{display:flex;align-items:baseline;justify-content:space-between}
+.startline-top span{font-size:12px;color:var(--color-neutral-600)}
+.startline-top b{font-family:var(--font-heading);font-weight:600;font-size:20px;color:var(--color-accent-700)}
+.startline-meta{display:flex;gap:var(--space-4);font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums}
+
+.seg{display:inline-flex;overflow:hidden;border:1px solid var(--color-divider);border-radius:var(--radius-md)}
+.seg.full{width:100%}
+.seg-opt{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 12px;
+  font-size:13px;font-family:var(--font-body);cursor:pointer;background:transparent;border:0;color:var(--color-text);
+}
+.seg.full .seg-opt{flex:1}
+.seg-opt+.seg-opt{border-left:1px solid var(--color-divider)}
+.seg-opt.active{color:var(--color-accent);box-shadow:inset 0 0 0 1px var(--color-accent)}
+.seg-opt:not(.active):hover{background:color-mix(in srgb, var(--color-text) 7%, transparent)}
+.seg-opt:focus-visible{outline:2px solid var(--color-accent);outline-offset:-2px}
+
+.fleet-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-2)}
+.boat-card{padding:var(--space-2) var(--space-3);gap:4px;border-radius:var(--radius-md);border:1px solid var(--color-divider);display:flex;flex-direction:column}
+.boat-card.team{background:var(--color-accent-100);border-color:var(--color-accent)}
+.boat-card .name{font-family:var(--font-heading);font-weight:600;font-size:13px}
+.boat-card .row{display:flex;justify-content:space-between;font-size:11px;color:var(--color-neutral-600)}
+.boat-card .row b{color:var(--color-text);font-size:13px;font-variant-numeric:tabular-nums}
+
+.table{width:100%;border-collapse:collapse;font-size:14px}
+.table th{text-align:left;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-neutral-600);padding:var(--space-2) var(--space-1);border-bottom:1px solid var(--color-divider)}
+.table td{padding:var(--space-2) var(--space-1);border-bottom:1px solid var(--color-divider);font-variant-numeric:tabular-nums}
+.table td:first-child,.table th:first-child{padding-left:0}
+
+.loss-row{display:flex;gap:var(--space-4)}
+.loss{flex:1}
+.loss .lbl{font-size:11px;color:var(--color-neutral-600)}
+.loss .val{font-family:var(--font-heading);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+
+.card-title{font-family:var(--font-heading);font-weight:600;font-size:17px;line-height:1.2}
+.coach-pt{display:flex;gap:8px;font-size:13px;line-height:1.45}
+.coach-pt .bullet{flex:none;width:5px;height:5px;border-radius:1px;background:var(--color-accent);margin-top:7px}
+
+.msgs{display:flex;flex-direction:column;gap:var(--space-2)}
+.msg-row{display:flex}
+.msg-row.user{justify-content:flex-end}
+.msg-row.assistant{justify-content:flex-start}
+.bubble{max-width:82%;padding:8px 12px;border-radius:var(--radius-md);font-size:13px;line-height:1.4}
+.bubble.user{border:1px solid var(--color-accent);color:var(--color-accent-700);background:var(--color-accent-100)}
+.bubble.assistant{border:1px solid var(--color-divider);background:var(--color-neutral-100)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.tag-outline{
+  display:inline-flex;align-items:center;font-size:11px;letter-spacing:0.02em;padding:4px 10px;
+  border-radius:3px;border:1px solid var(--color-accent);color:var(--color-accent);
+  background:transparent;cursor:pointer;font:inherit;
+}
+.tag-outline:hover{background:var(--color-accent-100)}
+.tag-outline:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px}
+
+.chat-input-row{display:flex;gap:8px}
+.input{
+  flex:1;min-height:36px;padding:6px 10px;font:inherit;font-size:14px;color:var(--color-text);
+  caret-color:var(--color-accent);background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);
+}
+.input:hover{border-color:color-mix(in srgb, var(--color-text) 45%, transparent)}
+.input:focus-visible{border-color:var(--color-accent);outline:none}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;flex:none;cursor:pointer;
+  font-family:var(--font-heading);font-weight:600;font-size:14px;color:var(--color-accent);
+  background:transparent;border:1px solid var(--color-accent);border-radius:var(--radius-md);padding:var(--space-2) calc(var(--space-3) * 1.2);
+}
+.btn:hover{background:color-mix(in srgb, var(--color-accent) 12%, transparent)}
+.btn:active{background:color-mix(in srgb, var(--color-accent) 22%, transparent)}
+
+.sourcenote{padding:var(--space-4) var(--space-4) 0;text-align:center;font-size:11px;color:var(--color-neutral-600)}
+
+@media (prefers-reduced-motion: reduce){
+  .status .dot{animation:none}
+}
+</style>
+
+<div class="stage-caption">Team Sweden · J/70 Worlds — race telemetry</div>
+
+<div class="phone">
+
+  <div class="topbar">
+    <div class="status"><span class="dot"></span><span id="statusLabel">Live — Race 2</span></div>
+    <div class="elapsed" id="elapsedLabel">38:12 elapsed</div>
+  </div>
+
+  <div class="masthead">
+    <div class="kicker">Team Sweden &middot; J/70 Worlds</div>
+    <h1>Cascais — Race 2</h1>
+    <p class="dek">Decoded from the fleet's own VKX logs and the live wind model. Bearings are corrected for the bias the fleet itself measured today.</p>
+  </div>
+
+  <div class="section">
+    <h6>Wind conditions</h6>
+    <div class="card">
+      <div class="wind-row">
+        <svg viewBox="0 0 120 120" style="width:104px;height:104px;flex:none" aria-hidden="true">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--color-divider)"></circle>
+          <circle cx="60" cy="60" r="38" fill="none" stroke="var(--color-divider)" stroke-dasharray="2 4"></circle>
+          <g font-family="Lora, serif" font-size="9" fill="var(--color-neutral-600)" text-anchor="middle">
+            <text x="60" y="12">N</text><text x="112" y="63">E</text><text x="60" y="116">S</text><text x="8" y="63">W</text>
+          </g>
+          <g style="transform:rotate(341deg);transform-origin:60px 60px">
+            <line x1="60" y1="20" x2="60" y2="86" stroke="var(--color-neutral-400)" stroke-width="1.5"></line>
+            <polygon points="60,90 55,80 65,80" fill="var(--color-neutral-400)"></polygon>
+          </g>
+          <g style="transform:rotate(322deg);transform-origin:60px 60px">
+            <line x1="60" y1="17" x2="60" y2="89" stroke="var(--color-accent)" stroke-width="2.5"></line>
+            <polygon points="60,95 52,78 68,78" fill="var(--color-accent)"></polygon>
+          </g>
+          <circle cx="60" cy="60" r="3" fill="var(--color-text)"></circle>
+        </svg>
+        <div class="wind-stats">
+          <div class="wind-stat"><span>Raw model</span><b>341&deg;</b></div>
+          <div class="wind-stat hero"><span>Corrected TWD</span><b>322&deg;</b></div>
+          <div class="wind-stat"><span>Speed</span><b id="windSpeed">12.4 kn</b></div>
+          <div class="wind-stat"><span>Gust</span><b id="windGust">15.8 kn</b></div>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <p class="note">Corrected for the +18.6&deg; right-side bias the fleet's own first-beat bearing measured against the GRIB &mdash; valid only in this 10&ndash;14 kn gradient Nortada.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h6>Start-line read</h6>
+    <div class="card">
+      <div class="startline-top"><span>Favoured end</span><b>Pin end</b></div>
+      <div class="startline-meta"><span>Bias 12&deg; (&asymp;206 m)</span><span>Line 1,006 m</span></div>
+      <div class="hr" style="margin:2px 0"></div>
+      <p class="note">The bias won in both of yesterday's races despite the pin sitting ~1,000 m off the course axis &mdash; take it, then get right.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h6>Fleet snapshot</h6>
+      <div class="seg" id="unitSeg">
+        <button class="seg-opt" data-unit="knots">kn</button>
+        <button class="seg-opt" data-unit="mps">m/s</button>
+      </div>
+    </div>
+    <div class="fleet-grid" id="fleetGrid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h6>Point of sail &amp; maneuvers</h6></div>
+    <div class="seg full" id="boatSeg" style="margin-bottom:var(--space-3)"></div>
+    <div class="card">
+      <table class="table">
+        <thead><tr><th></th><th style="text-align:right">Avg speed</th><th style="text-align:right">VMG</th><th style="text-align:right">% time</th></tr></thead>
+        <tbody id="pointOfSailBody"></tbody>
+      </table>
+      <div class="hr"></div>
+      <div class="loss-row" id="lossRow"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h6>Coach's read</h6>
+    <div class="card">
+      <div class="card-title">Take the bias, then get right</div>
+      <div class="coach-pt"><span class="bullet"></span><span>Right is stronger &mdash; the breeze bends against the shoreline &mdash; but never sacrifice 100&ndash;200 m of line bias just to get there.</span></div>
+      <div class="coach-pt"><span class="bullet"></span><span>If bias is visible at all on the line, it's probably worth more than anything else available on the first beat.</span></div>
+      <div class="coach-pt"><span class="bullet"></span><span>The pin sat about 1,000 m across the course axis in both races. Starting there only works if you can go right almost immediately.</span></div>
+      <div class="coach-pt"><span class="bullet"></span><span>Nothing on the beat gives the bias back &mdash; spend the pre-start gathering clues, not settling.</span></div>
+    </div>
+  </div>
+
+  <div class="section" style="padding-bottom:var(--space-2)">
+    <h6>Ask the analyser</h6>
+    <div class="card">
+      <div class="msgs" id="msgs" hidden></div>
+      <div class="chips" id="chips"></div>
+      <div class="chat-input-row">
+        <input class="input" id="chatInput" type="text" placeholder="Ask about the race&hellip;" autocomplete="off">
+        <button class="btn" id="sendBtn">Ask</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sourcenote">Vakaros Atlas telemetry &middot; Cascais, Portugal &middot; 38.68N 9.42W</div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var BOATS = [
+    { key:'roman', name:'Team Sweden', short:'SWE', isTeam:true, maxKn:16.3, avgKn:7.4, distNm:25.8,
+      up:{ avgKn:5.6, vmgKn:4.3, pct:63.1 }, down:{ avgKn:11.82, vmgKn:8.8, pct:30.4 },
+      tackCount:51, tackLossKn:1.02, gybeCount:35, gybeLossKn:2.35 },
+    { key:'patakin', name:'Patakin 3', short:'PAT', isTeam:false, maxKn:16.2, avgKn:7.5, distNm:26.0,
+      up:{ avgKn:5.65, vmgKn:4.37, pct:63.6 }, down:{ avgKn:11.83, vmgKn:8.95, pct:30.3 },
+      tackCount:33, tackLossKn:1.31, gybeCount:32, gybeLossKn:1.53 },
+    { key:'baba', name:'Ba ba', short:'BAB', isTeam:false, maxKn:15.9, avgKn:7.5, distNm:26.0,
+      up:{ avgKn:5.66, vmgKn:4.33, pct:65.0 }, down:{ avgKn:11.79, vmgKn:8.87, pct:30.4 },
+      tackCount:37, tackLossKn:1.02, gybeCount:26, gybeLossKn:2.86 },
+    { key:'tonessa', name:'To Nessa 1527', short:'TON', isTeam:false, maxKn:16.5, avgKn:7.5, distNm:25.9,
+      up:{ avgKn:5.57, vmgKn:4.32, pct:65.0 }, down:{ avgKn:11.9, vmgKn:8.9, pct:29.9 },
+      tackCount:37, tackLossKn:0.98, gybeCount:27, gybeLossKn:2.58 }
+  ];
+
+  var QA = [
+    { label:"Upwind VMG vs Patakin?", q:"How's our upwind VMG vs Patakin?", a:"Team Sweden's upwind VMG is 4.3 kn, just under Patakin 3's 4.37 kn — a 0.07 kn gap held over 63% of the beat." },
+    { label:"Tack loss trend?", q:"What's our tack loss trend?", a:"86 maneuvers logged: 51 tacks averaging 1.02 kn lost, 35 gybes averaging 2.35 kn lost — gybe losses are the bigger lever right now." },
+    { label:"Wind bias right now?", q:"Where's the wind bias right now?", a:"Corrected TWD is running 322°, about 18.6° left of the raw model. Right side has been paying all session." }
+  ];
+
+  var state = { selectedBoatKey:'roman', speedUnit:'knots', messages:[] };
+
+  function knToUnit(kn, unit){
+    return unit === 'mps' ? (kn * 0.514444).toFixed(1) + ' m/s' : kn.toFixed(1) + ' kn';
+  }
+  function esc(s){
+    var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+  }
+
+  var fleetGrid = document.getElementById('fleetGrid');
+  var unitSeg = document.getElementById('unitSeg');
+  var boatSeg = document.getElementById('boatSeg');
+  var posBody = document.getElementById('pointOfSailBody');
+  var lossRow = document.getElementById('lossRow');
+  var msgsEl = document.getElementById('msgs');
+  var chipsEl = document.getElementById('chips');
+  var windSpeedEl = document.getElementById('windSpeed');
+  var windGustEl = document.getElementById('windGust');
+
+  boatSeg.innerHTML = BOATS.map(function(b){
+    return '<button class="seg-opt" data-boat="' + b.key + '">' + b.short + '</button>';
+  }).join('');
+
+  chipsEl.innerHTML = QA.map(function(qa, i){
+    return '<button class="tag-outline" data-qa="' + i + '">' + esc(qa.label) + '</button>';
+  }).join('');
+
+  function render(){
+    var unit = state.speedUnit;
+
+    windSpeedEl.textContent = knToUnit(12.4, unit);
+    windGustEl.textContent = knToUnit(15.8, unit);
+
+    Array.prototype.forEach.call(unitSeg.querySelectorAll('.seg-opt'), function(el){
+      el.classList.toggle('active', el.dataset.unit === unit);
+    });
+
+    fleetGrid.innerHTML = BOATS.map(function(b){
+      return '<div class="boat-card' + (b.isTeam ? ' team' : '') + '">' +
+        '<div class="name">' + esc(b.name) + '</div>' +
+        '<div class="row"><span>Avg</span><b>' + knToUnit(b.avgKn, unit) + '</b></div>' +
+        '<div class="row"><span>Max</span><b>' + knToUnit(b.maxKn, unit) + '</b></div>' +
+        '<div class="row"><span>Dist</span><b>' + b.distNm.toFixed(1) + ' nm</b></div>' +
+        '</div>';
+    }).join('');
+
+    Array.prototype.forEach.call(boatSeg.querySelectorAll('.seg-opt'), function(el){
+      el.classList.toggle('active', el.dataset.boat === state.selectedBoatKey);
+    });
+
+    var sb = BOATS.find(function(b){ return b.key === state.selectedBoatKey; }) || BOATS[0];
+    posBody.innerHTML =
+      '<tr><td>Upwind</td><td style="text-align:right">' + knToUnit(sb.up.avgKn, unit) + '</td>' +
+      '<td style="text-align:right;color:var(--color-accent-700);font-weight:600">' + knToUnit(sb.up.vmgKn, unit) + '</td>' +
+      '<td style="text-align:right;color:var(--color-neutral-600)">' + sb.up.pct.toFixed(0) + '%</td></tr>' +
+      '<tr><td>Downwind</td><td style="text-align:right">' + knToUnit(sb.down.avgKn, unit) + '</td>' +
+      '<td style="text-align:right;color:var(--color-accent-700);font-weight:600">' + knToUnit(sb.down.vmgKn, unit) + '</td>' +
+      '<td style="text-align:right;color:var(--color-neutral-600)">' + sb.down.pct.toFixed(0) + '%</td></tr>';
+
+    lossRow.innerHTML =
+      '<div class="loss"><div class="lbl">Tacks (' + sb.tackCount + ')</div><div class="val">-' + knToUnit(sb.tackLossKn, unit) + '</div></div>' +
+      '<div class="loss"><div class="lbl">Gybes (' + sb.gybeCount + ')</div><div class="val">-' + knToUnit(sb.gybeLossKn, unit) + '</div></div>';
+
+    if (state.messages.length){
+      msgsEl.hidden = false;
+      msgsEl.innerHTML = state.messages.map(function(m){
+        return '<div class="msg-row ' + (m.isUser ? 'user' : 'assistant') + '">' +
+          '<div class="bubble ' + (m.isUser ? 'user' : 'assistant') + '">' + esc(m.text) + '</div></div>';
+      }).join('');
+    } else {
+      msgsEl.hidden = true;
+      msgsEl.innerHTML = '';
+    }
+  }
+
+  unitSeg.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-unit]');
+    if (!btn) return;
+    state.speedUnit = btn.dataset.unit;
+    render();
+  });
+
+  boatSeg.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-boat]');
+    if (!btn) return;
+    state.selectedBoatKey = btn.dataset.boat;
+    render();
+  });
+
+  chipsEl.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-qa]');
+    if (!btn) return;
+    var qa = QA[Number(btn.dataset.qa)];
+    state.messages = state.messages.concat([{ text: qa.q, isUser: true }, { text: qa.a, isUser: false }]);
+    render();
+  });
+
+  var chatInput = document.getElementById('chatInput');
+  var sendBtn = document.getElementById('sendBtn');
+
+  function sendChat(){
+    var text = chatInput.value.trim();
+    if (!text) return;
+    var hit = QA.find(function(qa){ return qa.q.toLowerCase() === text.toLowerCase(); });
+    var reply = hit ? hit.a : "Demo analyser — try one of the suggested questions above, or bring this one to the coach on shore.";
+    state.messages = state.messages.concat([{ text: text, isUser: true }, { text: reply, isUser: false }]);
+    chatInput.value = '';
+    render();
+  }
+  sendBtn.addEventListener('click', sendChat);
+  chatInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') sendChat();
+  });
+
+  render();
+})();
+</script>
