@@ -1,6 +1,6 @@
 {
  "source": "cncascais.com scored results + ib-sailing mark-progress standings",
- "updated": "09/09/2026 late evening",
+ "updated": "10/09/2026 morning",
  "races_scored": 4,
  "top": [
   {
@@ -59,26 +59,26 @@
    "pos": 5,
    "sail": "POR 1282",
    "boat": "Another Affair",
-   "pts": 46,
+   "pts": 47,
    "r": [
     7,
     18,
-    19,
+    20,
     2
    ],
    "gain": 40
   }
  ],
  "team": {
-  "pos": 27,
+  "pos": 29,
   "sail": "SWE 1121",
   "boat": "Garm",
   "skipper": "Per Roman",
   "r1": 16,
   "r2": 57,
   "r3": 10,
-  "r4": 48,
-  "pts": 131,
+  "r4": 50,
+  "pts": 133,
   "gain_total": 50,
   "gain_up": 3,
   "gain_down": 21
@@ -89,7 +89,7 @@
   "Aretê 1872 (BRA 1795 — Areté) 08-09-2026.vkx",
   "To Nessa 1527 (BRA 1527 — To Nessa) 08-09-2026.vkx"
  ],
- "race4_note": "Race 4 sailed and scored today (9 Sep); no ib-sailing wind/bias report published for it yet, and no team telemetry (vkx) for 9 Sep has synced to Drive or Downloads, so it cannot be added to the race-explorer or the bias calibration table this run.",
+ "race4_note": "Race 4 (9 Sep) is scored on cncascais.com but still has no ib-sailing wind/bias analysis page and no synced team telemetry, so it is not in the race explorer or the bias calibration table. Overnight the scored results were amended: Garm's race 4 went from 48th to 50th (total 131->133 pts, overall 27th->29th of 100), and Another Affair's race 3 moved 19th->20th (46->47 pts) -- a reminder that early-posted results can still move.",
  "telemetry": {
   "logs": 34,
   "day8": 30,
