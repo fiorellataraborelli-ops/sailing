@@ -970,7 +970,9 @@ function srPaint(){
   const yHi = Math.max(...ys), yLo = Math.min(...ys);
   const W = 640, H = 420, L = 34, Rr = 16, T = 30, B = 40;
   const px = x => L + (W - L - Rr) * Math.min(1, Math.max(0, x / lineM));
-  const py = d => T + (H - T - B) * (yHi - d) / ((yHi - yLo) || 1);
+  // boats sail up the screen: furthest behind the line at the bottom, across it at the top.
+  // the axis ran the other way, which also contradicted the labels either side of it.
+  const py = d => T + (H - T - B) * (d - yLo) / ((yHi - yLo) || 1);
   const lineY = py(0);
   const best = rows.reduce((a, b) => (b.behind60 > a.behind60 ? b : a), rows[0]);
 
