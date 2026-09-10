@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Start analysis for races 1 and 2 -> site/payload.json['start'].
+"""Start analysis for races 1-4 -> site/payload.json['start'].
 
 The coaching brief asks for four numbers at the gun — distance, time, speed,
 angle — and this is the one section never built, because the payload only ever
@@ -14,7 +14,9 @@ rather than a compass bearing nobody can act on.
 
 One figure needs the whole fleet rather than one boat: gap to the leader a
 minute after the gun, taken as windward progress along the wind axis relative
-to the best boat in the tracked fleet.
+to the best boat in the tracked fleet. On Tuesday that fleet is thirty boats;
+on Wednesday only four logged, so each row carries the n it was measured
+against and the page has to say so.
 """
 import sys, glob, os, json, re, math, datetime
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -24,15 +26,23 @@ from src.sailing_agents import start_line as sl
 
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DAY = '2026-09-08'
-WIND = {1: 317, 2: 314}          # measured first upwind, from the event reports
+# Which race each day's race windows belong to, in order — Wednesday's first
+# window is race 3 — and the measured first-upwind wind for each.
+RACE_OF_WINDOW = {'2026-09-08': {1: '1', 2: '2'}, '2026-09-09': {1: '3', 2: '4'}}
+WIND = {'1': 317, '2': 314, '3': 324, '4': 335}   # from the event reports
 MS = 1.9438444924406            # m/s -> knots
 MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá': 'Ba ba',
        'Aretê 1872': 'Areté', 'SASSY too': 'Sassy', 'Moore DRV - vakaros 2': 'Moore DRV',
        'TYRA VAKAROS': 'TYRA', 'To Nessa 1527': 'To Nessa', 'Patakin_3': 'Patakin 3',
        'JCurve2026': 'JCurve', 'Nautique J70': 'Nautique', 'Mike’s Vakaros': "Mike's Vakaros"}
-name = lambda n: MAP.get(re.sub(r'\s+\d+$', '', re.sub(r'\.vkx.*$', '', n)).strip(),
-                         re.sub(r'\s+\d+$', '', re.sub(r'\.vkx.*$', '', n)).strip())
+
+
+def name(fn):
+    """Boat from filename: drop the extension, then a trailing date, then a copy number."""
+    s = re.sub(r'\.vkx.*$', '', fn).strip()
+    s = re.sub(r'\s+\d{1,2}-\d{1,2}-\d{4}$', '', s).strip()   # "vakaros 9-9-2026"
+    s = re.sub(r'\s+\d+$', '', s).strip()                      # "vakaros 10"
+    return MAP.get(s, s)
 
 
 def cross_time_s(log, gun_ms, pin, boat, sign, window_s=180):
@@ -126,15 +136,16 @@ def main():
             continue
         day = datetime.datetime.fromtimestamp(log.positions[0][0] / 1000,
                                               datetime.timezone.utc).strftime('%Y-%m-%d')
-        if day != DAY:
+        if day not in RACE_OF_WINDOW:
             continue
         b = name(os.path.basename(p))
-        if b in seen:
+        if (day, b) in seen:
             continue
-        seen.add(b)
+        seen.add((day, b))
 
-        for rn, (s, e) in enumerate(rml.race_windows(log), 1):
-            if rn not in WIND:
+        for wi, (s, e) in enumerate(rml.race_windows(log), 1):
+            rn = RACE_OF_WINDOW[day].get(wi)
+            if rn is None:
                 continue
             a = sl.start_analysis(log, s)
             if not a:
@@ -144,7 +155,7 @@ def main():
             fix = sl.position_at(log, s)
             cog = math.degrees(fix[4]) % 360
             twa = abs(((cog - WIND[rn] + 180) % 360) - 180)
-            out.setdefault(str(rn), []).append({
+            out.setdefault(rn, []).append({
                 'boat': b,
                 'dist_m': a['distance_to_line_m'],
                 'late_s': cross_time_s(log, s, pin, cb, sign),
@@ -159,14 +170,15 @@ def main():
                 'line_m': a['line_length_m'],
             })
             print(f'  r{rn} {b:22} {a["distance_to_line_m"]:6.1f} m  '
-                  f'{str(out[str(rn)][-1]["late_s"]):>6} s  {a["sog_at_gun_kn"]:5.2f} kn  '
-                  f'twa {twa:5.1f}  +60s {out[str(rn)][-1]["gain60"]}')
+                  f'{str(out[rn][-1]["late_s"]):>6} s  {a["sog_at_gun_kn"]:5.2f} kn  '
+                  f'twa {twa:5.1f}  +60s {out[rn][-1]["gain60"]}')
 
     # gap to the best boat a minute after the gun
     for rn, rows in out.items():
         best = max((r['gain60'] for r in rows if r['gain60'] is not None), default=None)
         for r in rows:
             r['behind60'] = None if r['gain60'] is None or best is None else round(r['gain60'] - best)
+            r['n'] = len(rows)          # how many boats that gap was measured against
         rows.sort(key=lambda r: (r['behind60'] is None, -(r['behind60'] or 0)))
 
     pj = os.path.join(ROOT, 'site/payload.json')
@@ -179,7 +191,7 @@ def main():
                 'Time is measured by walking the track forward to the crossing, not distance '
                 'divided by speed. Angle is COG at the gun against the measured first-beat wind. '
                 'Behind at +60 s is windward progress along the wind axis against the best boat '
-                'in the tracked fleet.',
+                'in the tracked fleet — thirty boats on Tuesday, four on Wednesday.',
     }
     json.dump(D, open(pj, 'w'), ensure_ascii=False)
     print('\nwrote payload["start"]:', {k: len(v) for k, v in out.items()})

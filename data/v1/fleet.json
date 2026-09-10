@@ -419,5 +419,17 @@
   "upAvg": 5.43,
   "dnAvg": 13.89,
   "partial": true
+ },
+ {
+  "file": "Team Sweden (Roman)",
+  "day": "2026-09-09",
+  "t0": "12:09",
+  "t1": "18:53",
+  "fixes": 48443,
+  "nm": 37.5,
+  "mx": 19.8,
+  "avg": 5.59,
+  "upAvg": 4.56,
+  "dnAvg": 13.57
  }
 ]

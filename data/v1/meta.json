@@ -17,18 +17,19 @@
   "entries_note": "The event report gives both \"99 boats\" and \"a fleet of 100 boats\"; the scored results list 100. The 34 that appear repeatedly here are the subset the event publishes race analysis for, not the fleet.",
   "source": "sail-world.com day 1 report"
  },
- "generated_utc": "2026-09-10T10:52:09Z",
+ "generated_utc": "2026-09-10T12:07:11Z",
  "telemetry": {
   "logs": 34,
   "day8": 30,
-  "day9": 4,
+  "day9": 5,
   "day9_boats": [
    "J70 Let it be",
    "Mag",
+   "Team Sweden",
    "Yupi",
    "joust70"
   ],
-  "team_day9": false,
+  "team_day9": true,
   "note": "Decoded 9 Sep from ~/Downloads/Sailing Files. Two byte-identical duplicates skipped. Day assigned from the decoded timestamps, not the filenames — the download scrambled those, and several boats have a higher-numbered file for the EARLIER day.",
   "day9_races": [
    "12:55:00Z",

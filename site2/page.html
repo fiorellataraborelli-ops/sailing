@@ -928,7 +928,11 @@ function drawStartAnalysis(){
       `A minute later it was ${Math.abs(g.behind60)} m behind the best boat in the tracked fleet, ` +
       `${rank} of ${rows.length}.<br><br>` : '') +
     `${fast.boat} was quickest across at ${fast.sog.toFixed(2)} kn; ${pinEnd} of ${rows.length} boats ` +
-    `started in the pin third. Our line measures ${rows[0].line_m} m against the event's ` +
+    `started in the pin third.` +
+    (rows.length < 12 ? ` <b>Measured against ${rows.length} logs, not the full fleet</b> — the ` +
+      `distance, time, speed and angle are Garm's own and stand on their own; the rank and the ` +
+      `gap at +60 s are only against those ${rows.length}.` : '') +
+    ` Our line measures ${rows[0].line_m} m against the event's ` +
     `${sl ? sl.line_m.toLocaleString() : '—'} m — computed independently from the committee's own ` +
     `line rows.<br><br><span style="color:var(--faint);">${S.note}</span>`;
 }
@@ -1259,14 +1263,23 @@ function drawManoeuvres(){
   const mtk = med(rows.map(r => r.tk)), mgy = med(rows.map(r => r.gy));
   const rateOk = g && g.tloss != null && g.tloss <= mt;
   $('mv-note').innerHTML =
-    `<b>Fleet median: ${mt.toFixed(2)} kn a tack, ${mg.toFixed(2)} kn a gybe, over ` +
+    `<b>${rows.length < 12 ? 'Median of ' + rows.length + ' boats' : 'Fleet median'}: ` +
+    `${mt.toFixed(2)} kn a tack, ${mg.toFixed(2)} kn a gybe, over ` +
     `${mtk} tacks and ${mgy} gybes.</b> ` +
     (g ? `Garm gives away ${g.cost.toFixed(0)} kn across the race, ${rows.findIndex(r => r.team) + 1} ` +
-         `of ${rows.length} on total cost — but the rate is not the problem. Each tack costs ` +
-         `${g.tloss.toFixed(2)} kn against a median of ${mt.toFixed(2)}${rateOk ? ', better than the fleet' : ''}, ` +
-         `and each gybe ${g.gloss.toFixed(2)} against ${mg.toFixed(2)}. The total is high because there ` +
-         `are ${g.tk} tacks and ${g.gy} gybes against ${mtk} and ${mgy}: the manoeuvres are clean, there ` +
-         `are simply more of them. ` : '') +
+         `of ${rows.length} on total cost. Each tack costs ${g.tloss.toFixed(2)} kn against a median of ` +
+         `${mt.toFixed(2)}${rateOk ? ', better than the median' : ''}, and each gybe ` +
+         `${g.gloss.toFixed(2)} against ${mg.toFixed(2)}, over ${g.tk} tacks and ${g.gy} gybes ` +
+         `against ${mtk} and ${mgy}. ` +
+         // which half of the total is actually the problem varies by race, so let the
+         // numbers say it rather than asserting race 1's answer every time
+         (rateOk && g.tk + g.gy > mtk + mgy
+            ? `The manoeuvres are clean; there are simply more of them. `
+            : !rateOk && g.tk + g.gy <= mtk + mgy
+            ? `Fewer manoeuvres than the median, each one dearer — the cost is in the execution. `
+            : !rateOk
+            ? `Dearer than the median and more of them. `
+            : `Cleaner than the median and fewer of them. `) : '') +
     `<br><br><span style="color:var(--faint);">A manoeuvre is a settled crossing of the wind, not a ` +
     `speed dip, so surfing downwind does not inflate the gybe count. Cost is the speed lost through ` +
     `each one; total cost sums it over every manoeuvre, and is a comparison between boats rather ` +
@@ -1356,9 +1369,10 @@ function drawVmg(){
   const us = beats.find(x => x.b === D.meta.legteam);
   const med = beats[Math.floor(beats.length / 2)].l.vmg;
   const dr = D.legs.drivers[vRace] || {};
+  const small = beats.length < 12;
   $('vmg-tiles').innerHTML = [
     ['Garm VMG, beat 1', us ? sp2(us.l.vmg) : '—'],
-    ['Fleet median', sp2(med)],
+    [small ? 'Median of ' + beats.length : 'Fleet median', sp2(med)],
     ['Rank of ' + beats.length, us ? (beats.findIndex(x => x.b === D.meta.legteam) + 1) : '—'],
     ['Garm TWA', us ? us.l.twa.toFixed(1) + '°' : '—']
   ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
@@ -1375,7 +1389,12 @@ function drawVmg(){
       <span class="tnum">${l.min.toFixed(1)}</span><span class="tnum">${l.sog.toFixed(2)}</span>
       <span class="tnum" style="font-weight:700;">${l.vmg.toFixed(2)}</span><span class="tnum">${l.twa.toFixed(0)}°</span>
       <span class="tnum">${l.tacks}/${l.gybes}</span></div>`).join('');
-  $('vmg-note').innerHTML =
+  $('vmg-note').innerHTML = small ?
+    `<b>Garm's own numbers, measured the same way as Tuesday's.</b> Only ${beats.length} boats logged ` +
+    `this race, so the rank and the median beside it are against those ${beats.length} — the VMG, SOG ` +
+    `and TWA are Garm's and do not depend on who else logged. What the fleet did is in the event's ` +
+    `own leg tables above, which cover all 30.` +
+    `<br><br><span style="color:var(--faint);">Correlations are not shown: they need a fleet.</span>` :
     `<b>What actually separated the fleet on the first beat.</b> Across ${dr.n || beats.length} boats, ` +
     `true wind angle correlates with VMG at <b>r = ${dr.r_twa}</b> and extra distance at ` +
     `<b>${dr.r_extra}</b>. Tack count comes in at <b>${dr.r_tacks}</b> — the weakest of the three by ` +
@@ -1497,6 +1516,7 @@ function drawSeg(){
       <span class="tnum">${r.s60.toFixed(2)}</span>
       <span class="tnum" style="color:${r.hold >= .88 ? 'var(--deep)' : r.hold < .82 ? 'var(--red)' : 'inherit'};font-weight:700;">${r.hold.toFixed(3)}</span></div>`).join('');
   const g = D.segments.rows.find(r => r.team);
+  const V = D.segments.verify;
   const peaky = [...D.segments.rows].sort((a, b) => b.s0 - a.s0)[0];
   const best = [...D.segments.rows].sort((a, b) => b.hold - a.hold)[0];
   $('seg-note').innerHTML =
@@ -1507,6 +1527,10 @@ function drawSeg(){
     `lowest peaks and the best retention at ${(best.hold * 100).toFixed(0)}%.` +
     (g ? ` <b>Garm is ${g.rank0} of ${D.segments.rows.length} on raw peak but ${g.rankhold} on retention</b> — ` +
          `the boat holds speed better than it spikes.` : '') +
+    (V ? `<br><br><b>Checked against the instrument.</b> Recomputing Garm's row straight from the ` +
+         `Atlas log gives ${V.log.map(x => x.toFixed(2)).join(' / ')} kn against the event's ` +
+         `${V.event.map(x => x.toFixed(2)).join(' / ')} — ${V.exact} of 6 identical, ` +
+         `${V.max_diff_kn.toFixed(2)} kn worst case.` : '') +
     `<br><br><span style="color:var(--faint);">${D.segments.caveat}</span>`;
 }
 

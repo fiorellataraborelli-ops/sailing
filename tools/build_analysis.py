@@ -115,16 +115,24 @@ def build_compare(D):
     return out
 
 
+MIN_FOR_THIRDS = 12      # boats needed before splitting a start line into thirds
+
+
 def coach_test(D):
     """The coach's start-line rule, checked against where boats actually started.
 
     "If you see start line bias, it is most probably big enough to take it" and "RC boats
     cannot get it back" are testable: split each fleet by which third of the line it
     started in, and compare what happened over the next minute and the beat that followed.
+
+    Only for races with enough boats to split. Wednesday has four logs, which would put
+    one or two boats in a third and print the difference between them as a finding.
     """
     out = []
     sl = {r['n']: r for r in D['ib']['races']}
     for rn, rows in sorted(D.get('start', {}).get('races', {}).items()):
+        if len(rows) < MIN_FOR_THIRDS:
+            continue
         legs = D['legs']['races'].get(rn, {})
         r = sl[int(rn)]
         thirds = {}
@@ -167,10 +175,9 @@ def main():
     # Sunday 7 September was the abandoned practice day — no scored racing, no Garm log.
     # It is dropped rather than shown as a third tab nobody asked for.
     RACED = ('2026-09-08', '2026-09-09')
-    # Races 1 and 2 are the only ones with decoded telemetry. Race 3 has no logs at all
-    # and race 4 only the event's start and first upwind, so neither is shown.
-    # All four now: races 3 and 4 have no logs, but the event has published a full
-    # four-leg analysis of each, which is more than races 1 and 2 have from telemetry.
+    # All four races. Tuesday's two carry thirty logs each; Wednesday's two carry five,
+    # Garm's among them, plus the event's own published four-leg analysis. Anything
+    # measured against four boats rather than thirty says so where it is printed.
     TRACKED = (1, 2, 3, 4)
     # The wind card carries both days. Race 3 turned out to be a Wednesday race, not a
     # Tuesday one — the event's own report is dated 2026-09-09 — so Wednesday has two.
@@ -282,7 +289,8 @@ def main():
                                          'tk': leg_tacks(D, r['n'], b['b'])}
                                         for b in r['boats']]} for r in D['races']],
       'legs': {'races': D['legs']['races'], 'drivers': D['legs']['drivers']},
-      'segments': {'rows': segs, 'caveat': D['segments']['caveat']},
+      'segments': {'rows': segs, 'caveat': D['segments']['caveat'],
+                   'verify': D['segments'].get('verify')},
       'kpi': {'rows': D['kpi']['rows'], 'note': D['kpi']['note']},
       'coach': {'start': D['coach']['start'], 'mechanism': D['coach']['mechanism']},
       'start': {'races': {k: [{**r, 'team': r['boat'] == 'Team Sweden'} for r in v]
@@ -297,6 +305,7 @@ def main():
       'qa': qa,
     }
 
+    legteam = payload['meta']['legteam']
     html = open(os.path.join(ROOT, 'site2/page.html'), encoding='utf-8').read()
     html = html.replace('__DATA__', json.dumps(payload, ensure_ascii=False, separators=(',', ':')))
     for tok, fn in (('__HERO__', 'hero.jpg'), ('__IMG1__', 'crew.jpg'),
@@ -325,6 +334,22 @@ def main():
       # and the page must not present these figures as net
       'points not called net': ('Net points' not in html
                                if sum([t['r1'], t['r2'], t['r3'], t['r4']]) == t['pts'] else True),
+      # every race with a start also has legs, and vice versa — they come from
+      # separate scripts over the same logs and drifted apart once
+      'start and legs cover the same races':
+          set(D['start']['races']) == set(D['legs']['races']) == {str(r) for r in TRACKED},
+      # the team's own telemetry, on every race that has any
+      'the team is in every tracked race':
+          all(any(r.get('boat') == legteam
+                  for r in D['start']['races'].get(str(rn), [])) and
+              legteam in D['legs']['races'].get(str(rn), {}) for rn in TRACKED),
+      # correlations are only computed for fleets; a race without them must not
+      # reach the page still holding the template's undefined
+      'no undefined in the copy': 'undefined' not in html,
+      # the final run is cut at the finish, so it cannot be longer than the race
+      'no leg runs past its race':
+          all(sum(l['min'] for l in L) < 120
+              for R in D['legs']['races'].values() for L in R.values()),
     }
     bad = [k for k, v in checks.items() if not v]
     if bad:

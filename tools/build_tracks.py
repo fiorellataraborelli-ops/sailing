@@ -18,7 +18,7 @@ M = 111320.0
 def main():
     idx = json.load(open(os.path.join(ROOT, 'data/v1/tracks/index.json')))
     out = {}
-    for race in ('1', '2'):
+    for race in ('1', '2', '3', '4'):
         files = sorted(glob.glob(os.path.join(ROOT, f'data/v1/tracks/*-r{race}.json')))
         if not files:
             continue
@@ -56,7 +56,8 @@ def main():
             'dur_s': int(secs[len(secs) // 2]),
             'boats': boats,
             'marks': [[round((m['lon'] - lon0) * M * cs), round((m['lat'] - lat0) * M),
-                       m['after_leg'], m['spread_m']] for m in idx['marks_estimated'][race]],
+                       m['after_leg'], m['spread_m']]
+                      for m in idx['marks_estimated'].get(race, [])],
             'x0': min(allx), 'y0': min(ally),
             'w': max(allx) - min(allx), 'h': max(ally) - min(ally),
             'step_s': STEP_S,

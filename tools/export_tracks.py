@@ -1,28 +1,26 @@
 #!/usr/bin/env python3
 """Downsampled race tracks -> data/v1/tracks/.
 
-The full logs are 0.5 s and 34 files deep; nothing on a web page needs that.
+The full logs are 0.5 s and 35 files deep; nothing on a web page needs that.
 This writes one columnar JSON per boat per race at 2 s, tagged with the leg the
 fix belongs to, plus an estimated mark position per race taken as the median of
 every boat's leg boundary. Marks are inferred from track reversals, not
 recorded by the instrument, so they carry unknown error and are labelled as
 estimates everywhere they appear.
+
+Both race days. The track stops at the finish, not at the logger's RACE_END —
+build_legs.finish_ts finds it from the speed trace, and without it the last leg
+carries several minutes of sailing home.
 """
 import sys, glob, os, json, re, datetime, math, statistics as st
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.sailing_agents.vkx_parser import parse_file
 from src.sailing_agents import race_multi_leg as rml
+from tools.build_legs import RACE_OF_WINDOW, WIND, finish_ts, name
 
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data/v1/tracks')
 STEP_S = 2
-WIND = {1: [317, 323, 313, 317], 2: [314, 321, 313, 313], 3: [313, 316, 307, 316]}
-MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá': 'Ba ba',
-       'Aretê 1872': 'Areté', 'SASSY too': 'Sassy', 'Moore DRV - vakaros 2': 'Moore DRV',
-       'TYRA VAKAROS': 'TYRA', 'To Nessa 1527': 'To Nessa', 'Patakin_3': 'Patakin 3',
-       'JCurve2026': 'JCurve', 'Nautique J70': 'Nautique', 'Mike’s Vakaros': "Mike's Vakaros"}
-name = lambda n: MAP.get(re.sub(r'\s+\d+$', '', re.sub(r'\.vkx.*$', '', n)).strip(),
-                         re.sub(r'\s+\d+$', '', re.sub(r'\.vkx.*$', '', n)).strip())
 slug = lambda s: re.sub(r'[^a-z0-9]+', '-', s.lower()).strip('-')
 iso = lambda ms: datetime.datetime.fromtimestamp(ms / 1000, datetime.timezone.utc)\
                                   .strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -43,23 +41,32 @@ def main():
             continue
         day = datetime.datetime.fromtimestamp(log.positions[0][0] / 1000,
                                               datetime.timezone.utc).strftime('%Y-%m-%d')
-        if day != '2026-09-08':
+        if day not in RACE_OF_WINDOW:
             continue
         boat = name(os.path.basename(p))
-        if boat in seen:
+        if (day, boat) in seen:
             continue
-        seen.add(boat)
+        seen.add((day, boat))
 
-        for rn, (s, e) in enumerate(rml.race_windows(log), 1):
-            if rn > 3:
+        for wi, (s, e) in enumerate(rml.race_windows(log), 1):
+            rn = RACE_OF_WINDOW[day].get(wi)
+            if rn is None:
                 continue
-            race = rml.segment_race(log, s, e, rn, wind_deg=WIND.get(rn, WIND[1])[0])
-            if len(race.legs) < 3:
+            w = WIND[rn]
+            race = rml.segment_race(log, s, e, int(rn), wind_deg=w[0])
+            if len(race.legs) < 4:
                 continue
             legs = race.legs[:4]
             tr = [q for q in log.positions if s <= q[0] <= e]
             if not tr:
                 continue
+            # cut at the finish, so neither the track nor the mark estimate is
+            # polluted by the sail home
+            if legs[3].kind == 'run':
+                ft = finish_ts([q for q in tr if legs[3].start_ts_ms <= q[0] <= legs[3].end_ts_ms])
+                if ft and legs[3].end_ts_ms - ft > 45_000:
+                    legs[3].end_ts_ms = ft
+                    tr = [q for q in tr if q[0] <= ft]
 
             # leg index per fix: 1..4 inside a leg, 0 before the first / after the last
             def leg_of(ts):
@@ -83,13 +90,13 @@ def main():
                 tsec.append(round((q[0] - t0) / 1000, 1))
 
             rec = {
-                'boat': boat, 'race': rn, 'date': day,
+                'boat': boat, 'race': int(rn), 'date': day,
                 'start_utc': iso(t0), 'end_utc': iso(tr[-1][0]),
                 'step_s': STEP_S, 'n': len(lat),
                 'units': {'lat': 'deg', 'lon': 'deg', 't': 's since start_utc',
                           'sog': 'kn', 'cog': 'deg true', 'leg': '1-4, 0 = outside a leg'},
                 'legs': [{'n': i, 'kind': l.kind,
-                          'wind_deg': WIND.get(rn, WIND[1])[min(i - 1, 3)],
+                          'wind_deg': w[min(i - 1, 3)],
                           'start_utc': iso(l.start_ts_ms), 'end_utc': iso(l.end_ts_ms)}
                          for i, l in enumerate(legs, 1)],
                 't': tsec, 'lat': lat, 'lon': lon, 'sog': sog, 'cog': cog, 'leg': lg,
@@ -97,7 +104,7 @@ def main():
             fn = f'{slug(boat)}-r{rn}.json'
             with open(os.path.join(OUT, fn), 'w') as f:
                 json.dump(rec, f, separators=(',', ':'), ensure_ascii=False)
-            index.append({'boat': boat, 'race': rn, 'file': 'tracks/' + fn,
+            index.append({'boat': boat, 'race': int(rn), 'file': 'tracks/' + fn,
                           'n': len(lat), 'bytes': os.path.getsize(os.path.join(OUT, fn))})
 
             # leg boundaries -> estimated mark positions
@@ -110,7 +117,7 @@ def main():
     for (rn, i), pts in sorted(boundaries.items()):
         if len(pts) < 3:
             continue
-        marks.setdefault(str(rn), []).append({
+        marks.setdefault(rn, []).append({
             'after_leg': i,
             'lat': round(st.median(p[0] for p in pts), 6),
             'lon': round(st.median(p[1] for p in pts), 6),
@@ -124,7 +131,7 @@ def main():
     with open(os.path.join(OUT, 'index.json'), 'w') as f:
         json.dump({
             'note': 'One file per boat per race, columnar arrays of equal length.',
-            'step_s': STEP_S, 'date': '2026-09-08', 'n_files': len(index),
+            'step_s': STEP_S, 'dates': sorted(RACE_OF_WINDOW), 'n_files': len(index),
             'marks_estimated': marks,
             'marks_note': 'Median leg-boundary position across boats. The Atlas does not '
                           'record mark roundings, so these are inferred from track reversals; '

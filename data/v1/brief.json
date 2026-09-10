@@ -28,7 +28,7 @@
   "Wind outlook to Friday, three-model consensus, refreshed every three hours",
   "Race start resolved — anchor on the LAST timer event, not the first",
   "Boat identity resolved — Team Sweden is the vakaros logs, confirmed by byte-size match",
-  "Official finishing positions pulled from cncascais.com — Team Sweden (SWE 1121 Garm, Per Roman) finished 16th, 57th and 10th, 83 net points, 23rd overall after 3 races",
+  "Official finishing positions pulled from cncascais.com — Team Sweden (SWE 1121 Garm, Per Roman) finished 16th, 57th, 10th and 50th across four races, 133 net points, 29th overall of 100",
   "Start-line bias validated three times — pin favoured in every race, and our formula reproduces the event's own 107 m / 206 m / 137 m within 2% each time",
   "8 September telemetry expanded from 14 boats to 30 — near-complete against the event's 34-boat analysis set, so fleet-relative figures are now a real fleet comparison",
   "Places gained and lost now available per boat, split upwind and downwind, from the event mark-progress standings — the last unmeasured item on the race-analysis brief"
@@ -36,8 +36,7 @@
  "open": [
   "9 September has telemetry for only 3 boats (J70 Let it be, Mag, Yupi) — and Team Sweden's own log for today is not among them, so there is no analysis of the team's racing today",
   "Best and worst 60-second VMG windows are computed by leg_vmg but not yet surfaced on the page",
-  "Race 4 (9 Sep) is scored but has no ib-sailing analysis page yet, so it has no measured wind, no start-line bias and no bias calibration point",
-  "Race 4 (9 Sep) is scored on cncascais.com — Garm 48th in-race, 27th overall on 131 pts — but has no ib-sailing wind/bias analysis and no synced team telemetry yet, so it isn't in the race explorer or the bias calibration table.",
+  "Race 4 (9 Sep) now has a full ib-sailing analysis (start + both upwinds + both downwinds, wind 331→349°T across the beats) but still no measured-wind bias calibration point for it, since the historical GRIB reanalysis needed to compute that hasn't been pulled",
   "Wind-referenced VMG per leg. race_multi_leg reports a straight-line proxy, not VMG. The function already takes a wind_deg argument and the measured per-leg winds are known, so this is plumbing, not new machinery",
   "Race 3 (8 Sep) is analysed only from the event report — no leg tables here, because none of the 34 boats' race-3 telemetry has been decoded yet",
   "Official results are known per race now (3 races scored), but not yet joined boat-by-boat to the telemetry — the race explorer's order column is still last-rounding position, not the finish",

@@ -93,14 +93,15 @@
  "telemetry": {
   "logs": 34,
   "day8": 30,
-  "day9": 4,
+  "day9": 5,
   "day9_boats": [
    "J70 Let it be",
    "Mag",
+   "Team Sweden",
    "Yupi",
    "joust70"
   ],
-  "team_day9": false,
+  "team_day9": true,
   "note": "Decoded 9 Sep from ~/Downloads/Sailing Files. Two byte-identical duplicates skipped. Day assigned from the decoded timestamps, not the filenames — the download scrambled those, and several boats have a higher-numbered file for the EARLIER day.",
   "day9_races": [
    "12:55:00Z",

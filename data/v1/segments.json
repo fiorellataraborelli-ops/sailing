@@ -12,6 +12,36 @@
  "n": 30,
  "source": "transcribed from the event segment table for Wednesday 9 September",
  "caveat": "Boat speed, not VMG — a peak-and-hold measure, and a boat can post a big number reaching off in a gust without it being fast around the course. Two rows are labelled Sardonyx with different figures; the second is shown as Sardonyx (2) and one of them is likely a second device rather than a second boat.",
+ "verify": {
+  "boat": "Garm",
+  "windows": [
+   0,
+   5,
+   10,
+   20,
+   30,
+   60
+  ],
+  "event": [
+   19.8,
+   18.99,
+   18.56,
+   17.9,
+   17.8,
+   17.14
+  ],
+  "log": [
+   19.8,
+   18.94,
+   18.56,
+   17.9,
+   17.8,
+   17.14
+  ],
+  "max_diff_kn": 0.05,
+  "exact": 5,
+  "note": "The event publishes this table; these are the same six numbers recomputed from the Atlas log for the same day. They agree, which is also how the event's GARM row is confirmed to be this boat."
+ },
  "rows": [
   {
    "boat": "RelativeObscurity",
