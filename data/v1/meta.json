@@ -17,9 +17,9 @@
   "entries_note": "The event report gives both \"99 boats\" and \"a fleet of 100 boats\"; the scored results list 100. The 34 that appear repeatedly here are the subset the event publishes race analysis for, not the fleet.",
   "source": "sail-world.com day 1 report"
  },
- "generated_utc": "2026-09-10T12:15:29Z",
+ "generated_utc": "2026-09-10T17:31:17Z",
  "telemetry": {
-  "logs": 34,
+  "logs": 40,
   "day8": 30,
   "day9": 5,
   "day9_boats": [
@@ -42,6 +42,11 @@
    "what": "The unit recorded nothing until 16:32:48Z, 12.8 minutes after the 16:20:00Z gun.",
    "evidence": "The file parses byte-exact to EOF (416,547 of 416,547) and the position stream is clean — no dropouts, no zero-speed fixes. What is missing is the session, not the data: 0 line-position rows against 4,710 on a healthy log the same day, and 0 timer events against 13. The unit was logging normally once it started; it started late.",
    "cost": "No start line and no gun, so this log cannot join the start analysis or the leg segmentation. Its speed figures cover racing only, not a full session, so they are not comparable with the other rows and are kept out of the ranking."
-  }
+  },
+  "day10_boats": [
+   "Team Sweden"
+  ],
+  "day10": 4,
+  "team_day10": true
  }
 }

@@ -29,12 +29,12 @@
   "Race start resolved — anchor on the LAST timer event, not the first",
   "Boat identity resolved — Team Sweden is the vakaros logs, confirmed by byte-size match",
   "Official finishing positions pulled from cncascais.com — Team Sweden (SWE 1121 Garm, Per Roman) finished 16th, 57th, 10th and 50th across four races, 133 net points, 29th overall of 100",
-  "Start-line bias validated three times — pin favoured in every race, and our formula reproduces the event's own 107 m / 206 m / 137 m within 2% each time",
+  "Start-line bias validated across all four races — pin favoured every time, and our formula reproduces the event's own bias within 2%: 107 m (race 1), 206 m (race 2), 196 m (race 3), 60 m (race 4)",
   "8 September telemetry expanded from 14 boats to 30 — near-complete against the event's 34-boat analysis set, so fleet-relative figures are now a real fleet comparison",
   "Places gained and lost now available per boat, split upwind and downwind, from the event mark-progress standings — the last unmeasured item on the race-analysis brief"
  ],
  "open": [
-  "9 September has telemetry for only 3 boats (J70 Let it be, Mag, Yupi) — and Team Sweden's own log for today is not among them, so there is no analysis of the team's racing today",
+  "9 September telemetry now covers 5 boats (Team Sweden, J70 Let it be, Mag, Yupi, joust70 partial) — Team Sweden's own log has synced and races 3 and 4 are measured from it, but coverage is still far short of the 30-boat set decoded for 8 September, so fleet-relative figures for Wednesday racing remain thin",
   "Best and worst 60-second VMG windows are computed by leg_vmg but not yet surfaced on the page",
   "Race 4 (9 Sep) now has a full ib-sailing analysis (start + both upwinds + both downwinds, wind 331→349°T across the beats) but still no measured-wind bias calibration point for it, since the historical GRIB reanalysis needed to compute that hasn't been pulled",
   "Wind-referenced VMG per leg. race_multi_leg reports a straight-line proxy, not VMG. The function already takes a wind_deg argument and the measured per-leg winds are known, so this is plumbing, not new machinery",

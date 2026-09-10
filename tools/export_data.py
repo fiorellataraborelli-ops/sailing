@@ -79,8 +79,13 @@ FIELDS = {
     'calc_m': 'The same advantage from our own geometry: line_m x sin(bias_deg)',
     'favoured': 'Favoured end'},
   'official': {
-    'pos': 'Overall position', 'sail': 'Sail number', 'boat': 'Boat', 'pts': 'Total points — no discard has been applied at four races',
-    'r': 'Finishing position in each race', 'gain': 'Places won after the first windward mark'},
+    'pos': 'Overall position', 'sail': 'Sail number', 'boat': 'Boat',
+    'pts': 'Net points — the total with the worst race discarded',
+    'total': 'Total points before the discard',
+    'discard': 'Which race is discarded, 1-based',
+    'r': 'Finishing position in each race',
+    'codes': 'Scoring code per race where one applies (DNC, DNF, DSQ, PRP), else null',
+    'gain': 'Places won after the first windward mark, races 1-4 only'},
 }
 
 
@@ -156,11 +161,11 @@ def main():
               'and VMG from the logs. Nulls mean no data, never zero.')
 
     # --- official standings ----------------------------------------------
+    t = D['official']['team']
     add('official', D['official'], D['official']['top'] + [
-        {'pos': D['official']['team']['pos'], 'sail': D['official']['team']['sail'],
-         'boat': D['official']['team']['boat'], 'pts': D['official']['team']['pts'],
-         'r': [D['official']['team'][k] for k in ('r1', 'r2', 'r3', 'r4')],
-         'gain': D['official']['team']['gain_total']}], list(FIELDS['official']),
+        {'pos': t['pos'], 'sail': t['sail'], 'boat': t['boat'], 'pts': t['pts'],
+         'total': t.get('total'), 'discard': t.get('discard'), 'r': t.get('r'),
+         'codes': t.get('codes'), 'gain': t['gain_total']}], list(FIELDS['official']),
         about='Scored standings, not derived from telemetry.')
 
     # --- wind forecast ----------------------------------------------------

@@ -2,7 +2,7 @@
 
 J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry
 
-Generated 2026-09-10T12:15:29Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
+Generated 2026-09-10T17:31:17Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
 
 ## Conventions
 
@@ -18,20 +18,20 @@ Generated 2026-09-10T12:15:29Z. Every file here is a projection of the same anal
 | Dataset | Rows | JSON | CSV | What it is |
 |---|---:|---|---|---|
 | `meta` |  | `meta.json` | — | Venue, calibrated model bias, tacking angle, event dates and telemetry coverage. |
-| `fleet` | 36 | `fleet.json` | `fleet.csv` | One row per decoded .vkx log: session extent, fix count, distance and speed splits. |
-| `legs` | 264 | `legs.json` | `legs.csv` | Wind-referenced VMG per boat per leg, plus the correlations between each variable and first-beat VMG across the tracked fleet. |
+| `fleet` | 40 | `fleet.json` | `fleet.csv` | One row per decoded .vkx log: session extent, fix count, distance and speed splits. |
+| `legs` | 296 | `legs.json` | `legs.csv` | Wind-referenced VMG per boat per leg, plus the correlations between each variable and first-beat VMG across the tracked fleet. |
 | `races` | 25 | `races.json` | `races.csv` | Mark timings, speed splits and start-line position per boat per race, with the race header (gun, line length and bearing, measured wind) alongside. |
 | `segments` | 30 | `segments.json` | `segments.csv` | Maximum speed held over rolling windows, 9 Sep. Transcribed from the event's published table; the hold ratio and ranks are derived here. |
 | `kpi` | 6 | `kpi.json` | `kpi.csv` | Top five and the client boat joined across scored results, the segment table and VMG from the logs. Nulls mean no data, never zero. |
 | `official` | 6 | `official.json` | `official.csv` | Scored standings, not derived from telemetry. |
 | `wind` | 24 | `wind.json` | `wind.csv` | Three-model consensus at the race area, hourly 11:00-18:00 UTC, refreshed every three hours. Raw and bias-corrected direction side by side. |
-| `bias` | 4 | `bias.json` | `bias.csv` | GRIB forecast against wind measured on the water, per race. This is where the +16.1 deg correction comes from, and it is not a constant. |
-| `startline` | 4 | `startline.json` | `startline.csv` | Line geometry per race, with the event's published advantage beside the one our own formula produces from the geometry alone. |
-| `wind_by_leg` | 4 | `wind_by_leg.json` | `wind_by_leg.csv` | Wind bearing measured on each leg of each race by the event. |
-| `daycompare` | 4 | `daycompare.json` | `daycompare.csv` | Boats with a log on both 8 and 9 Sep — same hulls, same crews, different breeze. |
+| `bias` | 6 | `bias.json` | `bias.csv` | GRIB forecast against wind measured on the water, per race. This is where the +16.1 deg correction comes from, and it is not a constant. |
+| `startline` | 6 | `startline.json` | `startline.csv` | Line geometry per race, with the event's published advantage beside the one our own formula produces from the geometry alone. |
+| `wind_by_leg` | 6 | `wind_by_leg.json` | `wind_by_leg.csv` | Wind bearing measured on each leg of each race by the event. |
+| `daycompare` | 2 | `daycompare.json` | `daycompare.csv` | Boats with a log on both 8 and 9 Sep — same hulls, same crews, different breeze. |
 | `coach` |  | `coach.json` | — | Coaching notes, transcribed. Not measured, and labelled as such. |
 | `brief` |  | `brief.json` | — | The analysis requirements, with what is validated and what is open. |
-| `tracks` | 66 | `tracks/index.json` | — | Position, SOG, COG and leg index at 2 s for every boat in races 1 and 2, one columnar file per boat per race, plus estimated mark positions. This is what a course plan view or a polar scatter is drawn from. |
+| `tracks` | 74 | `tracks/index.json` | — | Position, SOG, COG and leg index at 2 s for every boat in races 1 and 2, one columnar file per boat per race, plus estimated mark positions. This is what a course plan view or a polar scatter is drawn from. |
 
 ## Field dictionary
 
@@ -129,9 +129,12 @@ Generated 2026-09-10T12:15:29Z. Every file here is a projection of the same anal
 | `pos` | Overall position |
 | `sail` | Sail number |
 | `boat` | Boat |
-| `pts` | Total points — no discard has been applied at four races |
+| `pts` | Net points — the total with the worst race discarded |
+| `total` | Total points before the discard |
+| `discard` | Which race is discarded, 1-based |
 | `r` | Finishing position in each race |
-| `gain` | Places won after the first windward mark |
+| `codes` | Scoring code per race where one applies (DNC, DNF, DSQ, PRP), else null |
+| `gain` | Places won after the first windward mark, races 1-4 only |
 
 ### `wind`
 

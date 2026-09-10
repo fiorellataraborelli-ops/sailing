@@ -26,20 +26,49 @@ MS = 1.9438444924406
 # Which race each day's race windows belong to, in order. Explicit rather than
 # "window n = race n": Wednesday's first window is race 3, and one Tuesday boat
 # leaves a spare window behind that would otherwise be scored as a race.
-RACE_OF_WINDOW = {'2026-09-08': {1: '1', 2: '2'}, '2026-09-09': {1: '3', 2: '4'}}
+RACE_OF_WINDOW = {'2026-09-08': {1: '1', 2: '2'}, '2026-09-09': {1: '3', 2: '4'},
+                  '2026-09-10': {1: '5', 2: '6'}}
+# Races 1-4 take their wind from the event's published leg analysis. Races 5 and 6
+# have no published analysis yet, so these are measured from the tracks themselves by
+# wind_from_track.leg_wind, which reproduces the published figures for races 1-4 to a
+# mean of 0.9 deg. WIND_SOURCE keeps the distinction visible all the way to the page.
 WIND = {'1': [317, 323, 313, 317], '2': [314, 321, 313, 313],
-        '3': [324, 327, 326, 332], '4': [335, 341, 342, 349]}
+        '3': [324, 327, 326, 332], '4': [335, 341, 342, 349],
+        '5': [323, 332, 332, 334], '6': [354, 354, 349, 352]}
+WIND_SOURCE = {r: ('event report' if r in ('1', '2', '3', '4') else 'measured from the tracks')
+               for r in WIND}
+# The fleet's own disagreement on each measured leg, degrees between the highest and
+# lowest boat. Race 5's first run is the one loose figure and must not be quoted as
+# though it were as solid as the beats.
+WIND_SPREAD = {'5': [5, 41, 6, 4], '6': [3, 6, 3, 4]}
 MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá': 'Ba ba',
        'Aretê 1872': 'Areté', 'SASSY too': 'Sassy', 'Moore DRV - vakaros 2': 'Moore DRV',
-       'TYRA VAKAROS': 'TYRA', 'To Nessa 1527': 'To Nessa', 'Patakin_3': 'Patakin 3',
-       'JCurve2026': 'JCurve', 'Nautique J70': 'Nautique', 'Mike’s Vakaros': "Mike's Vakaros"}
+       'TYRA VAKAROS': 'TYRA', 'TYRA VAKAROS2': 'TYRA', 'To Nessa 1527': 'To Nessa',
+       'Patakin_3': 'Patakin 3', 'JCurve2026': 'JCurve', 'Nautique J70': 'Nautique',
+       'Vamos September 2024': 'Vamos', 'Mike’s Vakaros': "Mike's Vakaros"}
+# "8-9-2026", "08.09.2026" and "2026-09-08" all appear as filename suffixes
+DATE = re.compile(r'\s+(?:\d{1,2}[-.]\d{1,2}[-.]\d{4}|\d{4}-\d{2}-\d{2})$')
 
 
 def name(fn):
-    """Boat from filename: drop the extension, then a trailing date, then a copy number."""
+    """Boat from filename, peeling one suffix at a time.
+
+    The alias table is consulted after every peel, not only at the end. Peeling
+    first meant any boat whose real name ends in a digit could never match:
+    "Moore DRV - vakaros 2 10-9-2026.vkx" lost the 2 before the lookup and came out
+    as "Moore DRV - vakaros", while the same boat's undated file matched fine. The
+    two then read as different boats.
+    """
     s = re.sub(r'\.vkx.*$', '', fn).strip()
-    s = re.sub(r'\s+\d{1,2}-\d{1,2}-\d{4}$', '', s).strip()   # "vakaros 9-9-2026"
-    s = re.sub(r'\s+\d+$', '', s).strip()                      # "vakaros 10"
+    for _ in range(4):
+        if s in MAP:
+            return MAP[s]
+        peeled = DATE.sub('', s).strip()
+        if peeled == s:
+            peeled = re.sub(r'\s+\d+$', '', s).strip()      # a copy number: "vakaros 10"
+        if peeled == s:
+            break
+        s = peeled
     return MAP.get(s, s)
 
 
@@ -140,8 +169,10 @@ def main():
                              'gloss': round(st.mean([x['loss_kn'] for x in gy]), 2) if gy else None})
             races.setdefault(rn, {})[b] = legs
 
-    out = {'source': 'race_multi_leg segmentation + leg_vmg, per-leg winds from the event reports',
+    out = {'source': 'race_multi_leg segmentation + leg_vmg; per-leg winds from the event '
+                     'reports for races 1-4 and measured from the tracks for 5-6',
            'races': races, 'drivers': {}, 'steady_window_s': STEADY_WINDOW_S,
+           'wind_source': WIND_SOURCE, 'wind_spread': WIND_SPREAD,
            'note': 'The fourth leg is cut at the finish, detected as the boat coming off the '
                    'plane, not at the logger\'s RACE_END — that runs on into the sail home. '
                    'Checked against the event\'s published leg times for races 3 and 4: about '

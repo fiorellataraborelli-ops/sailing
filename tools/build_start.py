@@ -28,8 +28,11 @@ SRC = os.path.expanduser('~/Downloads/Sailing Files')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Which race each day's race windows belong to, in order — Wednesday's first
 # window is race 3 — and the measured first-upwind wind for each.
-RACE_OF_WINDOW = {'2026-09-08': {1: '1', 2: '2'}, '2026-09-09': {1: '3', 2: '4'}}
-WIND = {'1': 317, '2': 314, '3': 324, '4': 335}   # from the event reports
+RACE_OF_WINDOW = {'2026-09-08': {1: '1', 2: '2'}, '2026-09-09': {1: '3', 2: '4'},
+                  '2026-09-10': {1: '5', 2: '6'}}
+# First-upwind wind: published by the event for races 1-4, measured from the tracks
+# for 5 and 6 (see build_legs.WIND and wind_from_track).
+WIND = {'1': 317, '2': 314, '3': 324, '4': 335, '5': 323, '6': 354}
 MS = 1.9438444924406            # m/s -> knots
 MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá': 'Ba ba',
        'Aretê 1872': 'Areté', 'SASSY too': 'Sassy', 'Moore DRV - vakaros 2': 'Moore DRV',
@@ -191,7 +194,8 @@ def main():
                 'Time is measured by walking the track forward to the crossing, not distance '
                 'divided by speed. Angle is COG at the gun against the measured first-beat wind. '
                 'Behind at +60 s is windward progress along the wind axis against the best boat '
-                'in the tracked fleet — thirty boats on Tuesday, four on Wednesday.',
+                'in the tracked fleet: ' + ', '.join(f'{len(v)} in race {k}'
+                                                     for k, v in sorted(out.items())) + '.',
     }
     json.dump(D, open(pj, 'w'), ensure_ascii=False)
     print('\nwrote payload["start"]:', {k: len(v) for k, v in out.items()})

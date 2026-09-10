@@ -13,12 +13,14 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMG = os.path.join(ROOT, 'site2/img')
 OUT = os.path.join(ROOT, 'race-analysis.html')
 
-DAY_LABEL = {'2026-09-08': 'Tue 8 Sep', '2026-09-09': 'Wed 9 Sep'}
+DAY_LABEL = {'2026-09-08': 'Tue 8 Sep', '2026-09-09': 'Wed 9 Sep', '2026-09-10': 'Thu 10 Sep'}
 DAY_NOTE = {
   '2026-09-08': 'Races 1 and 2. Thirty boats decode here against the event\'s own 34-boat '
                 'analysis set, so fleet-relative figures are a real fleet comparison.',
-  '2026-09-09': 'Three full logs and one partial, and Garm\'s is not among them — so there is no '
-                'telemetry for the team\'s racing, only the fleet\'s speed segments.',
+  '2026-09-09': 'Races 3 and 4. Four full logs and one partial, Garm\'s among them, plus the '
+                'event\'s own four-leg analysis of both races covering all thirty boats.',
+  '2026-09-10': 'Races 5 and 6. Four logs, Garm\'s among them, and no event report yet — the '
+                'wind on each leg and the line\'s bias are measured from the tracks.',
 }
 fold = lambda s: ud.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
 
@@ -242,14 +244,16 @@ def main():
     # fleet, one row per log, flagged for the client boat
     # Sunday 7 September was the abandoned practice day — no scored racing, no Garm log.
     # It is dropped rather than shown as a third tab nobody asked for.
-    RACED = ('2026-09-08', '2026-09-09')
-    # All four races. Tuesday's two carry thirty logs each; Wednesday's two carry five,
-    # Garm's among them, plus the event's own published four-leg analysis. Anything
-    # measured against four boats rather than thirty says so where it is printed.
-    TRACKED = (1, 2, 3, 4)
-    # The wind card carries both days. Race 3 turned out to be a Wednesday race, not a
-    # Tuesday one — the event's own report is dated 2026-09-09 — so Wednesday has two.
-    WIND_RACES = (1, 2, 3, 4)
+    RACED = ('2026-09-08', '2026-09-09', '2026-09-10')
+    # All six. Tuesday's two carry thirty logs each; Wednesday's and Thursday's carry
+    # four or five, Garm's among them, and Wednesday also has the event's own published
+    # four-leg analysis. Anything measured against four boats rather than thirty says so
+    # where it is printed.
+    TRACKED = (1, 2, 3, 4, 5, 6)
+    # The wind card carries every racing day. Race 3 turned out to be a Wednesday race,
+    # not a Tuesday one — the event's own report is dated 2026-09-09 — so Wednesday has
+    # two, and Thursday's two are derived from the logs rather than a published report.
+    WIND_RACES = TRACKED
     fleet = [{'name': f['file'], 'day': f['day'], 'avg': f['avg'], 'up': f['upAvg'],
               'dn': f['dnAvg'], 'mx': f['mx'], 'nm': f['nm'],
               't0': f['t0'], 't1': f['t1'], 'fixes': f['fixes'],
@@ -275,14 +279,17 @@ def main():
             # 13:34:52, which puts every tracked boat mid-race
             'n': r['n'], 'gun': guns.get(r['n']) or r.get('start_local'),
             'forecast': b.get('forecast'), 'measured': b.get('measured'),
-            'bias': b.get('bias'), 'setting': r['setting'], 'legs': r['legs']})
+            'bias': b.get('bias'), 'setting': r['setting'], 'legs': r['legs'],
+            # races with no event report: wind and line geometry measured from the logs
+            'derived': 'source' in r})
     wind_days = [{'date': d, 'label': DAY_LABEL.get(d, d), 'races': rs}
                  for d, rs in sorted(by_day.items())]
 
     # start line, from the event's published geometry
     startline = [{'race': r['n'], 'setting': r['setting'], 'line_m': r['line_m'],
                   'bias_deg': r['bias_deg'], 'bias_m': r['bias_m'], 'calc_m': r['calc_m'],
-                  'favoured': r['favoured']} for r in D['ib']['races'] if r['n'] in TRACKED]
+                  'favoured': r['favoured'], 'derived': 'source' in r}
+                 for r in D['ib']['races'] if r['n'] in TRACKED]
 
     # segments, flagged and renamed for the client boat
     segs = []
@@ -343,8 +350,10 @@ def main():
             f"in the manoeuvres."},
       {'label': 'Official standing?', 'k': ['standing', 'result', 'position', 'points', 'overall'],
        'q': "What's our official standing?",
-       'a': f"{t['pos']}th of {D['official']['fleet_scored']} on {t['pts']} net points after "
-            f"{D['official']['races_scored']} races — {t['r1']}, {t['r2']}, {t['r3']}, {t['r4']}. "
+       'a': f"{t['pos']}th of {D['official']['fleet_scored']} on {t['pts']:g} net points from "
+            f"{t['total']:g} total after {D['official']['races_scored']} races — "
+            f"{' · '.join(t['scores'])}, the starred one discarded. Best race a "
+            f"{t['best']:g} in race {t['r'].index(t['best']) + 1}. "
             f"{t['sail']}, {t['boat']}, skippered by {t['skipper']}."},
       {'label': 'How fast is the boat really?', 'k': ['fast', 'speed', 'peak', 'hold', 'segment'],
        'q': 'How fast is the boat really?',
@@ -362,9 +371,13 @@ def main():
                    # only the field the page prints; the event's end date is not shown
                    'event': {'dates': D['official']['event']['dates']},
                    'day9_races': D['official']['telemetry'].get('day9_races', []),
+                   'discard': D['official'].get('discard_applied', False),
+                   'gainRaces': D['official'].get('gain_races'),
                    'team': {'pos': t['pos'], 'sail': t['sail'], 'boat': t['boat'],
-                            'skipper': t['skipper'], 'pts': t['pts'], 'gain': t['gain_total'],
-                            'races': [t['r1'], t['r2'], t['r3'], t['r4']]}},
+                            'skipper': t['skipper'], 'pts': t['pts'], 'total': t['total'],
+                            'gain': t['gain_total'], 'moved': t.get('moved', 0),
+                            'best': t['best'], 'discardRace': t['discard'],
+                            'races': t['r'], 'scores': t['scores']}},
       'wind': {'days': wind_days, 'note': D['coach']['mechanism']},
       'fleet': fleet,
       'dayLabel': DAY_LABEL, 'dayNote': DAY_NOTE,
@@ -405,8 +418,9 @@ def main():
       'only tracked races': all(r['n'] in WIND_RACES for d in wind_days for r in d['races'])
                             and all(r['race'] in TRACKED for r in startline),
       'wind days all raced': all(d['date'] in RACED and d['races'] for d in wind_days),
-      'no unraced days': '2026-09-10' not in html and '2026-09-11' not in html
-                         and '2026-09-12' not in html and '2026-09-07' not in html,
+      # Thursday is now a racing day; Friday and Saturday are not yet, and Sunday
+      # 7 September was the abandoned practice day.
+      'no unraced days': all(d not in html for d in ('2026-09-11', '2026-09-12', '2026-09-07')),
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,
       # a .gridhead and the row template it labels must declare the same columns —
       # they drifted once and nothing complained
@@ -418,10 +432,16 @@ def main():
       'a viewport declared': 'name="viewport" content="width=device-width' in html,
       # nothing supplies a charset when Netlify serves this file raw
       'a charset declared': html.lstrip().startswith('<meta charset="utf-8">'),
-      # every boat's points equal the sum of its finishes, so nothing is discarded yet
-      # and the page must not present these figures as net
-      'points not called net': ('Net points' not in html
-                               if sum([t['r1'], t['r2'], t['r3'], t['r4']]) == t['pts'] else True),
+      # Through four races nothing was discarded, so the page had to say total, not
+      # net. From five races on a discard is applied and net and total differ — the
+      # page must then show both, and must not call the total "net".
+      'points labelled for the scoring in force':
+          (('Net points' in html and 'Total points' in html)
+           if D['official'].get('discard_applied') else ('Net points' not in html)),
+      # a day with no label reached the wind card as a raw ISO date
+      'every racing day has a name': all(d in DAY_LABEL and d in DAY_NOTE for d in RACED),
+      'the standing says how many races it covers':
+          f"after {D['official']['races_scored']} races" in html.lower(),
       # every race with a start also has legs, and vice versa — they come from
       # separate scripts over the same logs and drifted apart once
       'start and legs cover the same races':

@@ -1,87 +1,212 @@
 {
- "source": "cncascais.com scored results + ib-sailing mark-progress standings",
- "updated": "10/09/2026 morning",
- "races_scored": 4,
+ "source": "cncascais.com scored results (fetched, not transcribed) + ib-sailing mark-progress standings for races 1-4",
+ "updated": "10/09/2026 17:24 UTC",
+ "races_scored": 6,
  "top": [
   {
    "pos": 1,
-   "sail": "ESP 1283",
-   "boat": "Marnatura",
-   "pts": 20,
+   "sail": "BRA 641",
+   "boat": "Oceanpact - Viking",
+   "pts": 27.0,
+   "total": 44.0,
    "r": [
-    4,
-    8,
-    5,
-    3
+    9.0,
+    1.0,
+    17.0,
+    4.0,
+    8.0,
+    5.0
    ],
-   "gain": 23
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 3,
+   "scores": [
+    "9",
+    "1",
+    "17*",
+    "4",
+    "8",
+    "5"
+   ]
   },
   {
    "pos": 2,
-   "sail": "BRA 641",
-   "boat": "Oceanpact - Viking",
-   "pts": 31,
+   "sail": "USA 169",
+   "boat": "Empeiria",
+   "pts": 30.0,
+   "total": 87.3,
    "r": [
-    9,
-    1,
-    17,
-    4
+    17.0,
+    57.3,
+    2.0,
+    5.0,
+    5.0,
+    1.0
    ],
-   "gain": 45
+   "codes": [
+    null,
+    "PRP",
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 2,
+   "scores": [
+    "17",
+    "PRP 57.3*",
+    "2",
+    "5",
+    "5",
+    "1"
+   ]
   },
   {
    "pos": 3,
-   "sail": "BRA 1795",
-   "boat": "Areté",
-   "pts": 38,
+   "sail": "ESP 1283",
+   "boat": "Marnatura",
+   "pts": 38.0,
+   "total": 63.0,
    "r": [
-    13,
-    9,
-    7,
-    9
+    4.0,
+    8.0,
+    5.0,
+    3.0,
+    18.0,
+    25.0
    ],
-   "gain": 2
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 6,
+   "scores": [
+    "4",
+    "8",
+    "5",
+    "3",
+    "18",
+    "25*"
+   ]
   },
   {
    "pos": 4,
-   "sail": "POR 284",
-   "boat": "Navis Portugal",
-   "pts": 44,
+   "sail": "USA 26",
+   "boat": "MidlifeCrisis",
+   "pts": 52.0,
+   "total": 85.0,
    "r": [
-    20,
-    10,
-    6,
-    8
+    21.0,
+    6.0,
+    3.0,
+    18.0,
+    33.0,
+    4.0
    ],
-   "gain": 10
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 5,
+   "scores": [
+    "21",
+    "6",
+    "3",
+    "18",
+    "33*",
+    "4"
+   ]
   },
   {
    "pos": 5,
-   "sail": "POR 1282",
-   "boat": "Another Affair",
-   "pts": 47,
+   "sail": "USA 1047",
+   "boat": "Good to Go",
+   "pts": 58.0,
+   "total": 103.0,
    "r": [
-    7,
-    18,
-    20,
-    2
+    18.0,
+    4.0,
+    13.0,
+    13.0,
+    45.0,
+    10.0
    ],
-   "gain": 40
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 5,
+   "scores": [
+    "18",
+    "4",
+    "13",
+    "13",
+    "45*",
+    "10"
+   ]
   }
  ],
  "team": {
-  "pos": 29,
+  "pos": 15,
   "sail": "SWE 1121",
   "boat": "Garm",
   "skipper": "Per Roman",
-  "r1": 16,
-  "r2": 57,
-  "r3": 10,
-  "r4": 50,
-  "pts": 133,
+  "r1": 16.0,
+  "r2": 57.0,
+  "r3": 10.0,
+  "r4": 50.0,
+  "pts": 115.0,
   "gain_total": 50,
   "gain_up": 3,
-  "gain_down": 21
+  "gain_down": 21,
+  "total": 172.0,
+  "r": [
+   16.0,
+   57.0,
+   10.0,
+   50.0,
+   2.0,
+   37.0
+  ],
+  "codes": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "discard": 2,
+  "scores": [
+   "16",
+   "57*",
+   "10",
+   "50",
+   "2",
+   "37"
+  ],
+  "best": 2.0,
+  "moved": 14,
+  "r5": 2.0,
+  "r6": 37.0
  },
  "fleet_scored": 100,
  "drive_new": [
@@ -89,9 +214,9 @@
   "Aretê 1872 (BRA 1795 — Areté) 08-09-2026.vkx",
   "To Nessa 1527 (BRA 1527 — To Nessa) 08-09-2026.vkx"
  ],
- "race4_note": "Races 3 and 4 were both sailed on Wednesday and both are scored. The event has now published a full four-leg analysis for each. No Garm telemetry for 9 September has synced, so neither race has decoded logs here.",
+ "race4_note": "Six races scored, one discard. Garm is 15th on 115 net from 172 total, discarding race 2 (57). Race 5 is a 2nd — the best of the regatta — and the team has moved from 29th after 4 races to 15th after 6.",
  "telemetry": {
-  "logs": 34,
+  "logs": 40,
   "day8": 30,
   "day9": 5,
   "day9_boats": [
@@ -114,7 +239,12 @@
    "what": "The unit recorded nothing until 16:32:48Z, 12.8 minutes after the 16:20:00Z gun.",
    "evidence": "The file parses byte-exact to EOF (416,547 of 416,547) and the position stream is clean — no dropouts, no zero-speed fixes. What is missing is the session, not the data: 0 line-position rows against 4,710 on a healthy log the same day, and 0 timer events against 13. The unit was logging normally once it started; it started late.",
    "cost": "No start line and no gun, so this log cannot join the start analysis or the leg segmentation. Its speed figures cover racing only, not a full session, so they are not comparable with the other rows and are kept out of the ranking."
-  }
+  },
+  "day10_boats": [
+   "Team Sweden"
+  ],
+  "day10": 4,
+  "team_day10": true
  },
  "event": {
   "dates": "4–12 September 2026",
@@ -123,5 +253,7 @@
   "entries_note": "The event report gives both \"99 boats\" and \"a fleet of 100 boats\"; the scored results list 100. The 34 that appear repeatedly here are the subset the event publishes race analysis for, not the fleet.",
   "source": "sail-world.com day 1 report"
  },
- "gain_def": "Places won between the first windward mark and the finish — the estimated Windward 1 position minus the official finish, summed over the races."
+ "gain_def": "Places won between the first windward mark and the finish — the estimated Windward 1 position minus the official finish, summed over races 1-4. The event has not published mark progress for races 5-6.",
+ "discard_applied": true,
+ "gain_races": 4
 }

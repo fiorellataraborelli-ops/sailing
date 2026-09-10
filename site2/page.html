@@ -391,7 +391,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   <section id="summary" data-tab="team" class="rd-card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
       <div>
-        <div style="font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;">Standing after 4 races</div>
+        <div id="sum-label" style="font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;">Standing</div>
         <div class="cg" style="font-weight:700;font-size:34px;margin-top:2px;" id="sum-pos">&mdash;</div>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;" id="sum-stats"></div>
@@ -758,11 +758,17 @@ function seg(el, items, active, onPick){
 function drawSummary(){
   const t = D.official.team, e = D.official.event;
   $('sum-pos').innerHTML = `${ord(t.pos)}<span style="font-size:15px;color:var(--faint);font-family:Lora,serif;font-weight:500;"> / ${D.official.fleet}</span>`;
-  // Every boat's points equal the sum of its races, so no discard has been applied.
-  // Calling this "net" would imply the series is settled; it is not.
-  const discard = Math.max(...t.races);
-  const stats = [['Total points', t.pts], ['Races', t.races.join(' · ')],
-                 ['Places gained', '+' + t.gain]];
+  // Whether a discard is in force changes what these numbers mean, so the label
+  // follows the scoring rather than being written into the markup. Through four races
+  // net and total were the same figure and calling it "net" would have implied a
+  // settled series; from five races on they differ and both belong here.
+  const D6 = D.official.discard;
+  $('sum-label').textContent = `Standing after ${D.official.races} races`;
+  const stats = D6
+    ? [['Net points', t.pts], ['Total points', t.total],
+       ['Races', (t.scores || t.races).join(' · ')], ['Places gained', '+' + t.gain]]
+    : [['Total points', t.pts], ['Races', t.races.join(' · ')],
+       ['Places gained', '+' + t.gain]];
   $('sum-stats').innerHTML = stats.map(([k, v], i) =>
     `<div style="text-align:right;"><div style="font-size:12px;color:var(--faint);font-weight:600;">${k}</div>` +
     `<div class="tnum ${i === 2 ? 'rd-pill' : 'cg'}" style="font-weight:700;font-size:20px;${i === 2 ? 'padding:2px 12px;' : ''}">${v}</div></div>`).join('');
@@ -770,15 +776,18 @@ function drawSummary(){
     `<b>Provisional.</b> ${t.sail} ${t.boat}, ${t.skipper}. ${D.official.races} races scored of a ` +
     `${D.official.fleet}-boat championship running ${e.dates}, so this is a mid-series standing, ` +
     `not a result.<br><br>` +
-    `<b>No discard has been applied yet</b> — every boat's points still equal the sum of its finishes. ` +
-    `Garm's discard would be the ${discard} from race 2, worth more than any other boat in the top of ` +
-    `the fleet: ${t.pts} becomes <b>${t.pts - discard}</b>. The position that follows cannot be worked ` +
-    `out from here, because only the top five and Garm are in the results held.<br><br>` +
-    `Places gained counts positions won between the first windward mark and the finish.` +
-    (D.official.day9_races && D.official.day9_races.length === 2
-      ? ` Both Wednesday races are in these standings: the loggers put their guns at ` +
-        `${D.official.day9_races[0]} and ${D.official.day9_races[1]}, and the event has published a ` +
-        `full analysis of each.` : '');
+    (D6
+      ? `<b>A discard is now in force.</b> Garm throws out the ${t.races[t.discardRace - 1]} from ` +
+        `race ${t.discardRace}, which takes ${t.total} down to <b>${t.pts}</b>. Best race so far is a ` +
+        `<b>${t.best}</b> in race ${t.races.indexOf(t.best) + 1}` +
+        (t.moved > 0 ? `, and the team has moved up <b>${t.moved} places</b> since the last standing.`
+                     : '.')
+      : `<b>No discard has been applied yet</b> — every boat's points still equal the sum of its ` +
+        `finishes.`) +
+    `<br><br>Places gained counts positions won between the first windward mark and the finish` +
+    (D.official.gainRaces && D.official.gainRaces < D.official.races
+      ? `, over races 1–${D.official.gainRaces} — the event has not published mark progress for the ` +
+        `races since.` : '.');
   $('herosub').textContent = `Team Sweden · ${t.sail} ${t.boat} · J/70 Worlds, Cascais`;
   $('foot').innerHTML =
     `Built on ${D.meta.logs} Vakaros Atlas VKX logs · ib-sailing race reports · cncascais.com results · ` +
@@ -848,9 +857,16 @@ function drawWind(){
   const B = vals.map(v => (v > 0 ? '+' : '') + v.toFixed(1) + '°');
   const drift = L.dw1 == null ? null : L.dw1 - L.uw1;
   $('w-note').innerHTML =
-    `<b>The model was ${r.bias.toFixed(1)}° right of the water at the gun.</b> ` +
+    // the model ran right of the water in every race until Thursday's second, when it
+    // went left — so the direction is read off the sign rather than assumed
+    `<b>The model was ${Math.abs(r.bias).toFixed(1)}° ${r.bias >= 0 ? 'right' : 'left'} of the ` +
+    `water at the gun.</b> ` +
     `Across the ${['','one','two','three','four','five'][B.length] || B.length} races shown it ran ` +
     `${B.join(', ')}. ${shape(vals)} ` +
+    (r.derived
+      ? `<b>This race has no event report yet</b> — its wind is measured from the boats' own ` +
+        `tracks, by the method that reproduces the published figures for races 1–4 to within a ` +
+        `degree. ` : '') +
     `${D.wind.note}<br><br>` +
     (drift == null
       ? `Only the first upwind is published for this race, so there is no leg-to-leg comparison yet.`
@@ -1014,7 +1030,9 @@ function drawStartAnalysis(){
     (rows.length < 12 ? ` <b>Measured against ${rows.length} logs, not the full fleet</b> — the ` +
       `distance, time, speed and angle are Garm's own and stand on their own; the rank and the ` +
       `gap at +60 s are only against those ${rows.length}.` : '') +
-    ` Our line measures ${rows[0].line_m} m against the event's ` +
+    ` ${sl && sl.derived ? `The line here is measured from the committee's own line-position rows, ` +
+      `not published — there is no event report for this race yet. ` : ''}` +
+    `Our line measures ${rows[0].line_m} m against the event's ` +
     `${sl ? sl.line_m.toLocaleString() : '—'} m — computed independently from the committee's own ` +
     `line rows.<br><br><span style="color:var(--faint);">${S.note}</span>`;
 }

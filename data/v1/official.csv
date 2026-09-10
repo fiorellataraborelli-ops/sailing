@@ -1,7 +1,7 @@
-pos,sail,boat,pts,r,gain
-1,ESP 1283,Marnatura,20,"[4, 8, 5, 3]",23
-2,BRA 641,Oceanpact - Viking,31,"[9, 1, 17, 4]",45
-3,BRA 1795,Areté,38,"[13, 9, 7, 9]",2
-4,POR 284,Navis Portugal,44,"[20, 10, 6, 8]",10
-5,POR 1282,Another Affair,47,"[7, 18, 20, 2]",40
-29,SWE 1121,Garm,133,"[16, 57, 10, 50]",50
+pos,sail,boat,pts,total,discard,r,codes,gain
+1,BRA 641,Oceanpact - Viking,27.0,44.0,3,"[9.0, 1.0, 17.0, 4.0, 8.0, 5.0]","[null, null, null, null, null, null]",
+2,USA 169,Empeiria,30.0,87.3,2,"[17.0, 57.3, 2.0, 5.0, 5.0, 1.0]","[null, ""PRP"", null, null, null, null]",
+3,ESP 1283,Marnatura,38.0,63.0,6,"[4.0, 8.0, 5.0, 3.0, 18.0, 25.0]","[null, null, null, null, null, null]",
+4,USA 26,MidlifeCrisis,52.0,85.0,5,"[21.0, 6.0, 3.0, 18.0, 33.0, 4.0]","[null, null, null, null, null, null]",
+5,USA 1047,Good to Go,58.0,103.0,5,"[18.0, 4.0, 13.0, 13.0, 45.0, 10.0]","[null, null, null, null, null, null]",
+15,SWE 1121,Garm,115.0,172.0,2,"[16.0, 57.0, 10.0, 50.0, 2.0, 37.0]","[null, null, null, null, null, null]",50

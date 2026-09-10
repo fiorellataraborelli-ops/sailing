@@ -18,7 +18,7 @@ M = 111320.0
 def main():
     idx = json.load(open(os.path.join(ROOT, 'data/v1/tracks/index.json')))
     out = {}
-    for race in ('1', '2', '3', '4'):
+    for race in ('1', '2', '3', '4', '5', '6'):
         files = sorted(glob.glob(os.path.join(ROOT, f'data/v1/tracks/*-r{race}.json')))
         if not files:
             continue
