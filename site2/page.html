@@ -1039,10 +1039,18 @@ const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
    and most visits to this tab want the numbers, not the film. */
 let srRace = '1', srI = 0, srAnim = null, srOn = false;
 
+/* Re-rendered on every pick, not just at startup. Without that the replay switched
+   race underneath — plot, caption and all — while the dark pill stayed on race 1, so
+   the control read as dead. seg() sets aria-pressed when it draws the buttons, which
+   means the only way to move the pill is to draw them again. */
+function srRaces(){
+  seg($('sr-races'), Object.keys(D.start.races).map(k => ({key: k, label: 'Race ' + k})), srRace,
+      k => { srRace = k; srStop(); srI = 0; srRaces(); if (srOn) srPaint(); srIdleNote(); });
+}
+
 function srInit(){
   if (!$('sr-load')) return;
-  seg($('sr-races'), Object.keys(D.start.races).map(k => ({key: k, label: 'Race ' + k})), srRace,
-      k => { srRace = k; srStop(); srI = 0; if (srOn) srPaint(); srIdleNote(); });
+  srRaces();
   srIdleNote();
   $('sr-load').onclick = () => {
     srOn = true;

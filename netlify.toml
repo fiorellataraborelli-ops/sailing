@@ -19,8 +19,16 @@
   status = 200
 
 # The page is rebuilt from payload.json on every data update, so never let a CDN pin it.
+# Both paths need the rule: headers are matched against the path the browser asked
+# for, and almost everyone arrives at "/" and is rewritten here. Without the second
+# block "/" falls back to heuristic caching and a phone can sit on yesterday's page.
 [[headers]]
   for = "/race-analysis.html"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+
+[[headers]]
+  for = "/"
   [headers.values]
     Cache-Control = "no-cache, must-revalidate"
 

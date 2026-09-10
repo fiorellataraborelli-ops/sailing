@@ -162,6 +162,35 @@ def coach_test(D):
     return out
 
 
+def segs_repaint_themselves(html):
+    """Every segmented control must re-render itself when one of its buttons is picked.
+
+    seg() stamps aria-pressed as it builds the buttons, so a handler that changes the
+    data without redrawing the control leaves the dark pill behind on the old choice.
+    That shipped once: the start replay switched race underneath — plot, caption and
+    all — while the pill stayed on race 1, which reads as a dead button.
+    """
+    bodies = {m.group(1): m.group(2) for m in
+              re.finditer(r'function ([A-Za-z_]\w*)\s*\([^)]*\)\s*\{(.*?)\n\}', html, re.S)}
+    bad = []
+    for m in re.finditer(r"seg\(\$\('([^']+)'\)(.*?)\);\n", html, re.S):
+        tid, rest = m.group(1), m.group(2)
+        if '=>' not in rest:
+            continue
+        handler = rest[rest.rfind('=>'):]
+        called = set(re.findall(r'\b([A-Za-z_]\w*)\s*\(', handler))
+        # drawAll redraws the page, so anything reached through it repaints too
+        reach = set(called)
+        for f in list(called):
+            if f in bodies:
+                reach |= set(re.findall(r'\b([A-Za-z_]\w*)\s*\(', bodies[f]))
+        if not any(f"seg($('{tid}')" in bodies.get(f, '') for f in reach):
+            bad.append(tid)
+    if bad:
+        print('  segmented controls that never move their own pill:', ', '.join(bad))
+    return not bad
+
+
 def classes_all_styled(html):
     """Every class the markup uses must have a rule somewhere in the stylesheet.
 
@@ -384,6 +413,7 @@ def main():
       'grid headers match their rows': grids_line_up(html),
       'every id the script reaches for exists': ids_all_exist(html),
       'every class the markup uses is styled': classes_all_styled(html),
+      'every segmented control repaints itself': segs_repaint_themselves(html),
       # a phone lays the page out at 980 px without this, and shrinks everything
       'a viewport declared': 'name="viewport" content="width=device-width' in html,
       # nothing supplies a charset when Netlify serves this file raw
