@@ -434,24 +434,9 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="note" id="sa-note"></p>
   </section>
 
-  <section id="fleet" data-tab="race" class="reveal rd-card">
-    <div class="cardhead">
-      <div class="title"><span class="n">06</span><h2>Fleet snapshot</h2></div>
-      <div class="seg" id="fleet-days"></div>
-    </div>
-    <p class="lede">Garm and the three quickest boats of the day. Tap any box for that boat's
-      race detail; the rest of the fleet is one tap below.</p>
-    <div id="fleet-boxes" class="boxes"></div>
-    <div style="display:flex;justify-content:center;margin-top:12px;">
-      <button class="btn" id="fleet-more" type="button">Show the rest</button>
-    </div>
-    <div id="fleet-detail"></div>
-    <p class="fine" id="fleet-note"></p>
-  </section>
-
   <section id="tracks" data-tab="tracks" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">07</span><h2>Course tracks</h2></div>
+      <div class="title"><span class="n">06</span><h2>Course tracks</h2></div>
       <div class="seg" id="tk-races"></div>
     </div>
     <p class="lede" id="tk-lede"></p>
@@ -469,7 +454,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="manoeuvres2" data-tab="tracks" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">08</span><h2>Tacks, gybes and the loss rate</h2></div>
+      <div class="title"><span class="n">07</span><h2>Tacks, gybes and the loss rate</h2></div>
       <div class="seg" id="mv-races"></div>
     </div>
     <p class="lede">Every settled manoeuvre in the race, and what each one costs in boat speed.
@@ -484,9 +469,82 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="note" id="mv-note"></p>
   </section>
 
+  <section id="fleet" data-tab="fleet" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">08</span><h2>Fleet snapshot</h2></div>
+      <div class="seg" id="fleet-days"></div>
+    </div>
+    <p class="fine" style="margin:0 0 12px;" id="fleet-note"></p>
+    <div class="gridhead" style="grid-template-columns:1.7fr 1fr 1fr 1fr 1fr;">
+      <span>Boat</span><span>Avg</span><span>Upwind</span><span>Max</span><span>Distance</span>
+    </div>
+    <div class="scroller" id="fleet-rows"></div>
+  </section>
+
+  <section id="maneuvers" data-tab="race" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">09</span><h2>Point of sail &amp; manoeuvres</h2></div>
+      <div class="seg" id="man-races"></div>
+    </div>
+    <div class="seg scroll" id="man-boats" style="margin-bottom:20px;"></div>
+    <div class="tiles" style="margin-bottom:20px;" id="man-tiles"></div>
+    <div class="split">
+      <div class="panel">
+        <div class="h" style="margin-bottom:2px;">Boat speed by point of sail</div>
+        <div style="display:flex;gap:16px;align-items:center;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:12px;">
+          <span style="display:flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#8bc63f;display:inline-block;"></span>measured</span>
+          <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:0;border-top:2px dashed #c7cbc1;display:inline-block;"></span>interpolated range</span>
+        </div>
+        <svg viewBox="0 0 320 290" style="width:100%;max-width:420px;height:auto;display:block;" id="polar" role="img" aria-label="Boat speed against true wind angle">
+          <circle cx="160" cy="150" r="40" fill="none" stroke="#e4e6e1"></circle>
+          <circle cx="160" cy="150" r="80" fill="none" stroke="#e4e6e1"></circle>
+          <circle cx="160" cy="150" r="120" fill="none" stroke="#e4e6e1"></circle>
+          <line x1="160" y1="30" x2="160" y2="270" stroke="#e4e6e1"></line>
+          <line x1="40" y1="150" x2="280" y2="150" stroke="#e4e6e1"></line>
+          <path id="p-curve" d="" fill="none" stroke="#c7cbc1" stroke-width="2" stroke-dasharray="5 4"></path>
+          <line id="p-lup" x1="160" y1="150" stroke="#8bc63f" stroke-width="1.5" stroke-dasharray="2 3"></line>
+          <line id="p-ldn" x1="160" y1="150" stroke="#8bc63f" stroke-width="1.5" stroke-dasharray="2 3"></line>
+          <circle id="p-up" r="5" fill="#8bc63f"></circle>
+          <circle id="p-dn" r="5" fill="#8bc63f"></circle>
+          <text id="p-tup" font-family="Lora,serif" font-size="11" font-weight="700" fill="#171a16" text-anchor="middle"></text>
+          <text id="p-tdn" font-family="Lora,serif" font-size="11" font-weight="700" fill="#171a16" text-anchor="middle"></text>
+          <text x="160" y="20" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="middle">0° (wind)</text>
+          <text x="30" y="153" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="end">90°</text>
+          <text x="290" y="153" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="start">90°</text>
+          <text x="160" y="284" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="middle">180°</text>
+        </svg>
+        <p class="fine" id="polar-note"></p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
+        <div class="insight"><div class="k">Coach insight</div><p id="man-insight"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vmg" data-tab="race" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">10</span><h2>Leg analysis &mdash; VMG</h2></div>
+      <div class="seg" id="vmg-races"></div>
+    </div>
+    <p class="lede">Speed made good along the wind axis, computed fix by fix against the wind the event measured on that leg. The coaching brief calls this the most important number on the page, and it is the one a straight-line proxy gets wrong.</p>
+    <div class="tiles" style="margin-bottom:18px;" id="vmg-tiles"></div>
+    <div class="gridhead" style="grid-template-columns:1.5fr .8fr .8fr .8fr .8fr .8fr;">
+      <span>Boat</span><span>VMG</span><span>SOG</span><span>TWA</span><span>Tacks</span><span>Extra m</span>
+    </div>
+    <div class="scroller" id="vmg-rows"></div>
+    <div class="panel" style="margin-top:16px;">
+      <div class="h">Garm, leg by leg</div>
+      <div class="gridhead" style="grid-template-columns:1.1fr .7fr .7fr .7fr .7fr .7fr .7fr;padding-left:0;padding-right:0;">
+        <span>Leg</span><span>Wind</span><span>Min</span><span>SOG</span><span>VMG</span><span>TWA</span><span>Tk/Gy</span>
+      </div>
+      <div id="ts-rows"></div>
+    </div>
+    <p class="note" id="vmg-note"></p>
+  </section>
+
   <section id="compare" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">09</span><h2>Competitor velocity</h2></div>
+      <div class="title"><span class="n">11</span><h2>Competitor velocity</h2></div>
       <div class="seg scroll" id="cmp-metric"></div>
     </div>
     <p class="lede">Every boat this analysis has a speed for, on one axis. Each dot is a boat; the
@@ -504,7 +562,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="segments" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">10</span><h2>Speed segments, 9 Sep</h2></div>
+      <div class="title"><span class="n">12</span><h2>Speed segments, 9 Sep</h2></div>
       <div class="seg" id="seg-sort"></div>
     </div>
     <p class="lede">Maximum speed held across a rolling window. The columns get harder left to right: anyone can touch 20 knots for an instant, holding it for a minute is a different thing.</p>
@@ -516,7 +574,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="kpi" data-tab="fleet" class="reveal rd-card">
-    <div class="title" style="margin-bottom:6px;"><span class="n">11</span><h2>Top five against Garm</h2></div>
+    <div class="title" style="margin-bottom:6px;"><span class="n">13</span><h2>Top five against Garm</h2></div>
     <p class="lede">The championship leaders on the KPIs that matter, joined from three independent sources &mdash; scored results, the 9 September speed segments, and VMG computed here from the raw logs.</p>
     <div class="gridhead" style="grid-template-columns:1.5fr .5fr .6fr .8fr .7fr .8fr .7fr;">
       <span>Boat</span><span>Pos</span><span>Pts</span><span>Gained</span><span>Peak</span><span>Hold</span><span>VMG</span>
@@ -526,14 +584,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="coach" data-tab="team" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">12</span><h2>Coach's read</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">14</span><h2>Coach's read</h2></div>
     <p class="cg" style="font-weight:600;font-style:italic;font-size:22px;line-height:1.35;color:var(--ink);background:var(--mint);border-radius:14px;padding:16px 18px;margin:0 0 16px;">&ldquo;Start at the pin, then get right immediately.&rdquo;</p>
     <div id="coach-points"></div>
     <p class="note" id="coach-mech"></p>
   </section>
 
   <section id="analyser" data-tab="ask" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">13</span><h2>Ask the analyser</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">15</span><h2>Ask the analyser</h2></div>
     <div id="chatlog" style="margin-bottom:12px;"></div>
     <div class="chips" id="chips"></div>
     <form class="ask" id="askform">
@@ -1054,91 +1112,29 @@ function drawManoeuvres(){
 }
 
 /* ---------------- fleet ---------------- */
-let fDay = null, fOpen = null, fAll = false;
+let fDay = null;
 function drawFleet(){
   const days = [...new Set(D.fleet.map(b => b.day))].sort();
   if (fDay === null) fDay = D.meta.raceday;
   seg($('fleet-days'), days.map(d => ({key: d, label: D.dayLabel[d] || d})), fDay,
-      k => { fDay = k; fOpen = null; fAll = false; drawFleet(); });
-
+      k => { fDay = k; drawFleet(); });
   const all = D.fleet.filter(b => b.day === fDay);
-  const ranked = all.filter(b => !b.partial).sort((a, b) => b.avg - a.avg);
-  ranked.forEach((b, i) => { b.rank = i + 1; });
+  // a log that starts mid-race has no motoring out or back in its average, so ranking it
+  // against full sessions would put it top on a number that measures something else
+  const rows = all.filter(b => !b.partial).sort((a, b) => b.avg - a.avg);
   const partial = all.filter(b => b.partial);
-
-  // Garm, then the three quickest — the benchmark set — then the rest on request
-  const me = ranked.find(b => b.team);
-  const top = ranked.filter(b => !b.team).slice(0, 3);
-  const rest = ranked.filter(b => b !== me && !top.includes(b));
-  const shown = [...(me ? [me] : []), ...top, ...(fAll ? rest : [])];
-
-  $('fleet-boxes').innerHTML = shown.map(b =>
-    `<button type="button" class="box${b.team ? ' me' : ''}" data-b="${esc(b.name)}"
-      aria-expanded="${fOpen === b.name}">
-      <div class="bh"><span class="bn">${esc(b.team ? 'Garm' : b.name)}</span>
-        <span class="br">${b.rank}/${ranked.length}</span></div>
-      <div class="bv">${sp(b.avg)}</div>
-      <div class="bs"><span>up <b>${b.up.toFixed(2)}</b></span><span>dn <b>${b.dn.toFixed(2)}</b></span>
-        <span>max <b>${b.mx.toFixed(1)}</b></span></div>
-    </button>`).join('');
-  for (const el of $('fleet-boxes').children)
-    el.onclick = () => { fOpen = fOpen === el.dataset.b ? null : el.dataset.b; drawFleet(); };
-
-  $('fleet-more').textContent = fAll ? 'Show fewer' : `Show the rest of the fleet (${rest.length})`;
-  $('fleet-more').onclick = () => { fAll = !fAll; drawFleet(); };
-
-  drawBoatDetail(fOpen, ranked);
-
   const mf = D.malfunction;
   $('fleet-note').innerHTML = (D.dayNote[fDay] || '') + (partial.length
     ? '<br><br>' + partial.map(b =>
         `<b>${esc(b.name)}, partial</b> — ${b.t0}&ndash;${b.t1} UTC, ${b.fixes.toLocaleString()} fixes, ` +
-        `${b.nm} nm, peak ${sp(b.mx)}. Kept out of the ranking.`).join('<br>') +
+        `${b.nm} nm, peak ${sp(b.mx)}. Kept out of the ranking above.`).join('<br>') +
       (mf && mf.day === fDay ? `<br><span style="color:var(--faint);">${esc(mf.what)} ${esc(mf.cost)}</span>` : '')
     : '');
-}
-
-/* the panel a box opens: the session, then every leg and the gun for that boat */
-function drawBoatDetail(name, ranked){
-  const host = $('fleet-detail');
-  if (!name){ host.innerHTML = ''; return; }
-  const b = ranked.find(x => x.name === name);
-  if (!b){ host.innerHTML = ''; return; }
-  const legName = b.team ? D.meta.legteam : b.name;
-
-  let s = `<div class="panel" style="margin-top:14px;">
-    <div class="h" style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;">
-      <span>${esc(b.team ? 'Garm' : b.name)} &mdash; ${D.dayLabel[b.day] || b.day}</span>
-      <span style="font:500 12px 'DM Sans',sans-serif;color:var(--faint);">${b.t0}&ndash;${b.t1} UTC</span></div>
-    <div class="tiles">` +
-    [['Average', sp(b.avg)], ['Upwind', sp(b.up)], ['Downwind', sp(b.dn)],
-     ['Peak', sp(b.mx)], ['Distance', b.nm.toFixed(1) + ' nm'], ['Fixes', b.fixes.toLocaleString()]]
-      .map(([k, v]) => `<div class="tile" style="background:var(--card);"><div class="k">${k}</div>` +
-                       `<div class="v tnum">${v}</div></div>`).join('') + `</div>`;
-
-  for (const rn of Object.keys(D.legs.races)){
-    const L = D.legs.races[rn][legName];
-    const st = ((D.start && D.start.races[rn]) || []).find(x => x.boat === legName);
-    if (!L && !st) continue;
-    s += `<div class="h" style="margin:16px 0 8px;">Race ${rn}</div>`;
-    if (st)
-      s += `<div style="display:flex;gap:14px;flex-wrap:wrap;font:500 12.5px 'DM Sans',sans-serif;color:var(--muted);margin-bottom:10px;">` +
-           `<span>at the gun <b style="color:var(--ink);">${st.dist_m.toFixed(1)} m</b></span>` +
-           `<span><b style="color:var(--ink);">${st.late_s.toFixed(1)} s</b> late</span>` +
-           `<span><b style="color:var(--ink);">${st.sog.toFixed(2)} kn</b></span>` +
-           `<span>${st.third}</span>` +
-           `<span><b style="color:var(--ink);">${st.behind60} m</b> at +60 s</span></div>`;
-    if (L)
-      s += `<div class="gridhead" style="grid-template-columns:1fr .7fr .6fr .6fr .6fr .6fr .6fr;padding-left:0;padding-right:0;">
-        <span>Leg</span><span>Wind</span><span>Min</span><span>SOG</span><span>VMG</span><span>TWA</span><span>Tk/Gy</span></div>` +
-        L.map(l => `<div class="grid" style="grid-template-columns:1fr .7fr .6fr .6fr .6fr .6fr .6fr;padding-left:0;padding-right:0;">
-          <span>${l.n} ${l.kind === 'beat' ? 'Beat' : 'Run'}</span><span class="tnum">${l.wind}&deg;</span>
-          <span class="tnum">${l.min.toFixed(1)}</span><span class="tnum">${l.sog.toFixed(2)}</span>
-          <span class="tnum" style="font-weight:700;">${l.vmg.toFixed(2)}</span>
-          <span class="tnum">${Math.round(l.twa)}&deg;</span>
-          <span class="tnum">${l.tacks}/${l.gybes}</span></div>`).join('');
-  }
-  host.innerHTML = s + `</div>`;
+  $('fleet-rows').innerHTML = pinTeam(rows).map(({r: b, rank}) =>
+    `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.7fr 1fr 1fr 1fr 1fr;">
+      <span>${posCell(rank)}${esc(b.name)}</span><span class="tnum">${sp(b.avg)}</span>
+      <span class="tnum">${sp(b.up)}</span>
+      <span class="tnum">${sp(b.mx)}</span><span class="tnum">${b.nm.toFixed(1)} nm</span></div>`).join('');
 }
 
 /* ---------------- manoeuvres ---------------- */
