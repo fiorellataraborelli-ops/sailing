@@ -440,7 +440,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
       <div class="seg" id="tk-races"></div>
     </div>
     <p class="lede" id="tk-lede"></p>
-    <div class="segwrap" style="padding:0 0 10px;"><div class="seg" id="tk-boats"></div></div>
+    <div class="chips" id="tk-boats"></div>
+    <div class="ctlrow" style="margin:0 0 10px;">
+      <button class="btn solid" id="tk-play" type="button">Replay</button>
+      <input type="range" id="tk-scrub" min="0" max="100" value="100" step="1"
+             aria-label="Time through the race" style="flex:1;min-width:140px;">
+      <span class="clock" id="tk-clock"></span>
+    </div>
+    <div id="tk-legend" style="display:flex;flex-wrap:wrap;gap:10px 16px;margin-bottom:10px;"></div>
     <svg id="tk-plot" viewBox="0 0 600 620" style="width:100%;height:auto;display:block;" role="img"></svg>
     <p class="fine" id="tk-note"></p>
   </section>
@@ -908,61 +915,148 @@ function drawCoachTest(){
 }
 
 /* ---------------- course tracks ---------------- */
-let tkRace = '1', tkBoat = null;
+/* Every selected boat is its own trace, and the replay advances them together in time
+   rather than drawing each one in turn — position against the fleet at the same moment
+   is the whole point of watching a beat back. */
+const TK_COLOURS = ['#2F6522', '#B4531E', '#0E6B72', '#7A3E9D', '#1F5FA8', '#B3452E',
+                    '#A66A00', '#C2185B'];
+let tkRace = '1', tkSel = null, tkT = 1, tkAnim = null;
+
+function tkColour(name){
+  const i = [...tkSel].indexOf(name);
+  return i < 0 ? 'var(--bar)' : TK_COLOURS[i % TK_COLOURS.length];
+}
+
 function drawTracks(){
   const T = D.tracks;
   if (!T) return;
-  const keys = Object.keys(T);
-  seg($('tk-races'), keys.map(k => ({key: k, label: 'Race ' + k})), tkRace,
-      k => { tkRace = k; drawTracks(); });
+  seg($('tk-races'), Object.keys(T).map(k => ({key: k, label: 'Race ' + k})), tkRace,
+      k => { tkRace = k; tkSel = null; tkStop(); tkT = 1; drawTracks(); });
   const R = T[tkRace];
   const names = Object.keys(R.boats).sort();
-  if (!names.includes(tkBoat)) tkBoat = names.includes(D.meta.legteam) ? D.meta.legteam : names[0];
-  seg($('tk-boats'), names.map(n => ({key: n, label: n === D.meta.legteam ? 'GARM' : n})), tkBoat,
-      k => { tkBoat = k; drawTracks(); });
+  if (!tkSel) tkSel = new Set([names.includes(D.meta.legteam) ? D.meta.legteam : names[0]]);
 
-  const PAD = 26, W = 600, H = 620;
+  // chips: tap to add or drop a trace
+  $('tk-boats').innerHTML = '';
+  for (const n of names){
+    const on = tkSel.has(n);
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (n === D.meta.legteam ? ' tm' : '');
+    b.setAttribute('aria-pressed', String(on));
+    b.textContent = n === D.meta.legteam ? 'Garm' : n;
+    if (on) b.style.cssText = `background:${tkColour(n)};border-color:${tkColour(n)};color:#fff;font-weight:700;`;
+    b.onclick = () => {
+      if (on) tkSel.delete(n); else if (tkSel.size < 8) tkSel.add(n);
+      drawTracks();
+    };
+    $('tk-boats').appendChild(b);
+  }
+
+  $('tk-legend').innerHTML = [...tkSel].map(n =>
+    `<span style="display:flex;align-items:center;gap:6px;font:600 12.5px 'DM Sans',sans-serif;color:var(--body);">` +
+    `<span style="width:14px;height:3px;border-radius:2px;background:${tkColour(n)};display:inline-block;"></span>` +
+    `${esc(n === D.meta.legteam ? 'Garm' : n)}</span>`).join('');
+
+  tkPaint();
+  $('tk-lede').innerHTML =
+    `Every tracked boat in plan view, north up. Tap a boat to add its trace &mdash; up to eight, ` +
+    `each in its own colour. <b>Replay</b> runs them forward together, so the gaps you see are the ` +
+    `gaps that were actually there at that moment.`;
+  $('tk-note').textContent =
+    `${names.length} boats, one point every ${R.step_s} s, ${(R.w / 1000).toFixed(1)} × ` +
+    `${(R.h / 1000).toFixed(1)} km of course. Mark positions are inferred from track reversals, ` +
+    `not recorded by the instrument.`;
+}
+
+function tkGeom(){
+  const R = D.tracks[tkRace], PAD = 26, W = 600, H = 620;
   const sc = Math.min((W - PAD * 2) / R.w, (H - PAD * 2) / R.h);
-  // north is up, so y flips
-  const px = x => PAD + (x - R.x0) * sc;
-  const py = y => H - PAD - (y - R.y0) * sc;
-  const abs = b => { const o = []; let x = 0, y = 0;
-    for (let i = 0; i < b.x.length; i++){ x += b.x[i]; y += b.y[i]; o.push([x, y]); } return o; };
-  const path = pts => pts.map(([x, y]) => `${px(x).toFixed(1)},${py(y).toFixed(1)}`).join(' ');
+  return {R, W, H, PAD, sc,
+          px: x => PAD + (x - R.x0) * sc,
+          py: y => H - PAD - (y - R.y0) * sc};
+}
+const tkAbs = b => { const o = []; let x = 0, y = 0;
+  for (let i = 0; i < b.x.length; i++){ x += b.x[i]; y += b.y[i]; o.push([x, y]); } return o; };
+
+/* One boat's race window came out double length — its RACE_END never fired cleanly —
+   and driving the clock off the longest track made the replay read 182 minutes with every
+   normal boat finishing halfway along the scrubber. The median is the race. */
+function tkLen(){
+  const L = Object.values(D.tracks[tkRace].boats).map(b => b.x.length).sort((a, b) => a - b);
+  return L[Math.floor(L.length / 2)];
+}
+
+function tkPaint(){
+  const {R, H, PAD, sc, px, py} = tkGeom();
+  const names = Object.keys(R.boats);
+  const cut = Math.max(2, Math.round(tkLen() * tkT));
+  const pathOf = pts => pts.map(([x, y]) => `${px(x).toFixed(1)},${py(y).toFixed(1)}`).join(' ');
 
   let s = '';
   for (const n of names){
-    if (n === tkBoat) continue;
-    s += `<polyline fill="none" stroke="var(--bar)" stroke-width="1" opacity=".45" points="${path(abs(R.boats[n]))}"/>`;
-  }
-  const me = abs(R.boats[tkBoat]);
-  const bounds = R.boats[tkBoat].b;
-  const LEG = ['var(--accent)', 'var(--cool)', 'var(--accent)', 'var(--cool)'];
-  for (let i = 0; i < bounds.length; i++){
-    const [lg, from] = bounds[i];
-    const to = i + 1 < bounds.length ? bounds[i + 1][1] : me.length - 1;
-    if (lg < 1) continue;
-    s += `<polyline fill="none" stroke="${LEG[(lg - 1) % 4]}" stroke-width="3" stroke-linejoin="round" ` +
-         `points="${path(me.slice(from, to + 1))}"/>`;
+    if (tkSel.has(n)) continue;
+    s += `<polyline fill="none" stroke="var(--line)" stroke-width="1" opacity=".5" points="${
+      pathOf(tkAbs(R.boats[n]).slice(0, cut))}"/>`;
   }
   for (const [x, y, leg] of R.marks)
-    s += `<circle cx="${px(x).toFixed(1)}" cy="${py(y).toFixed(1)}" r="5" fill="none" ` +
+    s += `<circle cx="${px(x).toFixed(1)}" cy="${py(y).toFixed(1)}" r="5" fill="var(--surface)" ` +
          `stroke="var(--ink)" stroke-width="2"/>` +
          `<text x="${(px(x) + 9).toFixed(1)}" y="${(py(y) + 4).toFixed(1)}" font-family="'DM Sans',sans-serif" ` +
          `font-size="11" font-weight="700" fill="var(--muted)">M${leg}</text>`;
-  s += `<circle cx="${px(me[0][0]).toFixed(1)}" cy="${py(me[0][1]).toFixed(1)}" r="5" fill="var(--lime)" stroke="#fff" stroke-width="2"/>`;
+  for (const n of tkSel){
+    const pts = tkAbs(R.boats[n]).slice(0, cut);
+    if (pts.length < 2) continue;
+    const c = tkColour(n);
+    s += `<polyline fill="none" stroke="${c}" stroke-width="${n === D.meta.legteam ? 4 : 2.6}" ` +
+         `stroke-linejoin="round" stroke-linecap="round" points="${pathOf(pts)}"/>`;
+    const [hx, hy] = pts[pts.length - 1];
+    s += `<circle cx="${px(hx).toFixed(1)}" cy="${py(hy).toFixed(1)}" r="${n === D.meta.legteam ? 6 : 4.5}" ` +
+         `fill="${c}" stroke="#fff" stroke-width="2"/>`;
+  }
   const bar = 500 * sc;
   s += `<line x1="${PAD}" y1="${H - 10}" x2="${(PAD + bar).toFixed(1)}" y2="${H - 10}" stroke="var(--muted)" stroke-width="2"/>` +
        `<text x="${(PAD + bar + 7).toFixed(1)}" y="${H - 6}" font-family="'DM Sans',sans-serif" font-size="11" fill="var(--faint)">500 m</text>`;
   $('tk-plot').innerHTML = s;
-  $('tk-plot').setAttribute('aria-label', `Plan view of race ${tkRace}, ${tkBoat} highlighted against the fleet`);
-  $('tk-lede').innerHTML = `Every tracked boat in plan view, north up. ` +
-    `<b>${esc(tkBoat === D.meta.legteam ? 'Garm' : tkBoat)}</b> is drawn in full, beats in orange and ` +
-    `runs in teal, from the green dot at the start. Marks are the fleet's median rounding point.`;
-  $('tk-note').textContent =
-    `${names.length} boats, one point every ${R.step_s} s, ${(R.w / 1000).toFixed(1)} × ` +
-    `${(R.h / 1000).toFixed(1)} km of course. Mark positions are inferred from track reversals, ` +
-    `not recorded by the instrument, so they carry the spread quoted in the dataset.`;
+  $('tk-plot').setAttribute('aria-label',
+    `Plan view of race ${tkRace}, ${tkSel.size} boat${tkSel.size === 1 ? '' : 's'} highlighted`);
+
+  const secs = Math.round((R.dur_s || cut * R.step_s) * tkT);
+  $('tk-clock').textContent = `${String(Math.floor(secs / 60)).padStart(2, '0')}:` +
+                              `${String(secs % 60).padStart(2, '0')} from the gun`;
+  $('tk-scrub').value = Math.round(tkT * 100);
+}
+
+function tkStop(){
+  if (tkAnim) cancelAnimationFrame(tkAnim);
+  tkAnim = null;
+  const b = $('tk-play');
+  if (b) b.textContent = 'Replay';
+}
+
+function tkPlay(){
+  if (tkAnim){ tkStop(); return; }
+  if (tkT >= 1) tkT = 0;
+  $('tk-play').textContent = 'Pause';
+  const DUR = 9000;
+  let t0 = null;
+  const step = ts => {
+    if (t0 === null) t0 = ts - tkT * DUR;
+    tkT = Math.min(1, (ts - t0) / DUR);
+    tkPaint();
+    if (tkT < 1) tkAnim = requestAnimationFrame(step);
+    else tkStop();
+  };
+  tkAnim = requestAnimationFrame(step);
+}
+
+function tkInit(){
+  if (!$('tk-play')) return;
+  $('tk-play').onclick = tkPlay;
+  $('tk-scrub').oninput = e => { tkStop(); tkT = Math.max(0.02, e.target.value / 100); tkPaint(); };
+  // a page that animates on load is not usable with reduced motion on
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  setTimeout(() => { if (!tkAnim && tkT >= 1) { tkT = 0; tkPlay(); } }, 400);
 }
 
 /* ---------------- manoeuvres and the loss rate ---------------- */
@@ -1417,5 +1511,5 @@ function drawAll(){
   drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawTracks(); drawManoeuvres(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
-drawAll(); drawChat(); drawNav(); initShell();
+drawAll(); drawChat(); drawNav(); initShell(); tkInit();
 </script>

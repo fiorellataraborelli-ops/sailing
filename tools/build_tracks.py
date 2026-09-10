@@ -44,7 +44,16 @@ def main():
                 'y': [ys[0]] + [ys[i] - ys[i-1] for i in range(1, len(ys))],
                 'b': bounds,
             }
+        # the clock cannot be counted off the point index: fixes are nominally 0.5 s but
+        # drift, so 2 s resampling loses about 11 minutes over a 97 minute race. Carry the
+        # real elapsed time instead, median across the fleet.
+        import datetime as _dt
+        secs = sorted(
+            (_dt.datetime.strptime(t['end_utc'], '%Y-%m-%dT%H:%M:%SZ') -
+             _dt.datetime.strptime(t['start_utc'], '%Y-%m-%dT%H:%M:%SZ')).total_seconds()
+            for t in ts)
         out[race] = {
+            'dur_s': int(secs[len(secs) // 2]),
             'boats': boats,
             'marks': [[round((m['lon'] - lon0) * M * cs), round((m['lat'] - lat0) * M),
                        m['after_leg'], m['spread_m']] for m in idx['marks_estimated'][race]],
