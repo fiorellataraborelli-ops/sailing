@@ -77,6 +77,26 @@ def approach(log, gun_ms, pin, boat, sign, marks=(-60, -30, -10, 0)):
     return out
 
 
+def replay(log, gun_ms, pin, boat, sign, line_m, t0=-60, t1=60, step=2):
+    """Position in the line's own frame, every `step` seconds around the gun.
+
+    x is metres along the line from the pin, y is metres to the line — positive behind
+    it. In that frame the line is simply y = 0, and thirty boats converging on it is
+    the whole start in one picture. lat/lon would need a projection and a rotation to
+    say the same thing.
+    """
+    out = []
+    for t in range(t0, t1 + 1, step):
+        fix = sl.position_at(log, gun_ms + t * 1000, max_gap_s=4.0)
+        if fix is None:
+            out.append(None)
+            continue
+        rel = sl.position_vs_line((fix[1], fix[2]), pin, boat, sign)
+        out.append(None if rel is None else
+                   [round(rel['along_line_from_pin'] * line_m), round(rel['distance_to_line_m'])])
+    return out
+
+
 def progress_m(log, gun_ms, at_s, wind_deg):
     """Distance made good along the wind axis between the gun and gun + at_s."""
     a = sl.position_at(log, gun_ms)
@@ -135,6 +155,7 @@ def main():
                 'third': a['started_on'],
                 'gain60': progress_m(log, s, 60, WIND[rn]),
                 'approach': approach(log, s, pin, cb, sign),
+                'replay': replay(log, s, pin, cb, sign, a['line_length_m']),
                 'line_m': a['line_length_m'],
             })
             print(f'  r{rn} {b:22} {a["distance_to_line_m"]:6.1f} m  '
@@ -151,6 +172,7 @@ def main():
     pj = os.path.join(ROOT, 'site/payload.json')
     D = json.load(open(pj))
     D['start'] = {
+        'replay': {'t0': -60, 't1': 60, 'step': 2},
         'source': 'VKX line-position rows and 0.5 s tracks; wind from the event reports',
         'races': out,
         'note': 'Distance is perpendicular to the committee line at the gun, positive behind it. '

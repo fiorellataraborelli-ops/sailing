@@ -327,9 +327,33 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="fine" id="sum-note"></p>
   </section>
 
+  <section id="startreplay" data-tab="start" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">01</span><h2>Start replay</h2></div>
+      <div class="seg" id="sr-races"></div>
+    </div>
+    <p class="lede">The whole fleet in the line's own frame: across is position along the line
+      from the pin, up and down is metres to the line. The line is the horizontal bar &mdash;
+      everything below it has not started yet.</p>
+    <div id="sr-idle">
+      <button class="btn solid" id="sr-load" type="button">Load the start replay</button>
+      <p class="fine" id="sr-idle-note"></p>
+    </div>
+    <div id="sr-live" hidden>
+      <div class="ctlrow" style="margin:0 0 10px;">
+        <button class="btn solid" id="sr-play" type="button">Play</button>
+        <input type="range" id="sr-scrub" min="0" max="60" value="0" step="1"
+               aria-label="Seconds around the gun" style="flex:1;min-width:140px;">
+        <span class="clock" id="sr-clock"></span>
+      </div>
+      <svg id="sr-plot" viewBox="0 0 640 420" style="width:100%;height:auto;display:block;" role="img"></svg>
+      <p class="note" id="sr-note"></p>
+    </div>
+  </section>
+
   <section id="startrule" data-tab="start" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">01</span><h2>The start-line rule, tested</h2></div>
+      <div class="title"><span class="n">02</span><h2>The start-line rule, tested</h2></div>
     </div>
     <p class="lede">&ldquo;If you see start line bias, it is most probably big enough to take it&rdquo; and
       &ldquo;RC boats cannot get it back&rdquo; &mdash; the coach's call, against which third of the
@@ -345,7 +369,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="wind" data-tab="wind" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">02</span><h2>Conditions on the racecourse</h2></div>
+      <div class="title"><span class="n">03</span><h2>Conditions on the racecourse</h2></div>
       <div class="segwrap">
         <div class="seg" id="wind-days"></div>
         <div class="seg" id="unitseg"></div>
@@ -384,7 +408,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="gap" data-tab="team" class="reveal rd-card">
-    <div class="title" style="margin-bottom:6px;"><span class="n">03</span><h2>Performance gap</h2></div>
+    <div class="title" style="margin-bottom:6px;"><span class="n">04</span><h2>Performance gap</h2></div>
     <p class="lede">Where is Garm losing speed to the best boat in the tracked fleet, and what does that mean in race time?</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:14px;" id="gap-cards"></div>
     <div class="row hl" style="margin-bottom:8px;padding:12px 16px;border-radius:14px;">
@@ -395,7 +419,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="start" data-tab="start" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">04</span><h2>Start-line read</h2></div>
+      <div class="title"><span class="n">05</span><h2>Start-line read</h2></div>
       <div class="seg" id="start-races"></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
@@ -414,7 +438,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="startanalysis" data-tab="start" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">05</span><h2>Start analysis</h2></div>
+      <div class="title"><span class="n">06</span><h2>Start analysis</h2></div>
       <div class="seg" id="sa-races"></div>
     </div>
     <p class="lede">The four numbers the brief asks for at the gun &mdash; how far from the line,
@@ -436,7 +460,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="tracks" data-tab="tracks" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">06</span><h2>Course tracks</h2></div>
+      <div class="title"><span class="n">07</span><h2>Course tracks</h2></div>
       <div class="seg" id="tk-races"></div>
     </div>
     <p class="lede" id="tk-lede"></p>
@@ -454,7 +478,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="manoeuvres2" data-tab="tracks" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">07</span><h2>Tacks, gybes and the loss rate</h2></div>
+      <div class="title"><span class="n">08</span><h2>Tacks, gybes and the loss rate</h2></div>
       <div class="seg" id="mv-races"></div>
     </div>
     <p class="lede">Every settled manoeuvre in the race, and what each one costs in boat speed.
@@ -471,7 +495,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="fleet" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">08</span><h2>Fleet snapshot</h2></div>
+      <div class="title"><span class="n">09</span><h2>Fleet snapshot</h2></div>
       <div class="seg" id="fleet-days"></div>
     </div>
     <p class="fine" style="margin:0 0 12px;" id="fleet-note"></p>
@@ -483,7 +507,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="maneuvers" data-tab="race" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">09</span><h2>Point of sail &amp; manoeuvres</h2></div>
+      <div class="title"><span class="n">10</span><h2>Point of sail &amp; manoeuvres</h2></div>
       <div class="seg" id="man-races"></div>
     </div>
     <div class="seg scroll" id="man-boats" style="margin-bottom:20px;"></div>
@@ -523,7 +547,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="vmg" data-tab="race" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">10</span><h2>Leg analysis &mdash; VMG</h2></div>
+      <div class="title"><span class="n">11</span><h2>Leg analysis &mdash; VMG</h2></div>
       <div class="seg" id="vmg-races"></div>
     </div>
     <p class="lede">Speed made good along the wind axis, computed fix by fix against the wind the event measured on that leg. The coaching brief calls this the most important number on the page, and it is the one a straight-line proxy gets wrong.</p>
@@ -544,7 +568,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="compare" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">11</span><h2>Competitor velocity</h2></div>
+      <div class="title"><span class="n">12</span><h2>Competitor velocity</h2></div>
       <div class="seg scroll" id="cmp-metric"></div>
     </div>
     <p class="lede">Every boat this analysis has a speed for, on one axis. Each dot is a boat; the
@@ -562,7 +586,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="segments" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">12</span><h2>Speed segments, 9 Sep</h2></div>
+      <div class="title"><span class="n">13</span><h2>Speed segments, 9 Sep</h2></div>
       <div class="seg" id="seg-sort"></div>
     </div>
     <p class="lede">Maximum speed held across a rolling window. The columns get harder left to right: anyone can touch 20 knots for an instant, holding it for a minute is a different thing.</p>
@@ -574,7 +598,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="kpi" data-tab="fleet" class="reveal rd-card">
-    <div class="title" style="margin-bottom:6px;"><span class="n">13</span><h2>Top five against Garm</h2></div>
+    <div class="title" style="margin-bottom:6px;"><span class="n">14</span><h2>Top five against Garm</h2></div>
     <p class="lede">The championship leaders on the KPIs that matter, joined from three independent sources &mdash; scored results, the 9 September speed segments, and VMG computed here from the raw logs.</p>
     <div class="gridhead" style="grid-template-columns:1.5fr .5fr .6fr .8fr .7fr .8fr .7fr;">
       <span>Boat</span><span>Pos</span><span>Pts</span><span>Gained</span><span>Peak</span><span>Hold</span><span>VMG</span>
@@ -584,14 +608,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="coach" data-tab="team" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">14</span><h2>Coach's read</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">15</span><h2>Coach's read</h2></div>
     <p class="cg" style="font-weight:600;font-style:italic;font-size:22px;line-height:1.35;color:var(--ink);background:var(--mint);border-radius:14px;padding:16px 18px;margin:0 0 16px;">&ldquo;Start at the pin, then get right immediately.&rdquo;</p>
     <div id="coach-points"></div>
     <p class="note" id="coach-mech"></p>
   </section>
 
   <section id="analyser" data-tab="ask" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">15</span><h2>Ask the analyser</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">16</span><h2>Ask the analyser</h2></div>
     <div id="chatlog" style="margin-bottom:12px;"></div>
     <div class="chips" id="chips"></div>
     <form class="ask" id="askform">
@@ -881,6 +905,107 @@ function drawStartAnalysis(){
     `started in the pin third. Our line measures ${rows[0].line_m} m against the event's ` +
     `${sl ? sl.line_m.toLocaleString() : '—'} m — computed independently from the committee's own ` +
     `line rows.<br><br><span style="color:var(--faint);">${S.note}</span>`;
+}
+
+/* ---------------- start replay ---------------- */
+/* Held back until asked. Thirty boats over sixty-one frames is real work for a phone,
+   and most visits to this tab want the numbers, not the film. */
+let srRace = '1', srI = 0, srAnim = null, srOn = false;
+
+function srInit(){
+  if (!$('sr-load')) return;
+  seg($('sr-races'), Object.keys(D.start.races).map(k => ({key: k, label: 'Race ' + k})), srRace,
+      k => { srRace = k; srStop(); srI = 0; if (srOn) srPaint(); srIdleNote(); });
+  srIdleNote();
+  $('sr-load').onclick = () => {
+    srOn = true;
+    $('sr-idle').hidden = true;
+    $('sr-live').hidden = false;
+    srI = 0; srPaint();
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) srPlay();
+  };
+  $('sr-play').onclick = () => srAnim ? srStop() : srPlay();
+  $('sr-scrub').oninput = e => { srStop(); srI = +e.target.value; srPaint(); };
+}
+
+function srIdleNote(){
+  const rows = D.start.races[srRace];
+  const R = D.start.replay;
+  $('sr-idle-note').textContent =
+    `${rows.length} boats, every ${R.step} s from ${R.t0} s before the gun to ${R.t1} s after.`;
+}
+
+function srPaint(){
+  const rows = D.start.races[srRace], R = D.start.replay;
+  const N = Math.round((R.t1 - R.t0) / R.step);
+  const lineM = rows[0].line_m;
+  const pts = rows.map(r => ({r, p: r.replay}));
+  const ys = pts.flatMap(o => o.p.filter(Boolean).map(q => q[1]));
+  const yHi = Math.max(...ys), yLo = Math.min(...ys);
+  const W = 640, H = 420, L = 34, Rr = 16, T = 30, B = 40;
+  const px = x => L + (W - L - Rr) * Math.min(1, Math.max(0, x / lineM));
+  const py = d => T + (H - T - B) * (yHi - d) / ((yHi - yLo) || 1);
+  const lineY = py(0);
+  const best = rows.reduce((a, b) => (b.behind60 > a.behind60 ? b : a), rows[0]);
+
+  let s = '';
+  // the line, with its ends named
+  s += `<rect x="${L}" y="${(lineY - 1.5).toFixed(1)}" width="${W - L - Rr}" height="3" fill="var(--ink)"/>` +
+       `<circle cx="${L}" cy="${lineY.toFixed(1)}" r="6" fill="var(--red)"/>` +
+       `<circle cx="${W - Rr}" cy="${lineY.toFixed(1)}" r="6" fill="var(--deep)"/>` +
+       `<text x="${L}" y="${(lineY - 12).toFixed(1)}" font-family="'DM Sans',sans-serif" font-size="11" font-weight="700" fill="var(--red)">PIN</text>` +
+       `<text x="${W - Rr}" y="${(lineY - 12).toFixed(1)}" font-family="'DM Sans',sans-serif" font-size="11" font-weight="700" fill="var(--deep)" text-anchor="end">BOAT</text>` +
+       `<text x="${L}" y="${H - 14}" font-family="'DM Sans',sans-serif" font-size="11" fill="var(--faint)">behind the line</text>` +
+       `<text x="${L}" y="20" font-family="'DM Sans',sans-serif" font-size="11" fill="var(--faint)">across</text>`;
+
+  for (const {r, p} of pts){
+    const from = Math.max(0, srI - 6);
+    const tail = p.slice(from, srI + 1).filter(Boolean);
+    if (!tail.length) continue;
+    const me = r.team, lead = r === best && !me;
+    const c = me ? 'var(--lime)' : lead ? 'var(--accent)' : 'var(--bar)';
+    if (tail.length > 1)
+      s += `<polyline fill="none" stroke="${c}" stroke-width="${me ? 3 : 1.4}" opacity="${me || lead ? 1 : .6}" ` +
+           `points="${tail.map(q => `${px(q[0]).toFixed(1)},${py(q[1]).toFixed(1)}`).join(' ')}"/>`;
+    const [x, y] = tail[tail.length - 1];
+    s += `<circle cx="${px(x).toFixed(1)}" cy="${py(y).toFixed(1)}" r="${me ? 6.5 : lead ? 5 : 3.4}" ` +
+         `fill="${c}"${me || lead ? ' stroke="#fff" stroke-width="2"' : ''}><title>${esc(r.boat)}</title></circle>`;
+  }
+  $('sr-plot').innerHTML = s;
+  const t = R.t0 + srI * R.step;
+  $('sr-clock').textContent = t === 0 ? 'the gun' : t < 0 ? `T${t} s` : `T+${t} s`;
+  $('sr-scrub').value = srI;
+  $('sr-scrub').max = N;
+  $('sr-plot').setAttribute('aria-label',
+    `Start replay, race ${srRace}, ${rows.length} boats at ${t} seconds relative to the gun`);
+
+  const g = rows.find(r => r.team);
+  $('sr-note').innerHTML = g
+    ? `<b>Garm in green, ${esc(best.boat)} in orange</b> — the boat furthest up the course a minute ` +
+      `after the gun. Garm crossed ${g.late_s.toFixed(1)} s late, ${g.dist_m.toFixed(1)} m back, in the ` +
+      `${g.third}. Line ${lineM.toLocaleString()} m, pin on the left.`
+    : '';
+}
+
+function srStop(){
+  if (srAnim) cancelAnimationFrame(srAnim);
+  srAnim = null;
+  if ($('sr-play')) $('sr-play').textContent = 'Play';
+}
+
+function srPlay(){
+  const R = D.start.replay, N = Math.round((R.t1 - R.t0) / R.step);
+  if (srI >= N) srI = 0;
+  $('sr-play').textContent = 'Pause';
+  const PER = 130;
+  let last = null;
+  const step = ts => {
+    if (last === null) last = ts;
+    if (ts - last >= PER){ last = ts; srI++; srPaint(); }
+    if (srI < N) srAnim = requestAnimationFrame(step);
+    else srStop();
+  };
+  srAnim = requestAnimationFrame(step);
 }
 
 /* ---------------- the coach's rule, tested ---------------- */
@@ -1511,5 +1636,5 @@ function drawAll(){
   drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawTracks(); drawManoeuvres(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
-drawAll(); drawChat(); drawNav(); initShell(); tkInit();
+drawAll(); drawChat(); drawNav(); initShell(); tkInit(); srInit();
 </script>

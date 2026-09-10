@@ -277,6 +277,7 @@ def main():
       'coach': {'start': D['coach']['start'], 'mechanism': D['coach']['mechanism']},
       'start': {'races': {k: [{**r, 'team': r['boat'] == 'Team Sweden'} for r in v]
                           for k, v in D['start']['races'].items()},
+                'replay': D['start']['replay'],
                 'note': D['start']['note']},
       'coachTest': coach_test(D),
       'malfunction': D['official']['telemetry'].get('malfunction'),
