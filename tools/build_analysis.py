@@ -169,7 +169,9 @@ def main():
     RACED = ('2026-09-08', '2026-09-09')
     # Races 1 and 2 are the only ones with decoded telemetry. Race 3 has no logs at all
     # and race 4 only the event's start and first upwind, so neither is shown.
-    TRACKED = (1, 2)
+    # All four now: races 3 and 4 have no logs, but the event has published a full
+    # four-leg analysis of each, which is more than races 1 and 2 have from telemetry.
+    TRACKED = (1, 2, 3, 4)
     # The wind card carries both days. Race 3 turned out to be a Wednesday race, not a
     # Tuesday one — the event's own report is dated 2026-09-09 — so Wednesday has two.
     WIND_RACES = (1, 2, 3, 4)
@@ -290,6 +292,7 @@ def main():
       'coachTest': coach_test(D),
       'malfunction': D['official']['telemetry'].get('malfunction'),
       'tracks': D.get('tracks'),
+      'eventLegs': D.get('eventLegs'),
       'compare': build_compare(D),
       'qa': qa,
     }
@@ -308,7 +311,6 @@ def main():
       'only tracked races': all(r['n'] in WIND_RACES for d in wind_days for r in d['races'])
                             and all(r['race'] in TRACKED for r in startline),
       'wind days all raced': all(d['date'] in RACED and d['races'] for d in wind_days),
-      'no race 3 or 4 on the page': 'Race 3' not in html and 'Race 4' not in html,
       'no unraced days': '2026-09-10' not in html and '2026-09-11' not in html
                          and '2026-09-12' not in html and '2026-09-07' not in html,
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,

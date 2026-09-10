@@ -458,9 +458,25 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="note" id="sa-note"></p>
   </section>
 
+  <section id="eventlegs" data-tab="race" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">07</span><h2>Wednesday, leg by leg</h2></div>
+      <div class="segwrap" style="padding:0;"><div class="seg" id="el-races"></div>
+        <div class="seg" id="el-legs"></div></div>
+    </div>
+    <p class="lede" id="el-lede"></p>
+    <div class="tiles" id="el-tiles" style="margin-bottom:16px;"></div>
+    <div class="gridhead" style="grid-template-columns:1.4fr .6fr .6fr .6fr .7fr .7fr .6fr .6fr;">
+      <span>Boat</span><span>Time</span><span>Net</span><span>Man</span><span>SOG</span>
+      <span>VMG</span><span>TWA</span><span>Heel</span>
+    </div>
+    <div class="scroller" id="el-rows"></div>
+    <p class="note" id="el-note"></p>
+  </section>
+
   <section id="tracks" data-tab="tracks" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">07</span><h2>Course tracks</h2></div>
+      <div class="title"><span class="n">08</span><h2>Course tracks</h2></div>
       <div class="seg" id="tk-races"></div>
     </div>
     <p class="lede" id="tk-lede"></p>
@@ -472,7 +488,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="manoeuvres2" data-tab="tracks" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">08</span><h2>Tacks, gybes and the loss rate</h2></div>
+      <div class="title"><span class="n">09</span><h2>Tacks, gybes and the loss rate</h2></div>
       <div class="seg" id="mv-races"></div>
     </div>
     <p class="lede">Every settled manoeuvre in the race, and what each one costs in boat speed.
@@ -489,7 +505,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="fleet" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">09</span><h2>Fleet snapshot</h2></div>
+      <div class="title"><span class="n">10</span><h2>Fleet snapshot</h2></div>
       <div class="seg" id="fleet-days"></div>
     </div>
     <p class="fine" style="margin:0 0 12px;" id="fleet-note"></p>
@@ -501,7 +517,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="maneuvers" data-tab="race" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">10</span><h2>Point of sail &amp; manoeuvres</h2></div>
+      <div class="title"><span class="n">11</span><h2>Point of sail &amp; manoeuvres</h2></div>
       <div class="seg" id="man-races"></div>
     </div>
     <div class="seg scroll" id="man-boats" style="margin-bottom:20px;"></div>
@@ -541,7 +557,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="vmg" data-tab="race" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">11</span><h2>Leg analysis &mdash; VMG</h2></div>
+      <div class="title"><span class="n">12</span><h2>Leg analysis &mdash; VMG</h2></div>
       <div class="seg" id="vmg-races"></div>
     </div>
     <p class="lede">Speed made good along the wind axis, computed fix by fix against the wind the event measured on that leg. The coaching brief calls this the most important number on the page, and it is the one a straight-line proxy gets wrong.</p>
@@ -562,7 +578,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="compare" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">12</span><h2>Competitor velocity</h2></div>
+      <div class="title"><span class="n">13</span><h2>Competitor velocity</h2></div>
       <div class="seg scroll" id="cmp-metric"></div>
     </div>
     <p class="lede">Every boat this analysis has a speed for, on one axis. Each dot is a boat; the
@@ -580,7 +596,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="segments" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">13</span><h2>Speed segments, 9 Sep</h2></div>
+      <div class="title"><span class="n">14</span><h2>Speed segments, 9 Sep</h2></div>
       <div class="seg" id="seg-sort"></div>
     </div>
     <p class="lede">Maximum speed held across a rolling window. The columns get harder left to right: anyone can touch 20 knots for an instant, holding it for a minute is a different thing.</p>
@@ -592,7 +608,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="kpi" data-tab="fleet" class="reveal rd-card">
-    <div class="title" style="margin-bottom:6px;"><span class="n">14</span><h2>Top five against Garm</h2></div>
+    <div class="title" style="margin-bottom:6px;"><span class="n">15</span><h2>Top five against Garm</h2></div>
     <p class="lede">The championship leaders on the KPIs that matter, joined from three independent sources &mdash; scored results, the 9 September speed segments, and VMG computed here from the raw logs.</p>
     <div class="gridhead" style="grid-template-columns:1.5fr .5fr .6fr .8fr .7fr .8fr .7fr;">
       <span>Boat</span><span>Pos</span><span>Pts</span><span>Gained</span><span>Peak</span><span>Hold</span><span>VMG</span>
@@ -602,14 +618,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="coach" data-tab="team" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">15</span><h2>Coach's read</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">16</span><h2>Coach's read</h2></div>
     <p class="cg" style="font-weight:600;font-style:italic;font-size:22px;line-height:1.35;color:var(--ink);background:var(--mint);border-radius:14px;padding:16px 18px;margin:0 0 16px;">&ldquo;Start at the pin, then get right immediately.&rdquo;</p>
     <div id="coach-points"></div>
     <p class="note" id="coach-mech"></p>
   </section>
 
   <section id="analyser" data-tab="ask" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">16</span><h2>Ask the analyser</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">17</span><h2>Ask the analyser</h2></div>
     <div id="chatlog" style="margin-bottom:12px;"></div>
     <div class="chips" id="chips"></div>
     <form class="ask" id="askform">
@@ -1047,6 +1063,67 @@ function drawCoachTest(){
     `<br><br><span style="color:var(--faint);">Groups are thirds of the line by measured along-line ` +
     `position at the gun. Beat time is the first upwind for the boats in each group with decoded ` +
     `telemetry.</span>`;
+}
+
+/* ---------------- Wednesday, from the event's own tracking ---------------- */
+/* Races 3 and 4 have no Garm log, so nothing here is decoded by us. It is the event's
+   analysis, and it is the only leg data those two races will ever have. */
+const EL_LEGS = [['1U','1st beat'], ['1D','1st run'], ['2U','2nd beat'], ['2D','2nd run']];
+let elRace = '3', elLeg = '1U';
+function drawEventLegs(){
+  const E = D.eventLegs;
+  if (!E) return;
+  seg($('el-races'), Object.keys(E.races).map(k => ({key: k, label: 'Race ' + k})), elRace,
+      k => { elRace = k; drawEventLegs(); });
+  seg($('el-legs'), EL_LEGS.map(([k, l]) => ({key: k, label: l})), elLeg,
+      k => { elLeg = k; drawEventLegs(); });
+  const R = E.races[elRace], L = R.legs[elLeg];
+  // a boat that retired mid-leg is not a slow boat; keep it out of the comparisons
+  const med = [...L.rows].map(r => r[5]).sort((a, b) => a - b)[Math.floor(L.rows.length / 2)];
+  const rows = L.rows.map(r => ({
+    b: r[0], team: r[0] === 'GARM', time: r[1], sr: r[2], er: r[3], net: r[4],
+    dist: r[5], mans: r[6], sog: r[7], vmg: r[8], twa: r[9], heel: r[10],
+    short: r[5] < med * 0.5,
+  }));
+  const full = rows.filter(r => !r.short);
+  const g = rows.find(r => r.team);
+  const vr = [...full].sort((a, b) => b.vmg - a.vmg);
+  const up = elLeg[1] === 'U';
+
+  $('el-lede').innerHTML =
+    `Race ${elRace}, ${EL_LEGS.find(x => x[0] === elLeg)[1]}, wind ${L.wind}&deg;. ` +
+    `${full.length} boats. <b>Start rank against end rank</b> is what a leg is really worth &mdash; ` +
+    `net is the places won or lost on it.`;
+  $('el-tiles').innerHTML = !g ? '' : [
+    ['Garm net', (g.net > 0 ? '+' : '') + g.net],
+    ['Into the leg', g.sr], ['Out of it', g.er],
+    ['VMG', g.vmg.toFixed(2), (vr.findIndex(r => r.team) + 1) + ' of ' + full.length],
+    ['SOG', g.sog.toFixed(2)], ['TWA', g.twa.toFixed(1) + '&deg;'],
+    ['Heel', g.heel.toFixed(1) + '&deg;'], ['Manoeuvres', g.mans],
+  ].map(([k, v, s]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div>` +
+    (s ? `<div style="font-size:11.5px;color:var(--faint);margin-top:3px;">${s}</div>` : '') + '</div>').join('');
+
+  $('el-rows').innerHTML = pinTeam(rows.map(r => ({...r, team: r.team}))).map(({r, rank}) =>
+    `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.4fr .6fr .6fr .6fr .7fr .7fr .6fr .6fr;">
+      <span>${posCell(rank)}${esc(r.team ? 'Garm' : r.b)}${r.short ? ' <span class="nil">part leg</span>' : ''}</span>
+      <span class="tnum">${r.time}</span>
+      <span class="tnum" style="color:${r.net > 0 ? 'var(--good)' : r.net < 0 ? 'var(--crit)' : 'inherit'};font-weight:700;">${r.net > 0 ? '+' : ''}${r.net}</span>
+      <span class="tnum">${r.mans}</span><span class="tnum">${r.sog.toFixed(2)}</span>
+      <span class="tnum">${r.vmg.toFixed(2)}</span><span class="tnum">${r.twa.toFixed(0)}&deg;</span>
+      <span class="tnum">${r.heel.toFixed(1)}&deg;</span></div>`).join('');
+
+  const gains = full.reduce((a, b) => b.net > a.net ? b : a);
+  const arc = ['1U','1D','2U','2D'].map(k => {
+    const row = (R.legs[k].rows.find(r => r[0] === 'GARM') || [])[4];
+    return row == null ? '' : (row > 0 ? '+' : '') + row;
+  }).filter(Boolean).join(', ');
+  $('el-note').innerHTML =
+    `<b>Garm across the four legs: ${arc}.</b> ` +
+    (g ? `On this one it went ${g.sr} to ${g.er} at ${g.vmg.toFixed(2)} kn of ${up ? 'beat' : 'run'} ` +
+         `VMG, ${vr.findIndex(r => r.team) + 1} of ${full.length}. ` : '') +
+    `${esc(gains.b === 'GARM' ? 'Garm' : gains.b)} gained most, ${gains.net > 0 ? '+' : ''}${gains.net}.` +
+    `<br><br><span style="color:var(--faint);">${E.note} Heel and pitch come from the same ` +
+    `orientation quaternion the Atlas records on every fix.</span>`;
 }
 
 /* ---------------- course tracks ---------------- */
@@ -1591,7 +1668,7 @@ function drawNav(){
 }
 
 function drawAll(){
-  drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawTracks(); drawManoeuvres(); drawFleet();
+  drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawEventLegs(); drawTracks(); drawManoeuvres(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
 drawAll(); drawChat(); drawNav(); initShell(); srInit();
