@@ -327,9 +327,25 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="fine" id="sum-note"></p>
   </section>
 
+  <section id="startrule" data-tab="start" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">01</span><h2>The start-line rule, tested</h2></div>
+    </div>
+    <p class="lede">&ldquo;If you see start line bias, it is most probably big enough to take it&rdquo; and
+      &ldquo;RC boats cannot get it back&rdquo; &mdash; the coach's call, against which third of the
+      line each boat actually started in.</p>
+<div class="segwrap" style="padding:0 0 10px;"><div class="seg" id="ct-races"></div></div>
+    <div class="gridhead" style="grid-template-columns:1.2fr .5fr .8fr .6fr .6fr .7fr;">
+      <span>Third of the line</span><span>Boats</span><span>+60 s</span><span>Late</span>
+      <span>SOG</span><span>Beat</span>
+    </div>
+    <div id="ct-rows"></div>
+    <p class="note" id="ct-note"></p>
+  </section>
+
   <section id="wind" data-tab="wind" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">01</span><h2>Conditions on the racecourse</h2></div>
+      <div class="title"><span class="n">02</span><h2>Conditions on the racecourse</h2></div>
       <div class="segwrap">
         <div class="seg" id="wind-days"></div>
         <div class="seg" id="unitseg"></div>
@@ -368,7 +384,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="gap" data-tab="team" class="reveal rd-card">
-    <div class="title" style="margin-bottom:6px;"><span class="n">02</span><h2>Performance gap</h2></div>
+    <div class="title" style="margin-bottom:6px;"><span class="n">03</span><h2>Performance gap</h2></div>
     <p class="lede">Where is Garm losing speed to the best boat in the tracked fleet, and what does that mean in race time?</p>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:14px;" id="gap-cards"></div>
     <div class="row hl" style="margin-bottom:8px;padding:12px 16px;border-radius:14px;">
@@ -379,7 +395,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="start" data-tab="start" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">03</span><h2>Start-line read</h2></div>
+      <div class="title"><span class="n">04</span><h2>Start-line read</h2></div>
       <div class="seg" id="start-races"></div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
@@ -398,7 +414,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="startanalysis" data-tab="start" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">04</span><h2>Start analysis</h2></div>
+      <div class="title"><span class="n">05</span><h2>Start analysis</h2></div>
       <div class="seg" id="sa-races"></div>
     </div>
     <p class="lede">The four numbers the brief asks for at the gun &mdash; how far from the line,
@@ -420,7 +436,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="fleet" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">05</span><h2>Fleet snapshot</h2></div>
+      <div class="title"><span class="n">06</span><h2>Fleet snapshot</h2></div>
       <div class="seg" id="fleet-days"></div>
     </div>
     <p class="fine" style="margin:0 0 12px;" id="fleet-note"></p>
@@ -432,7 +448,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="maneuvers" data-tab="race" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">06</span><h2>Point of sail &amp; manoeuvres</h2></div>
+      <div class="title"><span class="n">07</span><h2>Point of sail &amp; manoeuvres</h2></div>
       <div class="seg" id="man-races"></div>
     </div>
     <div class="seg scroll" id="man-boats" style="margin-bottom:20px;"></div>
@@ -472,7 +488,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="vmg" data-tab="race" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">07</span><h2>Leg analysis &mdash; VMG</h2></div>
+      <div class="title"><span class="n">08</span><h2>Leg analysis &mdash; VMG</h2></div>
       <div class="seg" id="vmg-races"></div>
     </div>
     <p class="lede">Speed made good along the wind axis, computed fix by fix against the wind the event measured on that leg. The coaching brief calls this the most important number on the page, and it is the one a straight-line proxy gets wrong.</p>
@@ -493,7 +509,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="compare" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">08</span><h2>Competitor velocity</h2></div>
+      <div class="title"><span class="n">09</span><h2>Competitor velocity</h2></div>
       <div class="seg scroll" id="cmp-metric"></div>
     </div>
     <p class="lede">Every boat this analysis has a speed for, on one axis. Each dot is a boat; the
@@ -511,7 +527,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="segments" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">09</span><h2>Speed segments, 9 Sep</h2></div>
+      <div class="title"><span class="n">10</span><h2>Speed segments, 9 Sep</h2></div>
       <div class="seg" id="seg-sort"></div>
     </div>
     <p class="lede">Maximum speed held across a rolling window. The columns get harder left to right: anyone can touch 20 knots for an instant, holding it for a minute is a different thing.</p>
@@ -523,7 +539,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="kpi" data-tab="fleet" class="reveal rd-card">
-    <div class="title" style="margin-bottom:6px;"><span class="n">10</span><h2>Top five against Garm</h2></div>
+    <div class="title" style="margin-bottom:6px;"><span class="n">11</span><h2>Top five against Garm</h2></div>
     <p class="lede">The championship leaders on the KPIs that matter, joined from three independent sources &mdash; scored results, the 9 September speed segments, and VMG computed here from the raw logs.</p>
     <div class="gridhead" style="grid-template-columns:1.5fr .5fr .6fr .8fr .7fr .8fr .7fr;">
       <span>Boat</span><span>Pos</span><span>Pts</span><span>Gained</span><span>Peak</span><span>Hold</span><span>VMG</span>
@@ -533,22 +549,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="coach" data-tab="team" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">11</span><h2>Coach's read</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">12</span><h2>Coach's read</h2></div>
     <p class="cg" style="font-weight:600;font-style:italic;font-size:22px;line-height:1.35;color:var(--ink);background:var(--mint);border-radius:14px;padding:16px 18px;margin:0 0 16px;">&ldquo;Start at the pin, then get right immediately.&rdquo;</p>
     <div id="coach-points"></div>
-    <h3 style="font-size:14px;margin:22px 0 8px;">The start-line rule, against where boats actually started</h3>
-    <div class="segwrap" style="padding:0 0 10px;"><div class="seg" id="ct-races"></div></div>
-    <div class="gridhead" style="grid-template-columns:1.2fr .5fr .8fr .6fr .6fr .7fr;">
-      <span>Third of the line</span><span>Boats</span><span>+60 s</span><span>Late</span>
-      <span>SOG</span><span>Beat</span>
-    </div>
-    <div id="ct-rows"></div>
-    <p class="note" id="ct-note"></p>
     <p class="note" id="coach-mech"></p>
   </section>
 
   <section id="analyser" data-tab="ask" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">12</span><h2>Ask the analyser</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">13</span><h2>Ask the analyser</h2></div>
     <div id="chatlog" style="margin-bottom:12px;"></div>
     <div class="chips" id="chips"></div>
     <form class="ask" id="askform">
@@ -878,8 +886,18 @@ function drawFleet(){
   if (fDay === null) fDay = D.meta.raceday;
   seg($('fleet-days'), days.map(d => ({key: d, label: D.dayLabel[d] || d})), fDay,
       k => { fDay = k; drawFleet(); });
-  const rows = D.fleet.filter(b => b.day === fDay).sort((a, b) => b.avg - a.avg);
-  $('fleet-note').textContent = D.dayNote[fDay] || '';
+  const all = D.fleet.filter(b => b.day === fDay);
+  // a log that starts mid-race has no motoring out or back in its average, so ranking it
+  // against full sessions would put it top on a number that measures something else
+  const rows = all.filter(b => !b.partial).sort((a, b) => b.avg - a.avg);
+  const partial = all.filter(b => b.partial);
+  const mf = D.malfunction;
+  $('fleet-note').innerHTML = (D.dayNote[fDay] || '') + (partial.length
+    ? '<br><br>' + partial.map(b =>
+        `<b>${esc(b.name)}, partial</b> — ${b.t0}&ndash;${b.t1} UTC, ${b.fixes.toLocaleString()} fixes, ` +
+        `${b.nm} nm, peak ${sp(b.mx)}. Kept out of the ranking above.`).join('<br>') +
+      (mf && mf.day === fDay ? `<br><span style="color:var(--faint);">${esc(mf.what)} ${esc(mf.cost)}</span>` : '')
+    : '');
   $('fleet-rows').innerHTML = pinTeam(rows).map(({r: b, rank}) =>
     `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.7fr 1fr 1fr 1fr 1fr;">
       <span>${posCell(rank)}${esc(b.name)}</span><span class="tnum">${sp(b.avg)}</span>

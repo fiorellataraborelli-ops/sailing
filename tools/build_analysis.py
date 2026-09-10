@@ -17,8 +17,8 @@ DAY_LABEL = {'2026-09-08': 'Tue 8 Sep', '2026-09-09': 'Wed 9 Sep'}
 DAY_NOTE = {
   '2026-09-08': 'Races 1 and 2. Thirty boats decode here against the event\'s own 34-boat '
                 'analysis set, so fleet-relative figures are a real fleet comparison.',
-  '2026-09-09': 'Only three logs have synced for this day, and Garm\'s is not among them — so there '
-                'is no telemetry for the team\'s racing, only the fleet\'s speed segments.',
+  '2026-09-09': 'Three full logs and one partial, and Garm\'s is not among them — so there is no '
+                'telemetry for the team\'s racing, only the fleet\'s speed segments.',
 }
 fold = lambda s: ud.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
 
@@ -167,7 +167,9 @@ def main():
     WIND_RACES = (1, 2, 4)
     fleet = [{'name': f['file'], 'day': f['day'], 'avg': f['avg'], 'up': f['upAvg'],
               'dn': f['dnAvg'], 'mx': f['mx'], 'nm': f['nm'],
-              'team': f['file'].startswith('Team Sweden') or f['file'] == 'vakaros'}
+              't0': f['t0'], 't1': f['t1'], 'fixes': f['fixes'],
+              'team': f['file'].startswith('Team Sweden') or f['file'] == 'vakaros',
+              'partial': f.get('partial', False)}
              for f in D['fleet'] if f['day'] in RACED]
 
     # Wind, measured, grouped by the day it was actually sailed.
@@ -277,6 +279,7 @@ def main():
                           for k, v in D['start']['races'].items()},
                 'note': D['start']['note']},
       'coachTest': coach_test(D),
+      'malfunction': D['official']['telemetry'].get('malfunction'),
       'compare': build_compare(D),
       'qa': qa,
     }

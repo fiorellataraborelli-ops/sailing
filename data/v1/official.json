@@ -93,18 +93,27 @@
  "telemetry": {
   "logs": 34,
   "day8": 30,
-  "day9": 3,
+  "day9": 4,
   "day9_boats": [
    "J70 Let it be",
    "Mag",
-   "Yupi"
+   "Yupi",
+   "joust70"
   ],
   "team_day9": false,
   "note": "Decoded 9 Sep from ~/Downloads/Sailing Files. Two byte-identical duplicates skipped. Day assigned from the decoded timestamps, not the filenames — the download scrambled those, and several boats have a higher-numbered file for the EARLIER day.",
   "day9_races": [
    "12:55:00Z",
    "16:20:00Z"
-  ]
+  ],
+  "malfunction": {
+   "boat": "joust70",
+   "day": "2026-09-09",
+   "race": 2,
+   "what": "The unit recorded nothing until 16:32:48Z, 12.8 minutes after the 16:20:00Z gun.",
+   "evidence": "The file parses byte-exact to EOF (416,547 of 416,547) and the position stream is clean — no dropouts, no zero-speed fixes. What is missing is the session, not the data: 0 line-position rows against 4,710 on a healthy log the same day, and 0 timer events against 13. The unit was logging normally once it started; it started late.",
+   "cost": "No start line and no gun, so this log cannot join the start analysis or the leg segmentation. Its speed figures cover racing only, not a full session, so they are not comparable with the other rows and are kept out of the ranking."
+  }
  },
  "event": {
   "dates": "4–12 September 2026",
