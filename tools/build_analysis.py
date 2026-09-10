@@ -162,6 +162,41 @@ def coach_test(D):
     return out
 
 
+def classes_all_styled(html):
+    """Every class the markup uses must have a rule somewhere in the stylesheet.
+
+    Four did not, including the one on the page's primary button, which rendered as
+    a raw browser control. Utility classes that only exist to be found by script are
+    listed here rather than given an empty rule.
+    """
+    SCRIPT_ONLY = {'on', 'is-visible', 'team', 'me', 'ai', 'hl', 'good', 'bad', 'ico', 'scroll'}
+    css = html[html.index('<style>'):html.index('</style>')]
+    defined = set(re.findall(r'\.([a-zA-Z][\w-]*)', css)) | SCRIPT_ONLY
+    used = set()
+    for m in re.findall(r'class="([^"{}]*)"', html):
+        used |= set(m.split())
+    for m in re.findall(r'class=\\?"([^"$]*)', html):
+        used |= {w for w in m.split() if re.fullmatch(r'[a-zA-Z][\w-]*', w)}
+    missing = sorted(w for w in used - defined if re.fullmatch(r'[a-zA-Z][\w-]*', w))
+    if missing:
+        print('  classes with no rule:', ', '.join(missing))
+    return not missing
+
+
+def ids_all_exist(html):
+    """Every element the script looks up by a literal id must be in the markup.
+
+    Restyling moved a container and dropped it; nothing complained until the page
+    threw in the browser. This is the check that would have caught it.
+    """
+    want = set(re.findall(r"\$\('([a-zA-Z0-9_-]+)'\)", html))
+    have = set(re.findall(r'id="([a-zA-Z0-9_-]+)"', html))
+    missing = sorted(want - have)
+    if missing:
+        print('  missing ids:', ', '.join(missing))
+    return not missing
+
+
 def grids_line_up(html):
     """Every grid-template-columns in a .gridhead must appear on a row template too."""
     heads = re.findall(r'class="gridhead"[^>]*grid-template-columns:([^;"]+)', html)
@@ -347,6 +382,8 @@ def main():
       # a .gridhead and the row template it labels must declare the same columns —
       # they drifted once and nothing complained
       'grid headers match their rows': grids_line_up(html),
+      'every id the script reaches for exists': ids_all_exist(html),
+      'every class the markup uses is styled': classes_all_styled(html),
       # a phone lays the page out at 980 px without this, and shrinks everything
       'a viewport declared': 'name="viewport" content="width=device-width' in html,
       # nothing supplies a charset when Netlify serves this file raw
