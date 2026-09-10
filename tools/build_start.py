@@ -58,6 +58,25 @@ def cross_time_s(log, gun_ms, pin, boat, sign, window_s=180):
     return None
 
 
+def approach(log, gun_ms, pin, boat, sign, marks=(-60, -30, -10, 0)):
+    """Distance to the line and speed at fixed moments before the gun.
+
+    The state at the gun alone cannot tell a good approach from a lucky one: a boat
+    parked on the line at -30 s and one arriving at full speed read the same at 0.
+    """
+    out = []
+    for t in marks:
+        fix = sl.position_at(log, gun_ms + int(t * 1000), max_gap_s=6.0)
+        if fix is None:
+            out.append(None)
+            continue
+        rel = sl.position_vs_line((fix[1], fix[2]), pin, boat, sign)
+        out.append(None if rel is None else
+                   {'t': t, 'd': round(rel['distance_to_line_m'], 1),
+                    's': round(fix[3] * MS, 2)})
+    return out
+
+
 def progress_m(log, gun_ms, at_s, wind_deg):
     """Distance made good along the wind axis between the gun and gun + at_s."""
     a = sl.position_at(log, gun_ms)
@@ -115,6 +134,7 @@ def main():
                 'along': a['along_line_from_pin'],
                 'third': a['started_on'],
                 'gain60': progress_m(log, s, 60, WIND[rn]),
+                'approach': approach(log, s, pin, cb, sign),
                 'line_m': a['line_length_m'],
             })
             print(f'  r{rn} {b:22} {a["distance_to_line_m"]:6.1f} m  '

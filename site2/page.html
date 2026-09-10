@@ -377,7 +377,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="fine" id="gap-fine"></p>
   </section>
 
-  <section id="start" data-tab="wind" class="reveal rd-card">
+  <section id="start" data-tab="start" class="reveal rd-card">
     <div class="cardhead">
       <div class="title"><span class="n">03</span><h2>Start-line read</h2></div>
       <div class="seg" id="start-races"></div>
@@ -396,7 +396,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="note" style="margin-top:0;" id="sl-note"></p>
   </section>
 
-  <section id="startanalysis" data-tab="wind" class="reveal rd-card">
+  <section id="startanalysis" data-tab="start" class="reveal rd-card">
     <div class="cardhead">
       <div class="title"><span class="n">04</span><h2>Start analysis</h2></div>
       <div class="seg" id="sa-races"></div>
@@ -405,6 +405,11 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
       how late across it, how fast, and at what angle to the wind &mdash; measured from each boat's
       own track against the committee's own line.</p>
     <div class="tiles" id="sa-tiles" style="margin-bottom:16px;"></div>
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="h">The approach &mdash; distance to the line, last minute before the gun</div>
+      <svg id="sa-plot" viewBox="0 0 640 260" style="width:100%;height:auto;display:block;" role="img"></svg>
+      <p class="fine" id="sa-plot-note" style="margin-top:8px;"></p>
+    </div>
     <div class="gridhead" style="grid-template-columns:1.5fr .7fr .6fr .6fr .6fr .9fr .7fr;">
       <span>Boat</span><span>To line</span><span>Late</span><span>SOG</span><span>TWA</span>
       <span>On the line</span><span>+60 s</span>
@@ -741,6 +746,54 @@ function pinTeam(sorted){
 const posCell = rank => `<span class="pos">${rank}</span>`;
 
 /* ---------------- start analysis ---------------- */
+function drawApproach(rows, g){
+  const T = [-60, -30, -10, 0];
+  const W = 640, H = 260, L = 46, R = 16, TP = 16, B = 34;
+  const withA = rows.filter(r => r.approach && r.approach.every(Boolean));
+  if (!withA.length){ $('sa-plot').innerHTML = ''; return; }
+  const maxD = Math.max(...withA.flatMap(r => r.approach.map(a => a.d)));
+  const x = t => L + (W - L - R) * (t + 60) / 60;
+  const y = d => TP + (H - TP - B) * (d / (maxD || 1));
+  let s = '';
+  for (let d = 0; d <= maxD; d += maxD > 200 ? 100 : 50)
+    s += `<line x1="${L}" y1="${y(d).toFixed(1)}" x2="${W - R}" y2="${y(d).toFixed(1)}" stroke="var(--line)"/>` +
+         `<text x="${L - 7}" y="${(y(d) + 4).toFixed(1)}" font-family="'DM Sans',sans-serif" font-size="11" fill="var(--faint)" text-anchor="end">${d}</text>`;
+  for (const t of T)
+    s += `<text x="${x(t).toFixed(1)}" y="${H - 12}" font-family="'DM Sans',sans-serif" font-size="11" fill="var(--faint)" text-anchor="middle">${t === 0 ? 'gun' : t + ' s'}</text>`;
+  // the line itself
+  s += `<line x1="${L}" y1="${y(0).toFixed(1)}" x2="${W - R}" y2="${y(0).toFixed(1)}" stroke="var(--ink)" stroke-width="1.5"/>`;
+  for (const r of withA){
+    if (r.team) continue;
+    s += `<polyline fill="none" stroke="var(--bar)" stroke-width="1.2" opacity=".55" points="${
+      r.approach.map(a => `${x(a.t).toFixed(1)},${y(a.d).toFixed(1)}`).join(' ')}"/>`;
+  }
+  const med = T.map(t => {
+    const v = withA.map(r => r.approach.find(a => a.t === t).d).sort((a, b) => a - b);
+    return {t, d: v[Math.floor(v.length / 2)]};
+  });
+  s += `<polyline fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 4" points="${
+    med.map(m => `${x(m.t).toFixed(1)},${y(m.d).toFixed(1)}`).join(' ')}"/>`;
+  if (g && g.approach && g.approach.every(Boolean)){
+    s += `<polyline fill="none" stroke="var(--lime)" stroke-width="3.5" points="${
+      g.approach.map(a => `${x(a.t).toFixed(1)},${y(a.d).toFixed(1)}`).join(' ')}"/>`;
+    for (const a of g.approach)
+      s += `<circle cx="${x(a.t).toFixed(1)}" cy="${y(a.d).toFixed(1)}" r="5" fill="var(--lime)" stroke="#fff" stroke-width="1.5"/>` +
+           `<text x="${x(a.t).toFixed(1)}" y="${(y(a.d) - 11).toFixed(1)}" font-family="'DM Sans',sans-serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">${a.s.toFixed(1)}</text>`;
+  }
+  s += `<text x="${L}" y="11" font-family="'DM Sans',sans-serif" font-size="11" font-weight="700" fill="var(--faint)">metres to the line &middot; Garm in green, fleet grey, median dashed &middot; figures are speed in knots</text>`;
+  $('sa-plot').innerHTML = s;
+  $('sa-plot').setAttribute('aria-label', 'Distance to the start line over the last minute for every tracked boat, Garm highlighted');
+  if (g && g.approach.every(Boolean)){
+    const a = g.approach, gun = a[3], ten = a[2];
+    $('sa-plot-note').innerHTML = gun.s < ten.s
+      ? `<b>Garm slowed into the gun</b> — ${ten.s.toFixed(1)} kn ten seconds out, ${gun.s.toFixed(1)} kn ` +
+        `crossing. Arriving early and having to burn time costs the first minute.`
+      : `<b>Garm accelerated into the gun</b> — ${ten.s.toFixed(1)} kn ten seconds out, ` +
+        `${gun.s.toFixed(1)} kn crossing, ${gun.d.toFixed(1)} m from the line.`;
+  }
+}
+
+
 let saRace = '1';
 function drawStartAnalysis(){
   const S = D.start;
@@ -762,6 +815,8 @@ function drawStartAnalysis(){
     ['Behind at +60 s', g.behind60 + ' m'],
     ['Rank at +60 s', rank + ' of ' + rows.length],
   ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
+
+  drawApproach(rows, g);
 
   $('sa-rows').innerHTML = pinTeam(rows).map(({r, rank: rk}) =>
     `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.5fr .7fr .6fr .6fr .6fr .9fr .7fr;">
@@ -1109,7 +1164,9 @@ function say(q, a){
 const TABS = [
   {k:'team',  label:'Team',  title:'Team',
    icon:'<path d="M3 20l9-16 9 16"/><path d="M12 4v16"/>'},
-  {k:'wind',  label:'Wind',  title:'Wind & start',
+  {k:'start', label:'Start', title:'Start analysis',
+   icon:'<path d="M4 4v16"/><path d="M4 5h13l-2.5 3.5L17 12H4"/>'},
+  {k:'wind',  label:'Wind',  title:'Wind',
    icon:'<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h8"/>'},
   {k:'race',  label:'Race',  title:'Race analysis',
    icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>'},
