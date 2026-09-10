@@ -115,6 +115,41 @@ def build_compare(D):
     return out
 
 
+def coach_test(D):
+    """The coach's start-line rule, checked against where boats actually started.
+
+    "If you see start line bias, it is most probably big enough to take it" and "RC boats
+    cannot get it back" are testable: split each fleet by which third of the line it
+    started in, and compare what happened over the next minute and the beat that followed.
+    """
+    out = []
+    sl = {r['n']: r for r in D['ib']['races']}
+    for rn, rows in sorted(D.get('start', {}).get('races', {}).items()):
+        legs = D['legs']['races'].get(rn, {})
+        r = sl[int(rn)]
+        thirds = {}
+        for x in rows:
+            thirds.setdefault(x['third'], []).append(x)
+        groups = []
+        for k in ('pin third', 'middle third', 'boat third'):
+            g = thirds.get(k)
+            if not g:
+                continue
+            beats = [next((l for l in (legs.get(x['boat']) or []) if l['kind'] == 'beat'), None)
+                     for x in g]
+            mins = [b['min'] for b in beats if b and b.get('vmg')]
+            groups.append({
+                'third': k.replace(' third', ''), 'n': len(g),
+                'behind60': round(sum(x['behind60'] for x in g) / len(g), 1),
+                'late': round(sum(x['late_s'] for x in g) / len(g), 1),
+                'sog': round(sum(x['sog'] for x in g) / len(g), 2),
+                'beat': round(sum(mins) / len(mins), 1) if mins else None,
+            })
+        out.append({'race': int(rn), 'favoured': r['favoured'], 'bias_m': r['bias_m'],
+                    'line_m': r['line_m'], 'groups': groups})
+    return out
+
+
 def main():
     D = json.load(open(os.path.join(ROOT, 'site/payload.json')))
     team = D['meta']['team']
@@ -241,6 +276,7 @@ def main():
       'start': {'races': {k: [{**r, 'team': r['boat'] == 'Team Sweden'} for r in v]
                           for k, v in D['start']['races'].items()},
                 'note': D['start']['note']},
+      'coachTest': coach_test(D),
       'compare': build_compare(D),
       'qa': qa,
     }

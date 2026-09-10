@@ -531,6 +531,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <div class="title" style="margin-bottom:16px;"><span class="n">11</span><h2>Coach's read</h2></div>
     <p class="cg" style="font-weight:600;font-style:italic;font-size:22px;line-height:1.35;color:var(--ink);background:var(--mint);border-radius:14px;padding:16px 18px;margin:0 0 16px;">&ldquo;Start at the pin, then get right immediately.&rdquo;</p>
     <div id="coach-points"></div>
+    <h3 style="font-size:14px;margin:22px 0 8px;">The start-line rule, against where boats actually started</h3>
+    <div class="segwrap" style="padding:0 0 10px;"><div class="seg" id="ct-races"></div></div>
+    <div class="gridhead" style="grid-template-columns:1.2fr .5fr .8fr .6fr .6fr .7fr;">
+      <span>Third of the line</span><span>Boats</span><span>+60 s</span><span>Late</span>
+      <span>SOG</span><span>Beat</span>
+    </div>
+    <div id="ct-rows"></div>
+    <p class="note" id="ct-note"></p>
     <p class="note" id="coach-mech"></p>
   </section>
 
@@ -775,6 +783,37 @@ function drawStartAnalysis(){
     `started in the pin third. Our line measures ${rows[0].line_m} m against the event's ` +
     `${sl ? sl.line_m.toLocaleString() : '—'} m — computed independently from the committee's own ` +
     `line rows.<br><br><span style="color:var(--faint);">${S.note}</span>`;
+}
+
+/* ---------------- the coach's rule, tested ---------------- */
+let ctRace = 0;
+function drawCoachTest(){
+  const T = D.coachTest;
+  if (!T || !T.length) return;
+  ctRace = Math.min(ctRace, T.length - 1);
+  seg($('ct-races'), T.map((x, i) => ({key: i, label: 'Race ' + x.race})), ctRace,
+      k => { ctRace = k; drawCoachTest(); });
+  const R = T[ctRace];
+  const worst = [...R.groups].sort((a, b) => a.behind60 - b.behind60)[0];
+  $('ct-rows').innerHTML = R.groups.map(g =>
+    `<div class="grid" style="grid-template-columns:1.2fr .5fr .8fr .6fr .6fr .7fr;">
+      <span>${g.third}${g.third === R.favoured.toLowerCase() ? ' <span class="nil">favoured</span>' : ''}</span>
+      <span class="tnum">${g.n}</span>
+      <span class="tnum" style="color:${g === worst ? 'var(--red)' : 'inherit'};font-weight:${g === worst ? 700 : 400};">${g.behind60} m</span>
+      <span class="tnum">${g.late} s</span><span class="tnum">${g.sog.toFixed(2)}</span>
+      <span class="tnum">${g.beat == null ? '—' : g.beat + ' min'}</span></div>`).join('');
+  const pin = R.groups.find(g => g.third === 'pin');
+  const cb = R.groups.find(g => g.third === 'boat');
+  $('ct-note').innerHTML =
+    `<b>The rule holds in both races.</b> ${R.favoured} favoured by ${R.bias_m} m on a ` +
+    `${R.line_m.toLocaleString()} m line, and the committee-boat third is the worst group on every ` +
+    `measure` + (pin && cb
+      ? `: ${Math.abs(cb.behind60)} m behind a minute after the gun against ${Math.abs(pin.behind60)} m ` +
+        `at the pin, ${cb.late} s late against ${pin.late} s, and a beat ${(cb.beat - pin.beat).toFixed(1)} ` +
+        `minutes longer.` : '.') +
+    `<br><br><span style="color:var(--faint);">Groups are thirds of the line by measured along-line ` +
+    `position at the gun. Beat time is the first upwind for the boats in each group with decoded ` +
+    `telemetry.</span>`;
 }
 
 /* ---------------- fleet ---------------- */
@@ -1160,7 +1199,7 @@ function drawNav(){
 }
 
 function drawAll(){
-  drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawFleet();
+  drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
 drawAll(); drawChat(); drawNav(); initShell();
