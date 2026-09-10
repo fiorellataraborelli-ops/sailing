@@ -238,6 +238,9 @@ def main():
       'segments': {'rows': segs, 'caveat': D['segments']['caveat']},
       'kpi': {'rows': D['kpi']['rows'], 'note': D['kpi']['note']},
       'coach': {'start': D['coach']['start'], 'mechanism': D['coach']['mechanism']},
+      'start': {'races': {k: [{**r, 'team': r['boat'] == 'Team Sweden'} for r in v]
+                          for k, v in D['start']['races'].items()},
+                'note': D['start']['note']},
       'compare': build_compare(D),
       'qa': qa,
     }

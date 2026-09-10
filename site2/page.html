@@ -396,9 +396,26 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     <p class="note" style="margin-top:0;" id="sl-note"></p>
   </section>
 
+  <section id="startanalysis" data-tab="wind" class="reveal rd-card">
+    <div class="cardhead">
+      <div class="title"><span class="n">04</span><h2>Start analysis</h2></div>
+      <div class="seg" id="sa-races"></div>
+    </div>
+    <p class="lede">The four numbers the brief asks for at the gun &mdash; how far from the line,
+      how late across it, how fast, and at what angle to the wind &mdash; measured from each boat's
+      own track against the committee's own line.</p>
+    <div class="tiles" id="sa-tiles" style="margin-bottom:16px;"></div>
+    <div class="gridhead" style="grid-template-columns:1.5fr .7fr .6fr .6fr .6fr .9fr .7fr;">
+      <span>Boat</span><span>To line</span><span>Late</span><span>SOG</span><span>TWA</span>
+      <span>On the line</span><span>+60 s</span>
+    </div>
+    <div class="scroller" id="sa-rows"></div>
+    <p class="note" id="sa-note"></p>
+  </section>
+
   <section id="fleet" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">04</span><h2>Fleet snapshot</h2></div>
+      <div class="title"><span class="n">05</span><h2>Fleet snapshot</h2></div>
       <div class="seg" id="fleet-days"></div>
     </div>
     <p class="fine" style="margin:0 0 12px;" id="fleet-note"></p>
@@ -410,7 +427,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="maneuvers" data-tab="race" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">05</span><h2>Point of sail &amp; manoeuvres</h2></div>
+      <div class="title"><span class="n">06</span><h2>Point of sail &amp; manoeuvres</h2></div>
       <div class="seg" id="man-races"></div>
     </div>
     <div class="seg scroll" id="man-boats" style="margin-bottom:20px;"></div>
@@ -450,7 +467,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="vmg" data-tab="race" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">06</span><h2>Leg analysis &mdash; VMG</h2></div>
+      <div class="title"><span class="n">07</span><h2>Leg analysis &mdash; VMG</h2></div>
       <div class="seg" id="vmg-races"></div>
     </div>
     <p class="lede">Speed made good along the wind axis, computed fix by fix against the wind the event measured on that leg. The coaching brief calls this the most important number on the page, and it is the one a straight-line proxy gets wrong.</p>
@@ -471,7 +488,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="compare" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">07</span><h2>Competitor velocity</h2></div>
+      <div class="title"><span class="n">08</span><h2>Competitor velocity</h2></div>
       <div class="seg scroll" id="cmp-metric"></div>
     </div>
     <p class="lede">Every boat this analysis has a speed for, on one axis. Each dot is a boat; the
@@ -489,7 +506,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="segments" data-tab="fleet" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">08</span><h2>Speed segments, 9 Sep</h2></div>
+      <div class="title"><span class="n">09</span><h2>Speed segments, 9 Sep</h2></div>
       <div class="seg" id="seg-sort"></div>
     </div>
     <p class="lede">Maximum speed held across a rolling window. The columns get harder left to right: anyone can touch 20 knots for an instant, holding it for a minute is a different thing.</p>
@@ -501,7 +518,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="kpi" data-tab="fleet" class="reveal rd-card">
-    <div class="title" style="margin-bottom:6px;"><span class="n">09</span><h2>Top five against Garm</h2></div>
+    <div class="title" style="margin-bottom:6px;"><span class="n">10</span><h2>Top five against Garm</h2></div>
     <p class="lede">The championship leaders on the KPIs that matter, joined from three independent sources &mdash; scored results, the 9 September speed segments, and VMG computed here from the raw logs.</p>
     <div class="gridhead" style="grid-template-columns:1.5fr .5fr .6fr .8fr .7fr .8fr .7fr;">
       <span>Boat</span><span>Pos</span><span>Pts</span><span>Gained</span><span>Peak</span><span>Hold</span><span>VMG</span>
@@ -511,14 +528,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </section>
 
   <section id="coach" data-tab="team" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">10</span><h2>Coach's read</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">11</span><h2>Coach's read</h2></div>
     <p class="cg" style="font-weight:600;font-style:italic;font-size:22px;line-height:1.35;color:var(--ink);background:var(--mint);border-radius:14px;padding:16px 18px;margin:0 0 16px;">&ldquo;Start at the pin, then get right immediately.&rdquo;</p>
     <div id="coach-points"></div>
     <p class="note" id="coach-mech"></p>
   </section>
 
   <section id="analyser" data-tab="ask" class="reveal rd-card">
-    <div class="title" style="margin-bottom:16px;"><span class="n">11</span><h2>Ask the analyser</h2></div>
+    <div class="title" style="margin-bottom:16px;"><span class="n">12</span><h2>Ask the analyser</h2></div>
     <div id="chatlog" style="margin-bottom:12px;"></div>
     <div class="chips" id="chips"></div>
     <form class="ask" id="askform">
@@ -714,6 +731,51 @@ function pinTeam(sorted){
   return us.length ? [...us, ...ranked.filter(x => !x.r.team)] : ranked;
 }
 const posCell = rank => `<span class="pos">${rank}</span>`;
+
+/* ---------------- start analysis ---------------- */
+let saRace = '1';
+function drawStartAnalysis(){
+  const S = D.start;
+  if (!S) return;
+  const keys = Object.keys(S.races);
+  seg($('sa-races'), keys.map(k => ({key: k, label: 'Race ' + k})), saRace,
+      k => { saRace = k; drawStartAnalysis(); });
+  const rows = S.races[saRace];
+  const g = rows.find(r => r.team);
+  const rank = rows.findIndex(r => r.team) + 1;
+  const sl = D.startline.find(x => String(x.race) === saRace);
+
+  $('sa-tiles').innerHTML = !g ? '' : [
+    ['To the line', g.dist_m.toFixed(1) + ' m'],
+    ['Across', g.late_s.toFixed(1) + ' s'],
+    ['Speed at gun', sp2(g.sog)],
+    ['Angle to wind', g.twa.toFixed(1) + '&deg;'],
+    ['Started', g.third.replace(' third', '')],
+    ['Behind at +60 s', g.behind60 + ' m'],
+    ['Rank at +60 s', rank + ' of ' + rows.length],
+  ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
+
+  $('sa-rows').innerHTML = pinTeam(rows).map(({r, rank: rk}) =>
+    `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.5fr .7fr .6fr .6fr .6fr .9fr .7fr;">
+      <span>${posCell(rk)}${esc(r.boat === D.meta.legteam ? 'Garm' : r.boat)}</span>
+      <span class="tnum">${r.dist_m.toFixed(1)} m</span><span class="tnum">${r.late_s.toFixed(1)} s</span>
+      <span class="tnum">${r.sog.toFixed(2)}</span><span class="tnum">${r.twa.toFixed(1)}&deg;</span>
+      <span>${r.third.replace(' third', '')}</span>
+      <span class="tnum">${r.behind60} m</span></div>`).join('');
+
+  const pinEnd = rows.filter(r => r.along < 0.33).length;
+  const fast = [...rows].sort((a, b) => b.sog - a.sog)[0];
+  $('sa-note').innerHTML = (g
+    ? `<b>Garm crossed ${g.late_s} s after the gun, ${g.dist_m} m back, at ${g.sog} kn` +
+      `${sl ? `, in the ${g.third.replace(' third', '')} third when the ${sl.favoured.toLowerCase()} ` +
+              `was favoured by ${sl.bias_m} m` : ''}.</b> ` +
+      `A minute later it was ${Math.abs(g.behind60)} m behind the best boat in the tracked fleet, ` +
+      `${rank} of ${rows.length}.<br><br>` : '') +
+    `${fast.boat} was quickest across at ${fast.sog.toFixed(2)} kn; ${pinEnd} of ${rows.length} boats ` +
+    `started in the pin third. Our line measures ${rows[0].line_m} m against the event's ` +
+    `${sl ? sl.line_m.toLocaleString() : '—'} m — computed independently from the committee's own ` +
+    `line rows.<br><br><span style="color:var(--faint);">${S.note}</span>`;
+}
 
 /* ---------------- fleet ---------------- */
 let fDay = null;
@@ -1098,7 +1160,7 @@ function drawNav(){
 }
 
 function drawAll(){
-  drawSummary(); drawWind(); drawGap(); drawStart(); drawFleet();
+  drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
 drawAll(); drawChat(); drawNav(); initShell();
