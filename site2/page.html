@@ -561,15 +561,16 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
       <div class="seg" id="vmg-races"></div>
     </div>
     <p class="lede">Speed made good along the wind axis, computed fix by fix against the wind the event measured on that leg. The coaching brief calls this the most important number on the page, and it is the one a straight-line proxy gets wrong.</p>
+    <div class="seg" id="vmg-mode" style="margin-bottom:14px;"></div>
     <div class="tiles" style="margin-bottom:18px;" id="vmg-tiles"></div>
-    <div class="gridhead" style="grid-template-columns:1.5fr .8fr .8fr .8fr .8fr .8fr;">
+    <div class="gridhead" id="vmg-head" style="grid-template-columns:1.5fr .8fr .8fr .8fr .8fr .8fr;">
       <span>Boat</span><span>VMG</span><span>SOG</span><span>TWA</span><span>Tacks</span><span>Extra m</span>
     </div>
     <div class="scroller" id="vmg-rows"></div>
     <div class="panel" style="margin-top:16px;">
       <div class="h">Garm, leg by leg</div>
-      <div class="gridhead" style="grid-template-columns:1.1fr .7fr .7fr .7fr .7fr .7fr .7fr;padding-left:0;padding-right:0;">
-        <span>Leg</span><span>Wind</span><span>Min</span><span>SOG</span><span>VMG</span><span>TWA</span><span>Tk/Gy</span>
+      <div class="gridhead" style="grid-template-columns:1fr .55fr .55fr .6fr .6fr .6fr .6fr .55fr;padding-left:0;padding-right:0;">
+        <span>Leg</span><span>Wind</span><span>Min</span><span>SOG</span><span>VMG</span><span>VMG&nbsp;st</span><span>TWA</span><span>Tk/Gy</span>
       </div>
       <div id="ts-rows"></div>
     </div>
@@ -1359,35 +1360,53 @@ function drawMan(){
 }
 
 /* ---------------- leg VMG ---------------- */
-let vRace = '1';
+/* Two ways to average a leg, and the page shows both rather than picking one.
+   "All fixes" is the rate the boat actually got round the course; "manoeuvres out"
+   drops every fix within the measured recovery window of a tack or gybe and is boat
+   speed with turning taken out. A crew that tacks more is otherwise charged twice —
+   once in the manoeuvre cost table, and again in an average quietly measuring how
+   often it turned. */
+let vRace = '1', vMode = 'all';
 function drawVmg(){
   const keys = Object.keys(D.legs.races);
   seg($('vmg-races'), keys.map(k => ({key: k, label: 'Race ' + k})), vRace, k => { vRace = k; drawVmg(); });
+  seg($('vmg-mode'), [{key:'all', label:'All fixes'}, {key:'steady', label:'Manoeuvres out'}],
+      vMode, k => { vMode = k; drawVmg(); });
+  const stdy = vMode === 'steady';
+  const fV = l => stdy && l.svmg != null ? l.svmg : l.vmg;
+  const fS = l => stdy && l.ssog != null ? l.ssog : l.sog;
+  const fW = l => stdy && l.stwa != null ? l.stwa : l.twa;
+
   const R = D.legs.races[vRace];
   const beats = Object.entries(R).map(([b, L]) => ({b, l: L.find(x => x.kind === 'beat')}))
-                                 .filter(x => x.l && x.l.vmg).sort((a, b) => b.l.vmg - a.l.vmg);
+                                 .filter(x => x.l && x.l.vmg).sort((a, b) => fV(b.l) - fV(a.l));
   const us = beats.find(x => x.b === D.meta.legteam);
-  const med = beats[Math.floor(beats.length / 2)].l.vmg;
+  const med = fV(beats[Math.floor(beats.length / 2)].l);
   const dr = D.legs.drivers[vRace] || {};
   const small = beats.length < 12;
+  const drag = us ? us.l.svmg - us.l.vmg : null;
   $('vmg-tiles').innerHTML = [
-    ['Garm VMG, beat 1', us ? sp2(us.l.vmg) : '—'],
+    ['Garm VMG, beat 1', us ? sp2(fV(us.l)) : '—'],
     [small ? 'Median of ' + beats.length : 'Fleet median', sp2(med)],
     ['Rank of ' + beats.length, us ? (beats.findIndex(x => x.b === D.meta.legteam) + 1) : '—'],
-    ['Garm TWA', us ? us.l.twa.toFixed(1) + '°' : '—']
+    ['Garm TWA', us ? fW(us.l).toFixed(1) + '°' : '—'],
+    ['Cost of turning', drag == null ? '—' : drag.toFixed(2) + ' kn'],
+    ['Leg spent turning', us && us.l.keep != null ? ((1 - us.l.keep) * 100).toFixed(0) + '%' : '—'],
   ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
   $('vmg-rows').innerHTML = beats.map(x =>
     `<div class="grid ${x.b === D.meta.legteam ? 'team' : ''}" style="grid-template-columns:1.5fr .8fr .8fr .8fr .8fr .8fr;">
       <span>${esc(x.b === D.meta.legteam ? 'Garm' : x.b)}</span>
-      <span class="tnum">${x.l.vmg.toFixed(2)}</span><span class="tnum">${x.l.sog.toFixed(2)}</span>
-      <span class="tnum">${x.l.twa.toFixed(1)}°</span><span class="tnum">${x.l.tacks}</span>
+      <span class="tnum">${fV(x.l).toFixed(2)}</span><span class="tnum">${fS(x.l).toFixed(2)}</span>
+      <span class="tnum">${fW(x.l).toFixed(1)}°</span><span class="tnum">${x.l.tacks}</span>
       <span class="tnum">${x.l.extra.toLocaleString()}</span></div>`).join('');
   const TS = R[D.meta.legteam] || [];
   $('ts-rows').innerHTML = TS.map(l =>
-    `<div class="grid" style="grid-template-columns:1.1fr .7fr .7fr .7fr .7fr .7fr .7fr;padding-left:0;padding-right:0;">
+    `<div class="grid" style="grid-template-columns:1fr .55fr .55fr .6fr .6fr .6fr .6fr .55fr;padding-left:0;padding-right:0;">
       <span>${l.n}. ${l.kind === 'beat' ? 'Beat' : 'Run'}</span><span class="tnum">${l.wind}°</span>
       <span class="tnum">${l.min.toFixed(1)}</span><span class="tnum">${l.sog.toFixed(2)}</span>
-      <span class="tnum" style="font-weight:700;">${l.vmg.toFixed(2)}</span><span class="tnum">${l.twa.toFixed(0)}°</span>
+      <span class="tnum">${l.vmg.toFixed(2)}</span>
+      <span class="tnum" style="font-weight:700;">${l.svmg == null ? '—' : l.svmg.toFixed(2)}</span>
+      <span class="tnum">${l.twa.toFixed(0)}°</span>
       <span class="tnum">${l.tacks}/${l.gybes}</span></div>`).join('');
   $('vmg-note').innerHTML = small ?
     `<b>Garm's own numbers, measured the same way as Tuesday's.</b> Only ${beats.length} boats logged ` +
@@ -1400,7 +1419,17 @@ function drawVmg(){
     `<b>${dr.r_extra}</b>. Tack count comes in at <b>${dr.r_tacks}</b> — the weakest of the three by ` +
     `some distance. ` +
     `The boats that made ground were sailing a better angle, not tacking less. ` +
-    `Efficiency (VMG ÷ SOG) correlates at ${dr.r_eff}, but that is definitional and is not treated as a driver.`;
+    `Efficiency (VMG ÷ SOG) correlates at ${dr.r_eff}, but that is definitional and is not treated as a driver.` +
+    (dr.r_tacks_steady != null
+      ? `<br><br><b>And most of even that much was an artefact of the averaging.</b> Take the ` +
+        `manoeuvres out of the average and tack count falls to <b>r = ${dr.r_tacks_steady}</b>, while ` +
+        `angle holds at <b>${dr.r_twa_steady}</b>. A boat that tacks more was partly just being ` +
+        `measured while it tacked.` : '') +
+    `<br><br><span style="color:var(--faint);">Manoeuvres out drops every fix from ` +
+    `${D.legs.steady_window_s.tack[0]} s to +${D.legs.steady_window_s.tack[1]} s around a tack and ` +
+    `${D.legs.steady_window_s.gybe[0]} s to +${D.legs.steady_window_s.gybe[1]} s around a gybe. Those ` +
+    `windows are measured, not assumed: across the fleet, speed at the crossing falls to 71% of the ` +
+    `approach for a tack and 64% for a gybe, and is back on its plateau by +10 s and +15 s.</span>`;
 }
 
 /* ---------------- competitor velocity ---------------- */
@@ -1409,6 +1438,12 @@ const METRICS = [
   {k:'dn',   label:'Downwind SOG', low:'downwind speed',unit:'kn', dp:2, blurb:'average speed at or above 8 knots, 8 September'},
   {k:'vmg1', label:'Beat VMG',     low:'beat VMG',      unit:'kn', dp:2, blurb:'speed made good up the wind axis, first beat of race 1'},
   {k:'run1', label:'Run VMG',      low:'run VMG',       unit:'kn', dp:2, blurb:'speed made good down the wind axis, first run of race 1'},
+  // the same two legs with every tack and gybe cut out of the average, so a boat that
+  // manoeuvres more is not ranked slower for having manoeuvred
+  {k:'svmg1', label:'Beat VMG, clean', low:'beat VMG with manoeuvres excluded', unit:'kn', dp:2,
+   blurb:'first beat of race 1, every tack cut out of the average'},
+  {k:'srun1', label:'Run VMG, clean',  low:'run VMG with manoeuvres excluded',  unit:'kn', dp:2,
+   blurb:'first run of race 1, every gybe cut out of the average'},
   {k:'peak', label:'Peak speed',   low:'peak speed',    unit:'kn', dp:2, blurb:'highest instantaneous speed, 9 September'},
   {k:'hold', label:'Speed held 60 s', low:'speed held for a full minute', unit:'', dp:3, blurb:'share of that peak still held over a full minute'},
 ];
@@ -1472,15 +1507,16 @@ function drawCompare(){
     (sub ? `<div style="font-size:11.5px;color:var(--faint);margin-top:3px;">${esc(sub)}</div>` : '') + `</div>`).join('');
 
   const dash = v => v == null ? '<span style="color:var(--faint);">—</span>' : v;
+  const clean = cmpKey === 'svmg1' || cmpKey === 'srun1';
   $('cmp-rows').innerHTML = pinTeam(have).map(({r: b, rank}) => {
     const d = us ? b[M.k] - us[M.k] : null;
     return `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.5fr .75fr .8fr .75fr .6fr .75fr .7fr .8fr .7fr;">
       <span>${posCell(rank)}${esc(b.name)}</span>
       <span class="tnum">${dash(b.up && b.up.toFixed(2))}</span>
       <span class="tnum">${dash(b.dn && b.dn.toFixed(2))}</span>
-      <span class="tnum">${dash(b.vmg1 && b.vmg1.toFixed(2))}</span>
+      <span class="tnum">${dash((clean ? b.svmg1 : b.vmg1)?.toFixed(2))}</span>
       <span class="tnum">${dash(b.twa1 && b.twa1.toFixed(0) + '°')}</span>
-      <span class="tnum">${dash(b.run1 && b.run1.toFixed(2))}</span>
+      <span class="tnum">${dash((clean ? b.srun1 : b.run1)?.toFixed(2))}</span>
       <span class="tnum">${dash(b.peak && b.peak.toFixed(2))}</span>
       <span class="tnum">${dash(b.hold && b.hold.toFixed(3))}</span>
       <span class="tnum" style="color:${b.team ? 'inherit' : d > 0 ? 'var(--red)' : 'var(--deep)'};font-weight:600;">${
@@ -1500,7 +1536,9 @@ function drawCompare(){
     `different ways — the log file, the leg analysis and the event's segment table. A boat missing ` +
     `from one source keeps a dash in those columns rather than dropping out of the comparison. ` +
     `Upwind and downwind averages come from 8 September; peak and hold from the 9 September segment ` +
-    `table; VMG from the raw logs.</span>`;
+    `table; VMG from the raw logs. The two <b>clean</b> metrics drop every fix inside a tack or gybe, ` +
+    `so a boat is not ranked slower for having manoeuvred more — the manoeuvres are costed on their ` +
+    `own, in the loss-rate table.</span>`;
 }
 
 /* ---------------- speed segments ---------------- */

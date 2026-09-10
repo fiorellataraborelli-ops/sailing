@@ -18,7 +18,7 @@ import sys, glob, os, json, re, datetime, math, statistics as st
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.sailing_agents.vkx_parser import parse_file
 from src.sailing_agents import race_multi_leg as rml
-from src.sailing_agents.leg_vmg import leg_vmg, manoeuvres
+from src.sailing_agents.leg_vmg import leg_vmg, manoeuvres, STEADY_WINDOW_S
 
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 MS = 1.9438444924406
@@ -115,8 +115,8 @@ def main():
                         end = ft
                 sub = [q for q in tr if l.start_ts_ms <= q[0] <= end]
                 wd = w[i] if i < len(w) else w[-1]
-                v = leg_vmg(sub, wd, l.kind == 'beat')
                 m = manoeuvres(sub, wd)
+                v = leg_vmg(sub, wd, l.kind == 'beat', mans=m)
                 tk = [x for x in m if x['kind'] == 'tack']
                 gy = [x for x in m if x['kind'] == 'gybe']
                 path = sum(math.hypot((r[1] - q[1]) * 111320,
@@ -130,6 +130,10 @@ def main():
                              'sog': v.get('avg_sog_kn'),
                              'vmg': v.get('avg_vmg_kn'), 'twa': v.get('avg_twa_deg'),
                              'eff': v.get('vmg_efficiency'),
+                             # the same leg with the turns taken out: boat speed rather
+                             # than boat speed diluted by manoeuvre count
+                             'svmg': v.get('steady_vmg_kn'), 'ssog': v.get('steady_sog_kn'),
+                             'stwa': v.get('steady_twa_deg'), 'keep': v.get('steady_share'),
                              'extra': round(path - straight),
                              'tacks': len(tk), 'gybes': len(gy),
                              'tloss': round(st.mean([x['loss_kn'] for x in tk]), 2) if tk else None,
@@ -137,7 +141,7 @@ def main():
             races.setdefault(rn, {})[b] = legs
 
     out = {'source': 'race_multi_leg segmentation + leg_vmg, per-leg winds from the event reports',
-           'races': races, 'drivers': {},
+           'races': races, 'drivers': {}, 'steady_window_s': STEADY_WINDOW_S,
            'note': 'The fourth leg is cut at the finish, detected as the boat coming off the '
                    'plane, not at the logger\'s RACE_END — that runs on into the sail home. '
                    'Checked against the event\'s published leg times for races 3 and 4: about '
@@ -146,12 +150,19 @@ def main():
         L = [l[0] for l in R.values() if l and l[0]['kind'] == 'beat']
         if len(L) < 8: continue
         vm = [x['vmg'] for x in L]
+        sv = [x['svmg'] for x in L]
         out['drivers'][rn] = {'n': len(L),
             'median_vmg': round(st.median(vm), 2),
+            'median_svmg': round(st.median(sv), 2),
             'r_tacks': pearson([x['tacks'] for x in L], vm),
             'r_extra': pearson([x['extra'] for x in L], vm),
             'r_twa':   pearson([x['twa'] for x in L], vm),
-            'r_eff':   pearson([x['eff'] for x in L], vm)}
+            'r_eff':   pearson([x['eff'] for x in L], vm),
+            # the same correlation once turning is out of the average. If tack count
+            # only ever predicted VMG because the average included the tacks, this is
+            # where it disappears.
+            'r_tacks_steady': pearson([x['tacks'] for x in L], sv),
+            'r_twa_steady':   pearson([x['stwa'] for x in L], sv)}
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     d = json.load(open(root + '/site/payload.json'))
     d['legs'] = out

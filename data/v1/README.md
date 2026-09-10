@@ -2,7 +2,7 @@
 
 J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry
 
-Generated 2026-09-10T12:07:11Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
+Generated 2026-09-10T12:15:29Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
 
 ## Conventions
 
@@ -64,6 +64,10 @@ Generated 2026-09-10T12:07:11Z. Every file here is a projection of the same anal
 | `vmg` | Mean wind-referenced VMG, knots — the component of boat speed along the wind axis |
 | `twa` | Mean true wind angle, degrees off the wind |
 | `eff` | VMG divided by SOG (definitional, not an independent measure) |
+| `svmg` | Mean VMG over the fixes outside a manoeuvre, knots — boat speed with turning removed, so a boat that manoeuvres more is not measured as slower for it |
+| `ssog` | Mean SOG over the same fixes, knots |
+| `stwa` | Mean true wind angle over the same fixes, degrees |
+| `keep` | Share of the leg's fixes left after removing the manoeuvre windows (-10 s to +15 s around a tack, -10 s to +20 s around a gybe) |
 | `extra` | Distance sailed beyond the straight line, metres |
 | `tacks` | Settled tacks |
 | `gybes` | Settled gybes |
@@ -116,6 +120,7 @@ Generated 2026-09-10T12:07:11Z. Every file here is a projection of the same anal
 | `hold` | Hold ratio |
 | `vmg` | Mean upwind VMG from this boat's own log, knots |
 | `twa` | Mean upwind true wind angle, degrees |
+| `svmg` | The same VMG with every tack cut out of the average, knots |
 
 ### `official`
 

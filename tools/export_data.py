@@ -31,6 +31,12 @@ FIELDS = {
     'vmg': f'Mean wind-referenced VMG, {KN} — the component of boat speed along the wind axis',
     'twa': 'Mean true wind angle, degrees off the wind',
     'eff': 'VMG divided by SOG (definitional, not an independent measure)',
+    'svmg': f'Mean VMG over the fixes outside a manoeuvre, {KN} — boat speed with turning removed, '
+            f'so a boat that manoeuvres more is not measured as slower for it',
+    'ssog': f'Mean SOG over the same fixes, {KN}',
+    'stwa': 'Mean true wind angle over the same fixes, degrees',
+    'keep': 'Share of the leg\'s fixes left after removing the manoeuvre windows '
+            '(-10 s to +15 s around a tack, -10 s to +20 s around a gybe)',
     'extra': 'Distance sailed beyond the straight line, metres',
     'tacks': 'Settled tacks', 'gybes': 'Settled gybes',
     'tloss': f'Mean speed lost per tack, {KN}', 'gloss': f'Mean speed lost per gybe, {KN}'},
@@ -46,7 +52,8 @@ FIELDS = {
     'gain': 'Places won between the first windward mark and the finish, summed over races',
     'peak': f'Instantaneous peak speed on 9 Sep, {KN}', 's60': f'Best speed held 60 s on 9 Sep, {KN}',
     'hold': 'Hold ratio', 'vmg': f'Mean upwind VMG from this boat\'s own log, {KN}',
-    'twa': 'Mean upwind true wind angle, degrees'},
+    'twa': 'Mean upwind true wind angle, degrees',
+    'svmg': f'The same VMG with every tack cut out of the average, {KN}'},
   'races': {
     'race': 'Race number', 'boat': 'Boat', 'm0': 'Cumulative minutes at mark 1',
     'm1': 'Cumulative minutes at mark 2', 'm2': 'Cumulative minutes at mark 3',
@@ -122,7 +129,8 @@ def main():
     legrows = [{'race': int(rn), 'boat': b, **l}
                for rn, R in D['legs']['races'].items() for b, L in R.items() for l in L]
     add('legs', {'source': D['legs']['source'], 'drivers': D['legs']['drivers'],
-                 'rows': legrows}, legrows, list(FIELDS['legs']),
+                 'steady_window_s': D['legs']['steady_window_s'],
+                 'note': D['legs']['note'], 'rows': legrows}, legrows, list(FIELDS['legs']),
         about='Wind-referenced VMG per boat per leg, plus the correlations between each '
               'variable and first-beat VMG across the tracked fleet.')
 

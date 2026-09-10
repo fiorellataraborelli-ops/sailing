@@ -95,8 +95,12 @@ def build_compare(D):
             if beat:
                 r['vmg' + rn], r['twa' + rn] = beat['vmg'], beat['twa']
                 r['tacks' + rn], r['extra' + rn] = beat['tacks'], beat['extra']
+                # boat speed with the turns taken out — the honest number for a
+                # table whose whole purpose is ranking boats against each other
+                r['svmg' + rn] = beat.get('svmg')
             if run:
                 r['run' + rn] = run['vmg']
+                r['srun' + rn] = run.get('svmg')
 
     for s in D['segments']['rows']:
         r = slot(s['boat'])
@@ -224,6 +228,21 @@ def main():
                      's60': s['60'], 'hold': r['hold'], 'rank0': r['rank0'],
                      'rankhold': r['rankhold'], 'team': r['boat'] == 'Garm'})
 
+    # The KPI table carried a VMG figure frozen from an earlier build, which now
+    # disagreed with the leg table on the same page. Re-derive it from race 1's
+    # first beat instead, and carry the manoeuvres-out figure with it.
+    beat1 = {key(b): L[0] for b, L in D['legs']['races']['1'].items() if L}
+    kpi_rows = []
+    for r in D['kpi']['rows']:
+        r = dict(r)
+        l = beat1.get(key(r['boat']))
+        if l:
+            r['vmg'], r['twa'], r['svmg'] = l['vmg'], l['twa'], l['svmg']
+        else:
+            r['svmg'] = None
+        kpi_rows.append(r)
+    garm_kpi = next((r for r in kpi_rows if r['team']), kpi_rows[-1])
+
     t = D['official']['team']
     bias = D['ib']['bias_rows'][0]
 
@@ -231,8 +250,9 @@ def main():
       {'label': 'Where did the regatta go wrong?',
        'k': ['wrong', 'bad', 'lose', 'lost', 'worst'],
        'q': 'Where did the regatta go wrong?',
-       'a': f"Not on boat speed. Garm's upwind VMG is {D['kpi']['rows'][-1]['vmg']} kn at "
-            f"{D['kpi']['rows'][-1]['twa']}° — within 0.01 kn of Areté, which is 3rd overall. "
+       'a': f"Not on boat speed. Garm's upwind VMG is {garm_kpi['vmg']} kn at "
+            f"{garm_kpi['twa']}°, and {garm_kpi['svmg']} kn with the tacks taken out of the "
+            f"average — mid-fleet either way, and the ranking barely moves. "
             f"The damage is done by the first windward mark: Garm wins <b>+{t['gain_total']} places</b> "
             f"after it, more than anyone in the top five, which means it is starting each race deep "
             f"and spending the rest of it recovering."},
@@ -288,10 +308,11 @@ def main():
       'races': [{'n': r['n'], 'boats': [{**{k: b[k] for k in ('b', 'up', 'dn', 'ex', 'dl')},
                                          'tk': leg_tacks(D, r['n'], b['b'])}
                                         for b in r['boats']]} for r in D['races']],
-      'legs': {'races': D['legs']['races'], 'drivers': D['legs']['drivers']},
+      'legs': {'races': D['legs']['races'], 'drivers': D['legs']['drivers'],
+               'steady_window_s': D['legs']['steady_window_s']},
       'segments': {'rows': segs, 'caveat': D['segments']['caveat'],
                    'verify': D['segments'].get('verify')},
-      'kpi': {'rows': D['kpi']['rows'], 'note': D['kpi']['note']},
+      'kpi': {'rows': kpi_rows, 'note': D['kpi']['note']},
       'coach': {'start': D['coach']['start'], 'mechanism': D['coach']['mechanism']},
       'start': {'races': {k: [{**r, 'team': r['boat'] == 'Team Sweden'} for r in v]
                           for k, v in D['start']['races'].items()},
@@ -346,6 +367,11 @@ def main():
       # correlations are only computed for fleets; a race without them must not
       # reach the page still holding the template's undefined
       'no undefined in the copy': 'undefined' not in html,
+      # every leg carries both averages, or the manoeuvres-out toggle quietly
+      # falls back to the all-fix figure and shows the same table twice
+      'both averages on every leg':
+          all(l.get('svmg') is not None and l.get('keep') is not None
+              for R in D['legs']['races'].values() for L in R.values() for l in L),
       # the final run is cut at the finish, so it cannot be longer than the race
       'no leg runs past its race':
           all(sum(l['min'] for l in L) < 120
