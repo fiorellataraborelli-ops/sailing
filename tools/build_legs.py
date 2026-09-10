@@ -14,7 +14,7 @@ average speed down with sail-home data: Garm's Tuesday race 1 read 21.2 min at
 9.3 kn against a 16.9 min second run at 11.7 kn. finish_ts() cuts it at the
 finish instead; see there for how, and for what it is calibrated against.
 """
-import sys, glob, os, json, re, datetime, math, statistics as st
+import sys, glob, os, json, re, datetime, math, statistics as st, unicodedata as ud
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.sailing_agents.vkx_parser import parse_file
 from src.sailing_agents import race_multi_leg as rml
@@ -34,42 +34,87 @@ RACE_OF_WINDOW = {'2026-09-08': {1: '1', 2: '2'}, '2026-09-09': {1: '3', 2: '4'}
 # mean of 0.9 deg. WIND_SOURCE keeps the distinction visible all the way to the page.
 WIND = {'1': [317, 323, 313, 317], '2': [314, 321, 313, 313],
         '3': [324, 327, 326, 332], '4': [335, 341, 342, 349],
-        '5': [323, 332, 332, 334], '6': [354, 354, 349, 352]}
+        '5': [320, 329, 333, 334], '6': [352, 354, 349, 352]}
 WIND_SOURCE = {r: ('event report' if r in ('1', '2', '3', '4') else 'measured from the tracks')
                for r in WIND}
-# The fleet's own disagreement on each measured leg, degrees between the highest and
-# lowest boat. Race 5's first run is the one loose figure and must not be quoted as
-# though it were as solid as the beats.
-WIND_SPREAD = {'5': [5, 41, 6, 4], '6': [3, 6, 3, 4]}
+WIND_BOATS = {'5': 17, '6': 17}    # how many logs each measured wind is a median of
+# The fleet's own disagreement on each measured leg, as the interquartile width in
+# degrees across the seventeen boats — min-to-max would report one bad boat rather
+# than the spread. Race 5's first run is the one loose leg: the middle half of the
+# fleet spans 18 deg on it, against 2-3 deg everywhere else.
+WIND_SPREAD = {'5': [3, 18, 3, 3], '6': [3, 3, 2, 3]}
 MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá': 'Ba ba',
        'Aretê 1872': 'Areté', 'SASSY too': 'Sassy', 'Moore DRV - vakaros 2': 'Moore DRV',
        'TYRA VAKAROS': 'TYRA', 'TYRA VAKAROS2': 'TYRA', 'To Nessa 1527': 'To Nessa',
        'Patakin_3': 'Patakin 3', 'JCurve2026': 'JCurve', 'Nautique J70': 'Nautique',
-       'Vamos September 2024': 'Vamos', 'Mike’s Vakaros': "Mike's Vakaros"}
+       'Vamos September 2024': 'Vamos', 'Mike’s Vakaros': "Mike's Vakaros",
+       # the device, not the boat: a spare unit and a sail number in place of a name
+       'MLC USA 26 Spare': 'MidlifeCrisis', '1566-2': 'Lady in red 2'}
 # "8-9-2026", "08.09.2026" and "2026-09-08" all appear as filename suffixes
 DATE = re.compile(r'\s+(?:\d{1,2}[-.]\d{1,2}[-.]\d{4}|\d{4}-\d{2}-\d{2})$')
+# macOS hands back decomposed filenames, so "Aretê" from the disk is not the same
+# string as "Aretê" typed here. Compare on a normalised form.
+_nfc = lambda x: ud.normalize('NFC', x)
+_MAP = {_nfc(k): v for k, v in MAP.items()}
+
+
+def _stem(fn):
+    """Filename with the extension and any trailing date removed."""
+    s = _nfc(re.sub(r'\.vkx.*$', '', fn).strip())
+    return re.sub(r'\s+', ' ', DATE.sub('', s)).strip()
+
+
+_CORPUS = None
+
+
+def _corpus():
+    """What the corpus says about trailing numbers.
+
+    Nothing in a filename says whether a trailing number is the device's download
+    index or part of the boat's name — "Mag 12" and "Florida 65" look identical to
+    a regex. Peeling always turned Florida 65 into Florida; never peeling left
+    "Mag 12" and "787 10" as boats of their own. The corpus separates them: a
+    download index turns up behind several different boats (9, 10, 11 and 12 each
+    appear behind seven to twelve of them), while a sail number appears behind
+    exactly one. Anything already known to take an index is then peelable whatever
+    the number, which catches the second copy of a boat that only ever appears
+    numbered — Florida 65 12 and Florida 65 13, and no bare Florida 65 at all.
+    """
+    global _CORPUS
+    if _CORPUS is None:
+        stems = {_stem(os.path.basename(p)) for p in glob.glob(SRC + '/*')
+                 if os.path.isfile(p)}
+        by_num = {}
+        for st_ in stems:
+            m = re.match(r'^(.*?)\s+(\d+)$', st_)
+            if m:
+                by_num.setdefault(m.group(2), set()).add(m.group(1))
+        idx = {k for k, v in by_num.items() if len(v) >= 2}
+        _CORPUS = (stems, idx, {p for k in idx for p in by_num[k]})
+    return _CORPUS
 
 
 def name(fn):
-    """Boat from filename, peeling one suffix at a time.
+    """Boat from filename.
 
-    The alias table is consulted after every peel, not only at the end. Peeling
-    first meant any boat whose real name ends in a digit could never match:
-    "Moore DRV - vakaros 2 10-9-2026.vkx" lost the 2 before the lookup and came out
-    as "Moore DRV - vakaros", while the same boat's undated file matched fine. The
-    two then read as different boats.
+    The alias table is consulted after every peel, not only at the end — peeling
+    first meant any boat whose real name ends in a digit could never match, so
+    "Moore DRV - vakaros 2 10-9-2026.vkx" came out as "Moore DRV - vakaros" while
+    the same boat's undated file matched fine, and the two read as different boats.
     """
-    s = re.sub(r'\.vkx.*$', '', fn).strip()
+    s = _stem(fn)
+    stems, index_nums, indexed = _corpus()
     for _ in range(4):
-        if s in MAP:
-            return MAP[s]
-        peeled = DATE.sub('', s).strip()
-        if peeled == s:
-            peeled = re.sub(r'\s+\d+$', '', s).strip()      # a copy number: "vakaros 10"
-        if peeled == s:
+        if s in _MAP:
+            return _MAP[s]
+        m = re.match(r'^(.*?)\s+(\d+)$', s)
+        if not m:
             break
-        s = peeled
-    return MAP.get(s, s)
+        cut, num = m.group(1).strip(), m.group(2)
+        if not (num in index_nums or cut in indexed or cut in _MAP or cut in stems):
+            break
+        s = cut
+    return _MAP.get(s, s)
 
 
 def rolling_kn(tr, win_s=30):
@@ -172,7 +217,7 @@ def main():
     out = {'source': 'race_multi_leg segmentation + leg_vmg; per-leg winds from the event '
                      'reports for races 1-4 and measured from the tracks for 5-6',
            'races': races, 'drivers': {}, 'steady_window_s': STEADY_WINDOW_S,
-           'wind_source': WIND_SOURCE, 'wind_spread': WIND_SPREAD,
+           'wind_source': WIND_SOURCE, 'wind_spread': WIND_SPREAD, 'wind_boats': WIND_BOATS,
            'note': 'The fourth leg is cut at the finish, detected as the boat coming off the '
                    'plane, not at the logger\'s RACE_END — that runs on into the sail home. '
                    'Checked against the event\'s published leg times for races 3 and 4: about '

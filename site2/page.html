@@ -1202,13 +1202,37 @@ function drawCoachTest(){
 
   const pin = R.groups.find(g => g.third === 'pin');
   const cb = R.groups.find(g => g.third === 'boat');
+  // Which third actually did best varies by race, and the favoured end is not always
+  // the one that paid. Read it off the numbers rather than restating race 1's answer.
+  const ranked = [...R.groups].sort((a, b) => b.behind60 - a.behind60);
+  const bestG = ranked[0], worstG = ranked[ranked.length - 1];
+  const label = g => g.third === 'boat' ? 'committee-boat' : g.third;
+  const favKey = R.favoured.toLowerCase().replace('committee', 'boat');
+  const favG = R.groups.find(g => g.third === favKey);
+  const unfav = R.groups.find(g => g.third === (favKey === 'pin' ? 'boat' : 'pin'));
+  const held = favG && favG === bestG;
+  const thin = R.groups.filter(g => g.n < 3);
   $('ct-note').innerHTML =
-    `<b>The rule holds in both races.</b> ${R.favoured} favoured by ${R.bias_m} m on a ` +
-    `${R.line_m.toLocaleString()} m line, and the committee-boat third is the worst group on every ` +
-    `measure` + (pin && cb
-      ? `: ${Math.abs(cb.behind60)} m behind a minute after the gun against ${Math.abs(pin.behind60)} m ` +
-        `at the pin, ${cb.late} s late against ${pin.late} s, and a beat ${(cb.beat - pin.beat).toFixed(1)} ` +
-        `minutes longer.` : '.') +
+    `<b>${held ? 'The rule holds here.' : 'The rule does not hold here.'}</b> ` +
+    `${R.favoured} favoured by ${R.bias_m} m on a ${R.line_m.toLocaleString()} m line, and the ` +
+    `${label(bestG)} third is the group that got away` +
+    (bestG !== worstG
+      ? `: level with the leader a minute after the gun against ${Math.abs(worstG.behind60)} m for the ` +
+        `${label(worstG)} third, ${bestG.late} s late against ${worstG.late} s` +
+        (bestG.beat != null && worstG.beat != null
+          ? `, and a beat ${Math.abs(worstG.beat - bestG.beat).toFixed(1)} minutes ` +
+            `${worstG.beat > bestG.beat ? 'shorter' : 'longer'}.` : '.')
+      : '.') +
+    (held
+      ? ''
+      : ` The favoured end was the ${R.favoured.toLowerCase()}, so the bias alone did not decide it.` +
+        (unfav && unfav === worstG
+          ? ` What does hold is the other half of the rule: the unfavoured ${label(unfav)} end is the ` +
+            `worst group of the three.` : '')) +
+    (thin.length
+      ? ` <b>The ${thin.map(g => label(g) + ' third has ' + g.n + (g.n === 1 ? ' boat' : ' boats')).join(' and the ')}</b>, ` +
+        `so ${thin.length > 1 ? 'those groups are' : 'that group is'} one crew's race rather than a group.`
+      : '') +
     `<br><br><span style="color:var(--faint);">Groups are thirds of the line by measured along-line ` +
     `position at the gun. Beat time is the first upwind for the boats in each group with decoded ` +
     `telemetry.</span>`;

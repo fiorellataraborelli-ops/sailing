@@ -17,11 +17,11 @@
   "entries_note": "The event report gives both \"99 boats\" and \"a fleet of 100 boats\"; the scored results list 100. The 34 that appear repeatedly here are the subset the event publishes race analysis for, not the fleet.",
   "source": "sail-world.com day 1 report"
  },
- "generated_utc": "2026-09-10T17:31:17Z",
+ "generated_utc": "2026-09-10T19:36:26Z",
  "telemetry": {
-  "logs": 40,
+  "logs": 58,
   "day8": 30,
-  "day9": 5,
+  "day9": 8,
   "day9_boats": [
    "J70 Let it be",
    "Mag",
@@ -46,7 +46,7 @@
   "day10_boats": [
    "Team Sweden"
   ],
-  "day10": 4,
+  "day10": 19,
   "team_day10": true
  }
 }
