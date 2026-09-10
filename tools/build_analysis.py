@@ -280,6 +280,7 @@ def main():
                 'note': D['start']['note']},
       'coachTest': coach_test(D),
       'malfunction': D['official']['telemetry'].get('malfunction'),
+      'tracks': D.get('tracks'),
       'compare': build_compare(D),
       'qa': qa,
     }
