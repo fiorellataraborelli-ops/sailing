@@ -150,6 +150,14 @@ def coach_test(D):
     return out
 
 
+def grids_line_up(html):
+    """Every grid-template-columns in a .gridhead must appear on a row template too."""
+    heads = re.findall(r'class="gridhead"[^>]*grid-template-columns:([^;"]+)', html)
+    rows = set(re.findall(r'class="grid [^"]*"[^>]*grid-template-columns:([^;"]+)', html) +
+               re.findall(r'grid-template-columns:([^;"]+)', html))
+    return all(any(h.strip() == r.strip() for r in rows) for h in heads)
+
+
 def main():
     D = json.load(open(os.path.join(ROOT, 'site/payload.json')))
     team = D['meta']['team']
@@ -304,6 +312,9 @@ def main():
       'no unraced days': '2026-09-10' not in html and '2026-09-11' not in html
                          and '2026-09-12' not in html and '2026-09-07' not in html,
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,
+      # a .gridhead and the row template it labels must declare the same columns —
+      # they drifted once and nothing complained
+      'grid headers match their rows': grids_line_up(html),
       # a phone lays the page out at 980 px without this, and shrinks everything
       'a viewport declared': 'name="viewport" content="width=device-width' in html,
       # nothing supplies a charset when Netlify serves this file raw

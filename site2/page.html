@@ -499,8 +499,8 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
       <div class="seg" id="fleet-days"></div>
     </div>
     <p class="fine" style="margin:0 0 12px;" id="fleet-note"></p>
-    <div class="gridhead" style="grid-template-columns:1.7fr 1fr 1fr 1fr 1fr;">
-      <span>Boat</span><span>Avg</span><span>Upwind</span><span>Max</span><span>Distance</span>
+    <div class="gridhead" style="grid-template-columns:1.6fr .9fr .9fr .9fr .9fr .9fr;">
+      <span>Boat</span><span>Avg</span><span>Upwind</span><span>Downwind</span><span>Max</span><span>Distance</span>
     </div>
     <div class="scroller" id="fleet-rows"></div>
   </section>
@@ -1256,9 +1256,9 @@ function drawFleet(){
       (mf && mf.day === fDay ? `<br><span style="color:var(--faint);">${esc(mf.what)} ${esc(mf.cost)}</span>` : '')
     : '');
   $('fleet-rows').innerHTML = pinTeam(rows).map(({r: b, rank}) =>
-    `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.7fr 1fr 1fr 1fr 1fr;">
+    `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.6fr .9fr .9fr .9fr .9fr .9fr;">
       <span>${posCell(rank)}${esc(b.name)}</span><span class="tnum">${sp(b.avg)}</span>
-      <span class="tnum">${sp(b.up)}</span>
+      <span class="tnum">${sp(b.up)}</span><span class="tnum">${sp(b.dn)}</span>
       <span class="tnum">${sp(b.mx)}</span><span class="tnum">${b.nm.toFixed(1)} nm</span></div>`).join('');
 }
 
