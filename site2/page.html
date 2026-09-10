@@ -682,9 +682,10 @@ function drawSummary(){
     `the fleet: ${t.pts} becomes <b>${t.pts - discard}</b>. The position that follows cannot be worked ` +
     `out from here, because only the top five and Garm are in the results held.<br><br>` +
     `Places gained counts positions won between the first windward mark and the finish.` +
-    (D.official.day9_races && D.official.day9_races.length > D.official.races - 3
-      ? ` A second race window appears in Wednesday's logs at ${D.official.day9_races[1]} that is not ` +
-        `in these standings, so they are at least one race behind the water.` : '');
+    (D.official.day9_races && D.official.day9_races.length === 2
+      ? ` Both Wednesday races are in these standings: the loggers put their guns at ` +
+        `${D.official.day9_races[0]} and ${D.official.day9_races[1]}, and the event has published a ` +
+        `full analysis of each.` : '');
   $('herosub').textContent = `Team Sweden · ${t.sail} ${t.boat} · J/70 Worlds, Cascais`;
   $('foot').innerHTML =
     `Built on ${D.meta.logs} Vakaros Atlas VKX logs · ib-sailing race reports · cncascais.com results · ` +
@@ -693,6 +694,20 @@ function drawSummary(){
 }
 
 /* ---------------- wind ---------------- */
+/* "falling each time" was true of the numbers and wrong about the shape: three races
+   near +18 and then a collapse is not a trend line. Say which it is. */
+function shape(v){
+  if (v.length < 3) return 'Treat it as a centre, not a fixed offset.';
+  const last = v[v.length - 2] - v[v.length - 1];
+  const total = Math.max(...v) - Math.min(...v);
+  const flat = Math.max(...v.slice(0, -1)) - Math.min(...v.slice(0, -1));
+  return last > total * 0.6 && flat < 3
+    ? `It held within ${flat.toFixed(1)}° across the first ${v.length - 1} and then collapsed by ` +
+      `${last.toFixed(1)}° in the last — correct with the most recent measurement, never a mean.`
+    : 'It moves race to race, so correct with the most recent measurement, never a mean.';
+}
+
+
 /* Measured by the fleet, race by race, each under the day it was sailed. Nothing forecast:
    the only days wind.json still covers are days nobody has raced. */
 let wDay = 0, wRace = 0;
@@ -736,12 +751,13 @@ function drawWind(){
     legs.map(([k, v]) => `<div class="tile" style="background:var(--card);"><div class="k">${k}</div>` +
       `<div class="v tnum">${v}°</div></div>`).join('') + `</div></div>`;
 
-  const B = D.wind.days.flatMap(d => d.races).map(x => (x.bias > 0 ? '+' : '') + x.bias.toFixed(1) + '°');
+  const vals = D.wind.days.flatMap(d => d.races).map(x => x.bias);
+  const B = vals.map(v => (v > 0 ? '+' : '') + v.toFixed(1) + '°');
   const drift = L.dw1 == null ? null : L.dw1 - L.uw1;
   $('w-note').innerHTML =
     `<b>The model was ${r.bias.toFixed(1)}° right of the water at the gun.</b> ` +
-    `Across the ${['','one','two','three','four','five'][B.length] || B.length} races shown it ran ${B.join(' then ')}` +
-    `${B.length > 1 ? ', falling each time' : ''} — the correction is a centre, not a fixed offset. ` +
+    `Across the ${['','one','two','three','four','five'][B.length] || B.length} races shown it ran ` +
+    `${B.join(', ')}. ${shape(vals)} ` +
     `${D.wind.note}<br><br>` +
     (drift == null
       ? `Only the first upwind is published for this race, so there is no leg-to-leg comparison yet.`

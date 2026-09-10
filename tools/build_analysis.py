@@ -170,9 +170,9 @@ def main():
     # Races 1 and 2 are the only ones with decoded telemetry. Race 3 has no logs at all
     # and race 4 only the event's start and first upwind, so neither is shown.
     TRACKED = (1, 2)
-    # The wind card also carries Wednesday, whose only race is 4. It shows the day's
-    # measured wind, not a race enumeration, so no race number reaches the screen.
-    WIND_RACES = (1, 2, 4)
+    # The wind card carries both days. Race 3 turned out to be a Wednesday race, not a
+    # Tuesday one — the event's own report is dated 2026-09-09 — so Wednesday has two.
+    WIND_RACES = (1, 2, 3, 4)
     fleet = [{'name': f['file'], 'day': f['day'], 'avg': f['avg'], 'up': f['upAvg'],
               'dn': f['dnAvg'], 'mx': f['mx'], 'nm': f['nm'],
               't0': f['t0'], 't1': f['t1'], 'fixes': f['fixes'],

@@ -1,6 +1,6 @@
 {
- "note": "Race 3 has no published start time, so its forecast is read at an estimated 16:30Z first beat. Race 4's gun is not published either, but all three 9 September loggers record it at 12:55:00Z to the second, so its forecast is read at the first beat's midpoint, about 13:10Z.",
- "trend": "The bias is not a constant, and it is not noise either — it decays. Across four races it ran +19.1, +18.0, +11.2 and +6.7 degrees, falling every single time. Wednesday's race needed less than half Tuesday's correction. Use the latest measured value, not the mean; the mean of +13.8 already over-corrects the most recent race by seven degrees.",
+ "note": "Races 3 and 4 are both Wednesday. The event publishes no gun for either, but all three 9 September loggers record race windows at 12:55:00Z and 16:20:00Z to the second, so race 3 is read at 13:00Z and race 4 at 16:00Z — each about the midpoint of its first beat.",
+ "trend": "The bias is not a constant and it does not decay smoothly either. It held near +18 degrees for three races — +19.1, +18.0, +17.7 — and then collapsed to +1.3 in the late afternoon of the second day. Correct with the most recent measurement, not a mean: the mean of +14.0 is wrong for every race in the series.",
  "rows": [
   {
    "race": 1,
@@ -20,17 +20,17 @@
   },
   {
    "race": 3,
-   "forecast": 326.2,
-   "measured": 315.0,
-   "bias": 11.2,
+   "forecast": 341.7,
+   "measured": 324.0,
+   "bias": 17.7,
    "old_observed": null,
    "old_bias": null
   },
   {
    "race": 4,
-   "forecast": 341.7,
+   "forecast": 336.3,
    "measured": 335.0,
-   "bias": 6.7,
+   "bias": 1.3,
    "old_observed": null,
    "old_bias": null
   }
