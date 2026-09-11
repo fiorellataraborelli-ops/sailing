@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-11T20:03:17Z",
+ "generated": "2026-09-11T23:18:28Z",
  "source": "Open-Meteo consensus: ICON-EU, ECMWF IFS 0.25, GFS",
  "position": {
   "lat": 38.68,
@@ -10,128 +10,43 @@
  "min_kn_for_bias": 8,
  "days": [
   {
-   "date": "2026-09-11",
-   "rows": [
-    {
-     "hr": 11,
-     "raw": 33.5,
-     "cor": null,
-     "sp": 33.5,
-     "kn": 2.5,
-     "gust": 13.2,
-     "mslp": 1018.4,
-     "trust": false
-    },
-    {
-     "hr": 12,
-     "raw": 75.0,
-     "cor": null,
-     "sp": 150.0,
-     "kn": 1.8,
-     "gust": 13.4,
-     "mslp": 1018.2,
-     "trust": false
-    },
-    {
-     "hr": 13,
-     "raw": 149.0,
-     "cor": null,
-     "sp": 69.0,
-     "kn": 1.7,
-     "gust": 13.4,
-     "mslp": 1017.9,
-     "trust": false
-    },
-    {
-     "hr": 14,
-     "raw": 271.6,
-     "cor": null,
-     "sp": 151.4,
-     "kn": 1.9,
-     "gust": 13.0,
-     "mslp": 1017.6,
-     "trust": false
-    },
-    {
-     "hr": 15,
-     "raw": 299.9,
-     "cor": null,
-     "sp": 44.1,
-     "kn": 3.4,
-     "gust": 12.6,
-     "mslp": 1017.3,
-     "trust": false
-    },
-    {
-     "hr": 16,
-     "raw": 308.4,
-     "cor": null,
-     "sp": 22.4,
-     "kn": 4.6,
-     "gust": 12.8,
-     "mslp": 1017.0,
-     "trust": false
-    },
-    {
-     "hr": 17,
-     "raw": 327.7,
-     "cor": null,
-     "sp": 3.7,
-     "kn": 6.3,
-     "gust": 14.2,
-     "mslp": 1016.9,
-     "trust": false
-    },
-    {
-     "hr": 18,
-     "raw": 334.7,
-     "cor": null,
-     "sp": 7.3,
-     "kn": 7.4,
-     "gust": 16.1,
-     "mslp": 1017.0,
-     "trust": false
-    }
-   ]
-  },
-  {
    "date": "2026-09-12",
    "rows": [
     {
      "hr": 11,
-     "raw": 137.8,
+     "raw": 138.8,
      "cor": null,
-     "sp": 33.2,
-     "kn": 1.8,
+     "sp": 35.2,
+     "kn": 2.0,
      "gust": 8.6,
      "mslp": 1018.7,
      "trust": false
     },
     {
      "hr": 12,
-     "raw": 153.2,
+     "raw": 154.1,
      "cor": null,
-     "sp": 57.2,
+     "sp": 58.1,
      "kn": 1.7,
      "gust": 10.1,
-     "mslp": 1018.6,
+     "mslp": 1018.7,
      "trust": false
     },
     {
      "hr": 13,
-     "raw": 175.4,
+     "raw": 178.8,
      "cor": null,
-     "sp": 55.6,
-     "kn": 1.6,
+     "sp": 67.2,
+     "kn": 1.5,
      "gust": 11.3,
      "mslp": 1018.1,
      "trust": false
     },
     {
      "hr": 14,
-     "raw": 225.2,
+     "raw": 227.5,
      "cor": null,
-     "sp": 33.8,
+     "sp": 39.5,
      "kn": 2.1,
      "gust": 11.5,
      "mslp": 1017.6,
@@ -139,11 +54,11 @@
     },
     {
      "hr": 15,
-     "raw": 264.4,
+     "raw": 263.7,
      "cor": null,
-     "sp": 11.4,
-     "kn": 2.7,
-     "gust": 11.5,
+     "sp": 10.7,
+     "kn": 2.8,
+     "gust": 13.0,
      "mslp": 1016.9,
      "trust": false
     },
@@ -153,7 +68,7 @@
      "cor": null,
      "sp": 15.0,
      "kn": 3.7,
-     "gust": 13.2,
+     "gust": 12.8,
      "mslp": 1016.4,
      "trust": false
     },
@@ -169,9 +84,9 @@
     },
     {
      "hr": 18,
-     "raw": 324.0,
+     "raw": 324.3,
      "cor": null,
-     "sp": 8.0,
+     "sp": 7.7,
      "kn": 6.2,
      "gust": 15.7,
      "mslp": 1016.4,
