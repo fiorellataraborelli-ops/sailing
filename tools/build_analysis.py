@@ -338,6 +338,7 @@ def main():
     garm_kpi = next((r for r in kpi_rows if r['team']), kpi_rows[-1])
 
     t = D['official']['team']
+    P = D['progress']
     bias = D['ib']['bias_rows'][0]
 
     qa = [
@@ -347,9 +348,11 @@ def main():
        'a': f"Not on boat speed. Garm's upwind VMG is {garm_kpi['vmg']} kn at "
             f"{garm_kpi['twa']}°, and {garm_kpi['svmg']} kn with the tacks taken out of the "
             f"average — mid-fleet either way, and the ranking barely moves. "
-            f"The damage is done by the first windward mark: Garm wins <b>+{t['gain_total']} places</b> "
-            f"after it, more than anyone in the top five, which means it is starting each race deep "
-            f"and spending the rest of it recovering."},
+            f"The damage is done by the first windward mark. Garm wins <b>+{t['gain_total']} places</b> "
+            f"back after it across {D['official']['gain_races']} races, and the upwind half of that, "
+            f"<b>+{t['gain_up']}</b>, is <b>{P['ranks']['up'][0]} of {P['ranks']['up'][1]}</b> in the "
+            f"whole fleet — only {P['best_up']['boat'].rsplit(' ', 2)[0].title()} claws back more "
+            f"going upwind. The boat is starting deep and spending the race recovering."},
       {'label': "What's the wind bias?", 'k': ['bias', 'wind', 'grib', 'forecast', 'model'],
        'q': "What's the wind bias?",
        'a': f"The GRIB runs right of the water. Race 1 forecast {bias['forecast']}° against "
@@ -396,6 +399,7 @@ def main():
                    'day9_races': D['official']['telemetry'].get('day9_races', []),
                    'discard': D['official'].get('discard_applied', False),
                    'gainRaces': D['official'].get('gain_races'),
+                   'gainDef': D['official'].get('gain_def'),
                    'team': {'pos': t['pos'], 'sail': t['sail'], 'boat': t['boat'],
                             'skipper': t['skipper'], 'pts': t['pts'], 'total': t['total'],
                             'gain': t['gain_total'], 'moved': t.get('moved', 0),
@@ -416,6 +420,7 @@ def main():
       'segments': {'rows': segs, 'caveat': D['segments']['caveat'],
                    'verify': D['segments'].get('verify')},
       'kpi': {'rows': kpi_rows, 'note': D['kpi']['note']},
+      'progress': P,
       'coach': {'start': D['coach']['start'], 'mechanism': D['coach']['mechanism']},
       'start': {'races': {k: [{**r, 'team': r['boat'] == 'Team Sweden'} for r in v]
                           for k, v in D['start']['races'].items()},

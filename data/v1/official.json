@@ -174,9 +174,9 @@
   "r3": 10.0,
   "r4": 50.0,
   "pts": 115.0,
-  "gain_total": 50,
-  "gain_up": 3,
-  "gain_down": 21,
+  "gain_total": 64,
+  "gain_up": 30,
+  "gain_down": 27,
   "total": 172.0,
   "r": [
    16.0,
@@ -253,7 +253,7 @@
   "entries_note": "The event report gives both \"99 boats\" and \"a fleet of 100 boats\"; the scored results list 100. The 34 that appear repeatedly here are the subset the event publishes race analysis for, not the fleet.",
   "source": "sail-world.com day 1 report"
  },
- "gain_def": "Places won between the first windward mark and the finish — the estimated Windward 1 position minus the official finish, summed over races 1-4. The event has not published mark progress for races 5-6.",
+ "gain_def": "Places won between the first windward mark and the finish, summed over all 6 races — the event's own race-progress report, which covers the full 100-boat fleet.",
  "discard_applied": true,
- "gain_races": 4
+ "gain_races": 6
 }
