@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.sailing_agents.vkx_parser import parse_file
 from src.sailing_agents import race_multi_leg as rml
 from src.sailing_agents import start_line as sl
-from tools.build_legs import RACE_OF_WINDOW, WIND, WIND_SOURCE, name
+from tools.build_legs import RACE_GUN, WIND, WIND_SOURCE, name, race_of
 
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -65,16 +65,18 @@ def main():
             continue
         day = datetime.datetime.fromtimestamp(log.positions[0][0] / 1000,
                                               datetime.timezone.utc).strftime('%Y-%m-%d')
-        if day not in RACE_OF_WINDOW:
+        if day not in RACE_GUN:
             continue
         b = name(os.path.basename(p))
         if (day, b) in seen:
             continue
         seen.add((day, b))
-        for wi, (s, e) in enumerate(rml.race_windows(log), 1):
-            rn = RACE_OF_WINDOW[day].get(wi)
-            if rn not in DERIVE:
+        done = set()
+        for s, e in rml.race_windows(log):
+            rn = race_of(day, s)
+            if rn not in DERIVE or rn in done:
                 continue
+            done.add(rn)
             ends = sl.line_at(log, s)
             if not ends:
                 continue

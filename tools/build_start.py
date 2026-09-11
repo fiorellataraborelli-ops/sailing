@@ -28,8 +28,7 @@ SRC = os.path.expanduser('~/Downloads/Sailing Files')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Which race each day's race windows belong to, in order — Wednesday's first
 # window is race 3 — and the measured first-upwind wind for each.
-RACE_OF_WINDOW = {'2026-09-08': {1: '1', 2: '2'}, '2026-09-09': {1: '3', 2: '4'},
-                  '2026-09-10': {1: '5', 2: '6'}}
+from tools.build_legs import RACE_GUN, race_of        # windows keyed by their gun
 # First-upwind wind: published by the event for races 1-4, measured from the tracks
 # for 5 and 6 (see build_legs.WIND and wind_from_track).
 WIND = {'1': 317, '2': 314, '3': 324, '4': 335, '5': 320, '6': 352}
@@ -139,17 +138,19 @@ def main():
             continue
         day = datetime.datetime.fromtimestamp(log.positions[0][0] / 1000,
                                               datetime.timezone.utc).strftime('%Y-%m-%d')
-        if day not in RACE_OF_WINDOW:
+        if day not in RACE_GUN:
             continue
         b = name(os.path.basename(p))
         if (day, b) in seen:
             continue
         seen.add((day, b))
 
-        for wi, (s, e) in enumerate(rml.race_windows(log), 1):
-            rn = RACE_OF_WINDOW[day].get(wi)
-            if rn is None:
+        done = set()
+        for s, e in rml.race_windows(log):
+            rn = race_of(day, s)
+            if rn is None or rn in done:
                 continue
+            done.add(rn)
             a = sl.start_analysis(log, s)
             if not a:
                 continue

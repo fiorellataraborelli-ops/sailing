@@ -11,61 +11,61 @@
   "1": [
    {
     "after_leg": 1,
-    "lat": 38.681759,
-    "lon": -9.468875,
-    "n_boats": 30,
-    "spread_m": 35.4
+    "lat": 38.681793,
+    "lon": -9.468871,
+    "n_boats": 29,
+    "spread_m": 33.2
    },
    {
     "after_leg": 2,
-    "lat": 38.649027,
-    "lon": -9.439161,
-    "n_boats": 30,
-    "spread_m": 52.9
+    "lat": 38.649001,
+    "lon": -9.439169,
+    "n_boats": 29,
+    "spread_m": 50.3
    },
    {
     "after_leg": 3,
-    "lat": 38.676453,
-    "lon": -9.463395,
-    "n_boats": 30,
+    "lat": 38.676454,
+    "lon": -9.46339,
+    "n_boats": 29,
     "spread_m": 17.2
    },
    {
     "after_leg": 4,
-    "lat": 38.649957,
-    "lon": -9.432403,
-    "n_boats": 30,
-    "spread_m": 52.0
+    "lat": 38.649941,
+    "lon": -9.432419,
+    "n_boats": 29,
+    "spread_m": 50.4
    }
   ],
   "2": [
    {
     "after_leg": 1,
-    "lat": 38.681659,
-    "lon": -9.46851,
-    "n_boats": 28,
-    "spread_m": 23.6
+    "lat": 38.681655,
+    "lon": -9.468526,
+    "n_boats": 29,
+    "spread_m": 25.1
    },
    {
     "after_leg": 2,
-    "lat": 38.64895,
-    "lon": -9.439019,
-    "n_boats": 28,
-    "spread_m": 62.3
+    "lat": 38.648954,
+    "lon": -9.439015,
+    "n_boats": 29,
+    "spread_m": 67.6
    },
    {
     "after_leg": 3,
-    "lat": 38.676162,
-    "lon": -9.463558,
-    "n_boats": 28,
-    "spread_m": 30.5
+    "lat": 38.676161,
+    "lon": -9.463572,
+    "n_boats": 29,
+    "spread_m": 29.6
    },
    {
     "after_leg": 4,
-    "lat": 38.649941,
-    "lon": -9.432474,
-    "n_boats": 28,
-    "spread_m": 65.9
+    "lat": 38.649945,
+    "lon": -9.432441,
+    "n_boats": 29,
+    "spread_m": 68.8
    }
   ],
   "3": [
@@ -161,31 +161,31 @@
   "6": [
    {
     "after_leg": 1,
-    "lat": 38.689033,
+    "lat": 38.689039,
     "lon": -9.373562,
     "n_boats": 20,
-    "spread_m": 17.9
+    "spread_m": 18.2
    },
    {
     "after_leg": 2,
-    "lat": 38.650926,
-    "lon": -9.372367,
+    "lat": 38.650949,
+    "lon": -9.372432,
     "n_boats": 20,
-    "spread_m": 33.1
+    "spread_m": 32.6
    },
    {
     "after_leg": 3,
     "lat": 38.681364,
-    "lon": -9.372764,
+    "lon": -9.372751,
     "n_boats": 20,
-    "spread_m": 9.9
+    "spread_m": 9.4
    },
    {
     "after_leg": 4,
-    "lat": 38.650484,
-    "lon": -9.367408,
+    "lat": 38.650515,
+    "lon": -9.367434,
     "n_boats": 20,
-    "spread_m": 46.9
+    "spread_m": 34.8
    }
   ]
  },
@@ -648,8 +648,8 @@
   },
   {
    "boat": "RO",
-   "race": 1,
-   "file": "tracks/ro-r1.json",
+   "race": 2,
+   "file": "tracks/ro-r2.json",
    "n": 2896,
    "bytes": 112292
   },
@@ -664,8 +664,8 @@
    "boat": "RO",
    "race": 6,
    "file": "tracks/ro-r6.json",
-   "n": 3051,
-   "bytes": 117872
+   "n": 2631,
+   "bytes": 101772
   },
   {
    "boat": "Sassy",

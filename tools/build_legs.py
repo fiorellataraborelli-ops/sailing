@@ -23,11 +23,22 @@ from src.sailing_agents.leg_vmg import leg_vmg, manoeuvres, STEADY_WINDOW_S
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 MS = 1.9438444924406
 
-# Which race each day's race windows belong to, in order. Explicit rather than
-# "window n = race n": Wednesday's first window is race 3, and one Tuesday boat
-# leaves a spare window behind that would otherwise be scored as a race.
-RACE_OF_WINDOW = {'2026-09-08': {1: '1', 2: '2'}, '2026-09-09': {1: '3', 2: '4'},
-                  '2026-09-10': {1: '5', 2: '6'}}
+# Which race each window belongs to, keyed by the gun itself rather than by the
+# window's position in the file. Counting windows quietly mis-assigns any boat whose
+# set is not the standard two: RO logged only the second race on Tuesday, so its one
+# window was scored as race 1, and on Thursday it started the timer twice for race 5,
+# which pushed its race 5 into the race 6 slot. Across the fleet the guns are
+# unambiguous — 29 boats agree on each Tuesday gun, 20 on each Thursday one.
+RACE_GUN = {'2026-09-08': {'12:05': '1', '13:55': '2'},
+            '2026-09-09': {'12:55': '3', '16:20': '4'},
+            '2026-09-10': {'12:50': '5', '15:10': '6'}}
+
+
+def race_of(day, gun_ms):
+    """Race number for a window, or None if its gun is not a race start."""
+    hhmm = datetime.datetime.fromtimestamp(
+        gun_ms / 1000, datetime.timezone.utc).strftime('%H:%M')
+    return RACE_GUN.get(day, {}).get(hhmm)
 # Races 1-4 take their wind from the event's published leg analysis. Races 5 and 6
 # have no published analysis yet, so these are measured from the tracks themselves by
 # wind_from_track.leg_wind, which reproduces the published figures for races 1-4 to a
@@ -159,7 +170,7 @@ def pearson(x, y):
 
 
 def main():
-    races, seen, trims = {}, set(), []
+    races, seen, trims, stray = {}, set(), [], []
     for p in sorted(glob.glob(SRC + '/*')):
         if not os.path.isfile(p): continue
         try: log = parse_file(p)
@@ -167,14 +178,22 @@ def main():
         if not log.positions: continue
         day = datetime.datetime.fromtimestamp(log.positions[0][0] / 1000,
                                               datetime.timezone.utc).strftime('%Y-%m-%d')
-        if day not in RACE_OF_WINDOW: continue
+        if day not in RACE_GUN: continue
         b = name(os.path.basename(p))
         if (day, b) in seen: continue
         seen.add((day, b))
 
-        for wi, (s, e) in enumerate(rml.race_windows(log), 1):
-            rn = RACE_OF_WINDOW[day].get(wi)
-            if rn is None: continue
+        done = set()
+        for s, e in rml.race_windows(log):
+            rn = race_of(day, s)
+            if rn is None:
+                # a gun nobody else fired: a new race day, a changed schedule, or a
+                # crew running the timer for practice. Reported, never guessed at.
+                stray.append((day, b, datetime.datetime.fromtimestamp(
+                    s / 1000, datetime.timezone.utc).strftime('%H:%M')))
+                continue
+            if rn in done: continue                 # a timer started twice is one race
+            done.add(rn)
             w = WIND[rn]
             race = rml.segment_race(log, s, e, int(rn), wind_deg=w[0])
             if len(race.legs) < 4: continue
@@ -244,6 +263,9 @@ def main():
     d['legs'] = out
     json.dump(d, open(root + '/site/payload.json', 'w'), ensure_ascii=False)
     print(f"legs: { {k: len(v) for k, v in sorted(races.items())} }")
+    if stray:
+        print(f'  {len(stray)} window(s) with an unrecognised gun — add them to RACE_GUN '
+              f'if they are races: ' + ', '.join(f'{d} {b} {g}' for d, b, g in stray[:6]))
     print(f"finish trim applied to {len(trims)} final runs, "
           f"median {st.median([t[2] for t in trims]):.1f} min" if trims else "no trims")
     for t in sorted(trims, key=lambda x: -x[2])[:6]:

@@ -16,7 +16,7 @@ import sys, glob, os, json, re, datetime, math, statistics as st
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.sailing_agents.vkx_parser import parse_file
 from src.sailing_agents import race_multi_leg as rml
-from tools.build_legs import RACE_OF_WINDOW, WIND, finish_ts, name
+from tools.build_legs import RACE_GUN, WIND, finish_ts, name, race_of
 
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data/v1/tracks')
@@ -41,17 +41,19 @@ def main():
             continue
         day = datetime.datetime.fromtimestamp(log.positions[0][0] / 1000,
                                               datetime.timezone.utc).strftime('%Y-%m-%d')
-        if day not in RACE_OF_WINDOW:
+        if day not in RACE_GUN:
             continue
         boat = name(os.path.basename(p))
         if (day, boat) in seen:
             continue
         seen.add((day, boat))
 
-        for wi, (s, e) in enumerate(rml.race_windows(log), 1):
-            rn = RACE_OF_WINDOW[day].get(wi)
-            if rn is None:
+        done = set()
+        for s, e in rml.race_windows(log):
+            rn = race_of(day, s)
+            if rn is None or rn in done:
                 continue
+            done.add(rn)
             w = WIND[rn]
             race = rml.segment_race(log, s, e, int(rn), wind_deg=w[0])
             if len(race.legs) < 4:
@@ -131,7 +133,7 @@ def main():
     with open(os.path.join(OUT, 'index.json'), 'w') as f:
         json.dump({
             'note': 'One file per boat per race, columnar arrays of equal length.',
-            'step_s': STEP_S, 'dates': sorted(RACE_OF_WINDOW), 'n_files': len(index),
+            'step_s': STEP_S, 'dates': sorted(RACE_GUN), 'n_files': len(index),
             'marks_estimated': marks,
             'marks_note': 'Median leg-boundary position across boats. The Atlas does not '
                           'record mark roundings, so these are inferred from track reversals; '
