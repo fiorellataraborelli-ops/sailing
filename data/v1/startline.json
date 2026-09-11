@@ -54,6 +54,24 @@
    "bias_m": 118,
    "calc_m": 118,
    "favoured": "Boat"
+  },
+  {
+   "race": 7,
+   "setting": 327,
+   "line_m": 986,
+   "bias_deg": 11,
+   "bias_m": 188,
+   "calc_m": 188,
+   "favoured": "Pin"
+  },
+  {
+   "race": 8,
+   "setting": 326,
+   "line_m": 973,
+   "bias_deg": 13,
+   "bias_m": 214,
+   "calc_m": 214,
+   "favoured": "Pin"
   }
  ]
 }

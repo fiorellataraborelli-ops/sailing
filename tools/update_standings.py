@@ -64,10 +64,8 @@ def main():
                  'best': min(team['races']), 'moved': prev_pos - team['pos']}
     for i, p in enumerate(team['races'], 1):          # r1..r6, kept for older renderers
         o['team']['r%d' % i] = p
-    o['gain_races'] = 4
-    o['gain_def'] = ('Places won between the first windward mark and the finish — the '
-                     'estimated Windward 1 position minus the official finish, summed over '
-                     'races 1-4. The event has not published mark progress for races 5-6.')
+    # gain_races and gain_def belong to update_progress, which knows how many races
+    # the progress report actually covers. Setting them here overwrote that with 4.
     o['race4_note'] = (
         f"Six races scored, one discard. Garm is {team['pos']}th on {team['net']:g} net from "
         f"{team['total']:g} total, discarding race {team['discard']} "

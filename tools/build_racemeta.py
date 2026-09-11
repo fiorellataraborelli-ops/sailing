@@ -25,7 +25,7 @@ from tools.build_legs import RACE_GUN, WIND, WIND_SOURCE, name, race_of
 
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DERIVE = ('5', '6')          # races with no published report
+DERIVE = ('5', '6', '7', '8')          # races with no published report
 # The GRIB forecast at each gun, captured once and kept. wind.json holds only the
 # coming two days and the overnight refresh rolls the raced day out of it, so this
 # cannot be re-derived after the fact: 10 September's forecast was already gone by
@@ -123,17 +123,26 @@ def main():
     # the wind card's forecast-vs-measured row
     have = {b['race'] for b in D['ib']['bias_rows']}
     kept = json.load(open(FORECAST)) if os.path.exists(FORECAST) else {}
-    # wind.json is {days: [{date, rows: [{hr, raw, ...}]}]} — raw is the GRIB direction
-    fc = {}
+    # wind.json is {days: [{date, rows: [{hr, raw, ...}]}]} — raw is the GRIB direction,
+    # kn its speed. A direction from a 2 kn model field is not a forecast of anything:
+    # on 11 September the model had 80 deg at the first gun and 191 deg an hour later
+    # while the water was steady at 327, which would have published a model error of
+    # +116 and -179 deg. The payload already carries the threshold it trusts.
+    MIN_KN = json.load(open(os.path.join(ROOT, 'data/wind.json'))).get('min_kn_for_bias', 8)
+    fc, fc_kn = {}, {}
     wf = os.path.join(ROOT, 'data/wind.json')
     if os.path.exists(wf):
         for d in json.load(open(wf)).get('days', []):
             for h in d.get('rows', []):
                 fc[(d['date'], h['hr'])] = h.get('raw')
+                fc_kn[(d['date'], h['hr'])] = h.get('kn')
     for r in D['ib']['races']:
         if r['n'] in have or r['n'] not in {int(x) for x in DERIVE}:
             continue
-        live = fc.get((r['date'], int(r['start_utc'][:2])))
+        hour = (r['date'], int(r['start_utc'][:2]))
+        live = fc.get(hour)
+        if live is not None and (fc_kn.get(hour) or 0) < MIN_KN:
+            live = None                              # too light for the direction to mean anything
         if live is not None:
             kept.setdefault(str(r['n']), live)      # first sighting wins, and is kept
         f = kept.get(str(r['n']))

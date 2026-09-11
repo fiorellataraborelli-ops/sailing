@@ -39,9 +39,12 @@ EDGE_TRIM_S = 30
 # window was scored as race 1, and on Thursday it started the timer twice for race 5,
 # which pushed its race 5 into the race 6 slot. Across the fleet the guns are
 # unambiguous — 29 boats agree on each Tuesday gun, 20 on each Thursday one.
+# Friday repeats Tuesday's gun times exactly, which is why this is keyed by day
+# first — a flat time-to-race map would have collided.
 RACE_GUN = {'2026-09-08': {'12:05': '1', '13:55': '2'},
             '2026-09-09': {'12:55': '3', '16:20': '4'},
-            '2026-09-10': {'12:50': '5', '15:10': '6'}}
+            '2026-09-10': {'12:50': '5', '15:10': '6'},
+            '2026-09-11': {'12:05': '7', '13:55': '8'}}
 
 
 def race_of(day, gun_ms):
@@ -55,22 +58,25 @@ def race_of(day, gun_ms):
 # mean of 0.9 deg. WIND_SOURCE keeps the distinction visible all the way to the page.
 WIND = {'1': [317, 323, 313, 317], '2': [314, 321, 313, 313],
         '3': [324, 327, 326, 332], '4': [335, 341, 342, 349],
-        '5': [320, 329, 334, 334], '6': [352, 354, 349, 352]}
+        '5': [320, 329, 334, 334], '6': [352, 354, 349, 352],
+        '7': [327, 331, 326, 333], '8': [326, 334, 324, 331]}
 WIND_SOURCE = {r: ('event report' if r in ('1', '2', '3', '4') else 'measured from the tracks')
                for r in WIND}
-WIND_BOATS = {'5': 20, '6': 20}    # how many logs each measured wind is a median of
+WIND_BOATS = {'5': 20, '6': 20, '7': 26, '8': 22}   # logs each measured wind is a median of
 # The fleet's own disagreement on each measured leg, as the interquartile width in
 # degrees across the seventeen boats — min-to-max would report one bad boat rather
 # than the spread. Race 5's first run is the one loose leg: the middle half of the
 # fleet spans 18 deg on it, against 2-3 deg everywhere else.
-WIND_SPREAD = {'5': [2, 19, 3, 3], '6': [3, 3, 2, 3]}
+WIND_SPREAD = {'5': [2, 19, 3, 3], '6': [3, 3, 2, 3],
+               '7': [3, 5, 3, 3], '8': [5, 2, 2, 2]}
 MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá': 'Ba ba',
        'Aretê 1872': 'Areté', 'SASSY too': 'Sassy', 'Moore DRV - vakaros 2': 'Moore DRV',
        'TYRA VAKAROS': 'TYRA', 'TYRA VAKAROS2': 'TYRA', 'To Nessa 1527': 'To Nessa',
        'Patakin_3': 'Patakin 3', 'JCurve2026': 'JCurve', 'Nautique J70': 'Nautique',
        'Vamos September 2024': 'Vamos', 'Mike’s Vakaros': "Mike's Vakaros",
        # the device, not the boat: a spare unit and a sail number in place of a name
-       'MLC USA 26 Spare': 'MidlifeCrisis', '1566-2': 'Lady in red 2'}
+       'MLC USA 26 Spare': 'MidlifeCrisis', '1566-2': 'Lady in red 2',
+       '1634': 'Liquid Sun', 'Sirena Chico2': 'Sirena Chico'}
 # "8-9-2026", "08.09.2026" and "2026-09-08" all appear as filename suffixes
 DATE = re.compile(r'\s+(?:\d{1,2}[-.]\d{1,2}[-.]\d{4}|\d{4}-\d{2}-\d{2})$')
 # macOS hands back decomposed filenames, so "Aretê" from the disk is not the same

@@ -1,6 +1,6 @@
 {
  "source": "cncascais.com scored results (fetched, not transcribed) + ib-sailing mark-progress standings for races 1-4",
- "updated": "11/09/2026 16:31 UTC",
+ "updated": "11/09/2026 17:26 UTC",
  "races_scored": 8,
  "top": [
   {
@@ -204,9 +204,9 @@
   "r3": 10.0,
   "r4": 50.0,
   "pts": 137.0,
-  "gain_total": 64,
-  "gain_up": 30,
-  "gain_down": 27,
+  "gain_total": 65,
+  "gain_up": 24,
+  "gain_down": 32,
   "total": 194.0,
   "r": [
    16.0,
@@ -254,7 +254,7 @@
  ],
  "race4_note": "Six races scored, one discard. Garm is 10th on 137 net from 194 total, discarding race 2 (57). Race 5 is a 2nd — the best of the regatta — and the team has moved from 15th after 6 races to 10th after 8.",
  "telemetry": {
-  "logs": 61,
+  "logs": 88,
   "day8": 30,
   "day9": 8,
   "day9_boats": [
@@ -282,7 +282,11 @@
    "Team Sweden"
   ],
   "day10": 22,
-  "team_day10": true
+  "team_day10": true,
+  "day11_boats": [
+   "Team Sweden"
+  ],
+  "day11": 27
  },
  "event": {
   "dates": "4–12 September 2026",
@@ -291,7 +295,7 @@
   "entries_note": "The event report gives both \"99 boats\" and \"a fleet of 100 boats\"; the scored results list 100. The 34 that appear repeatedly here are the subset the event publishes race analysis for, not the fleet.",
   "source": "sail-world.com day 1 report"
  },
- "gain_def": "Places won between the first windward mark and the finish, summed over all 6 races — the event's own race-progress report, which covers the full 100-boat fleet.",
+ "gain_def": "Places won between the first windward mark and the finish, summed over all 8 races — the event's own race-progress report, which covers the full 100-boat fleet.",
  "discard_applied": true,
- "gain_races": 6
+ "gain_races": 8
 }

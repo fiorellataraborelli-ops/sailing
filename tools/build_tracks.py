@@ -18,7 +18,12 @@ M = 111320.0
 def main():
     idx = json.load(open(os.path.join(ROOT, 'data/v1/tracks/index.json')))
     out = {}
-    for race in ('1', '2', '3', '4', '5', '6'):
+    # follow whatever the track export produced rather than a hand-kept list — this
+    # line has needed editing on each of the last three race days
+    races = sorted({os.path.basename(f).rsplit('-r', 1)[1].split('.')[0]
+                    for f in glob.glob(os.path.join(ROOT, 'data/v1/tracks/*-r*.json'))},
+                   key=int)
+    for race in races:
         files = sorted(glob.glob(os.path.join(ROOT, f'data/v1/tracks/*-r{race}.json')))
         if not files:
             continue

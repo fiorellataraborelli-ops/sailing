@@ -789,10 +789,11 @@ function drawSummary(){
       ? `, over races 1–${D.official.gainRaces} — the event has not published mark progress for the ` +
         `races since.`
       : `, over all ${D.official.races} races.` +
-        (D.progress ? ` The upwind half of it, <b>${D.progress.team.up > 0 ? '+' : ''}` +
-          `${D.progress.team.up}</b>, is <b>${D.progress.ranks.up[0]} of ` +
-          `${D.progress.ranks.up[1]}</b> in the fleet — the boat recovers upwind better than ` +
-          `almost anyone, which is the flip side of starting deep.` : ''));
+        (D.progress && D.progress.w1
+          ? ` Garm rounds the first windward mark <b>${D.progress.w1.avg}th on average</b> — ` +
+            `${D.progress.w1.rank} of ${D.progress.w1.n} — and finishes ${t.pos}th. That gap is ` +
+            `the whole story of the regatta: the boat is quick once it is going and starts too deep.`
+          : ''));
   $('herosub').textContent = `Team Sweden · ${t.sail} ${t.boat} · J/70 Worlds, Cascais`;
   $('foot').innerHTML =
     `Built on ${D.meta.logs} Vakaros Atlas VKX logs · ib-sailing race reports · cncascais.com results · ` +

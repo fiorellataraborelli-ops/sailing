@@ -13,14 +13,17 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IMG = os.path.join(ROOT, 'site2/img')
 OUT = os.path.join(ROOT, 'race-analysis.html')
 
-DAY_LABEL = {'2026-09-08': 'Tue 8 Sep', '2026-09-09': 'Wed 9 Sep', '2026-09-10': 'Thu 10 Sep'}
+DAY_LABEL = {'2026-09-08': 'Tue 8 Sep', '2026-09-09': 'Wed 9 Sep',
+             '2026-09-10': 'Thu 10 Sep', '2026-09-11': 'Fri 11 Sep'}
 DAY_NOTE = {
   '2026-09-08': 'Races 1 and 2. Thirty boats decode here against the event\'s own 34-boat '
                 'analysis set, so fleet-relative figures are a real fleet comparison.',
   '2026-09-09': 'Races 3 and 4. Four full logs and one partial, Garm\'s among them, plus the '
                 'event\'s own four-leg analysis of both races covering all thirty boats.',
-  '2026-09-10': 'Races 5 and 6. Four logs, Garm\'s among them, and no event report yet — the '
+  '2026-09-10': 'Races 5 and 6. Twenty logs, Garm\'s among them, and no event report yet — the '
                 'wind on each leg and the line\'s bias are measured from the tracks.',
+  '2026-09-11': 'Races 7 and 8. The widest telemetry of the regatta — 26 logs and 22 — with '
+                'the wind and the line measured from them rather than published.',
 }
 fold = lambda s: ud.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
 
@@ -267,12 +270,12 @@ def main():
     # fleet, one row per log, flagged for the client boat
     # Sunday 7 September was the abandoned practice day — no scored racing, no Garm log.
     # It is dropped rather than shown as a third tab nobody asked for.
-    RACED = ('2026-09-08', '2026-09-09', '2026-09-10')
+    RACED = ('2026-09-08', '2026-09-09', '2026-09-10', '2026-09-11')
     # All six. Tuesday's two carry thirty logs each; Wednesday's and Thursday's carry
     # four or five, Garm's among them, and Wednesday also has the event's own published
     # four-leg analysis. Anything measured against four boats rather than thirty says so
     # where it is printed.
-    TRACKED = (1, 2, 3, 4, 5, 6)
+    TRACKED = (1, 2, 3, 4, 5, 6, 7, 8)
     # The wind card carries every racing day. Race 3 turned out to be a Wednesday race,
     # not a Tuesday one — the event's own report is dated 2026-09-09 — so Wednesday has
     # two, and Thursday's two are derived from the logs rather than a published report.
@@ -348,11 +351,12 @@ def main():
        'a': f"Not on boat speed. Garm's upwind VMG is {garm_kpi['vmg']} kn at "
             f"{garm_kpi['twa']}°, and {garm_kpi['svmg']} kn with the tacks taken out of the "
             f"average — mid-fleet either way, and the ranking barely moves. "
-            f"The damage is done by the first windward mark. Garm wins <b>+{t['gain_total']} places</b> "
-            f"back after it across {D['official']['gain_races']} races, and the upwind half of that, "
-            f"<b>+{t['gain_up']}</b>, is <b>{P['ranks']['up'][0]} of {P['ranks']['up'][1]}</b> in the "
-            f"whole fleet — only {P['best_up']['boat'].rsplit(' ', 2)[0].title()} claws back more "
-            f"going upwind. The boat is starting deep and spending the race recovering."},
+            f"The damage is done by the first windward mark. Garm rounds it "
+            f"<b>{P['w1']['avg']}th on average</b> — {P['w1']['rank']} of {P['w1']['n']} — and "
+            f"finishes {t['pos']}th, winning <b>+{t['gain_total']} places</b> back after it across "
+            f"{D['official']['gain_races']} races. The boat is starting deep and spending the "
+            f"race recovering. Friday is the exception and the proof: in race 7 it rounded "
+            f"<b>6th</b>, the best of the regatta, and finished 13th."},
       {'label': "What's the wind bias?", 'k': ['bias', 'wind', 'grib', 'forecast', 'model'],
        'q': "What's the wind bias?",
        'a': f"The GRIB runs right of the water. Race 1 forecast {bias['forecast']}° against "
@@ -452,7 +456,7 @@ def main():
       'wind days all raced': all(d['date'] in RACED and d['races'] for d in wind_days),
       # Thursday is now a racing day; Friday and Saturday are not yet, and Sunday
       # 7 September was the abandoned practice day.
-      'no unraced days': all(d not in html for d in ('2026-09-11', '2026-09-12', '2026-09-07')),
+      'no unraced days': all(d not in html for d in ('2026-09-12', '2026-09-07')),
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,
       # a .gridhead and the row template it labels must declare the same columns —
       # they drifted once and nothing complained

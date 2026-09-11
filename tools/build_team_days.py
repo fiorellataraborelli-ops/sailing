@@ -21,7 +21,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Garm's log for each racing day. The device names its files by date, and the team
 # hands them over a day at a time, so this list grows by one line per day.
 LOGS = {'2026-09-09': '~/Downloads/Sailing Files/vakaros 9-9-2026.vkx',
-        '2026-09-10': '~/Downloads/Sailing Files/vakaros 10-9-2026.vkx'}
+        '2026-09-10': '~/Downloads/Sailing Files/vakaros 10-9-2026.vkx',
+        '2026-09-11': '~/Downloads/Sailing Files/vakaros 11-9-2026.vkx'}
 # The event published a peak-and-hold segment table for Wednesday only, so that is
 # the one day the instrument can be checked against someone else's arithmetic.
 VERIFY_DAY = '2026-09-09'
@@ -124,7 +125,10 @@ def fleet_row(path, day, label='Team Sweden (Roman)'):
                  't0': hm(log.positions[0][0]), 't1': hm(log.positions[-1][0]),
                  'fixes': len(log.positions), 'nm': round(d / 1852, 1),
                  'mx': round(max(sog), 1), 'avg': round(sum(sog) / len(sog), 2),
-                 'upAvg': round(sum(up) / len(up), 2), 'dnAvg': round(sum(dn) / len(dn), 2)}
+                 # a boat that never got above the planing line has no downwind sample;
+           # dividing by that emptied the whole run
+           'upAvg': round(sum(up) / len(up), 2) if up else None,
+           'dnAvg': round(sum(dn) / len(dn), 2) if dn else None}
 
 
 def main():

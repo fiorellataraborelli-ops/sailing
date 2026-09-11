@@ -13,9 +13,11 @@ SRC = os.path.join(ROOT, 'data/event/progress.json')
 PAYLOAD = os.path.join(ROOT, 'site/payload.json')
 
 
-def rank(rows, key, value):
-    vals = sorted((r[key] for r in rows if r[key] is not None), reverse=True)
-    return vals.index(value) + 1, len(vals)
+def rank(rows, key, value, high_is_good=True):
+    """Competition rank: boats on the same figure share a place."""
+    vals = [r[key] for r in rows if r.get(key) is not None]
+    better = sum(1 for v in vals if (v > value if high_is_good else v < value))
+    return better + 1, len(vals)
 
 
 def main():
@@ -38,6 +40,11 @@ def main():
         'races': P['races_covered'], 'fleet': P['fleet'],
         'by_race': P['team_by_race'],
         'team': {'gain': g['gain'], 'up': g['up'], 'dn': g['dn']},
+        # position at the first windward mark: the sharpest measure of how deep the
+        # boat is coming off the line, and lower is better
+        'w1': ({'avg': g['w1'],
+                'rank': rank(rows, 'w1', g['w1'], False)[0],
+                'n': rank(rows, 'w1', g['w1'], False)[1]} if g.get('w1') else None),
         'ranks': {'gain': rank(rows, 'gain', g['gain']),
                   'up': rank(rows, 'up', g['up']),
                   'dn': rank(rows, 'dn', g['dn']),

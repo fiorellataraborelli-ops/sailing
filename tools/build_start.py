@@ -31,7 +31,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 from tools.build_legs import RACE_GUN, race_of        # windows keyed by their gun
 # First-upwind wind: published by the event for races 1-4, measured from the tracks
 # for 5 and 6 (see build_legs.WIND and wind_from_track).
-WIND = {'1': 317, '2': 314, '3': 324, '4': 335, '5': 320, '6': 352}
+WIND = {'1': 317, '2': 314, '3': 324, '4': 335, '5': 320, '6': 352,
+        '7': 327, '8': 326}
 MS = 1.9438444924406            # m/s -> knots
 MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá': 'Ba ba',
        'Aretê 1872': 'Areté', 'SASSY too': 'Sassy', 'Moore DRV - vakaros 2': 'Moore DRV',
