@@ -1,6 +1,6 @@
 {
  "source": "cncascais.com scored results (fetched, not transcribed) + ib-sailing mark-progress standings for races 1-4",
- "updated": "10/09/2026 17:24 UTC",
+ "updated": "11/09/2026 09:02 UTC",
  "races_scored": 6,
  "top": [
   {
@@ -136,13 +136,13 @@
    "sail": "USA 1047",
    "boat": "Good to Go",
    "pts": 58.0,
-   "total": 103.0,
+   "total": 104.0,
    "r": [
     18.0,
     4.0,
     13.0,
     13.0,
-    45.0,
+    46.0,
     10.0
    ],
    "codes": [
@@ -159,7 +159,7 @@
     "4",
     "13",
     "13",
-    "45*",
+    "46*",
     "10"
    ]
   }
@@ -253,7 +253,7 @@
   "entries_note": "The event report gives both \"99 boats\" and \"a fleet of 100 boats\"; the scored results list 100. The 34 that appear repeatedly here are the subset the event publishes race analysis for, not the fleet.",
   "source": "sail-world.com day 1 report"
  },
- "gain_def": "Places won between the first windward mark and the finish, summed over all 6 races — the event's own race-progress report, which covers the full 100-boat fleet.",
+ "gain_def": "Places won between the first windward mark and the finish — the estimated Windward 1 position minus the official finish, summed over races 1-4. The event has not published mark progress for races 5-6.",
  "discard_applied": true,
- "gain_races": 6
+ "gain_races": 4
 }

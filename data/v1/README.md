@@ -2,7 +2,7 @@
 
 J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry
 
-Generated 2026-09-11T08:59:01Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
+Generated 2026-09-11T09:02:05Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
 
 ## Conventions
 

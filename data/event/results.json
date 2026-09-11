@@ -58,7 +58,7 @@
    "pos": 3,
    "sail": "ESP 1283",
    "boat": "MARNATURA",
-   "cat": "Open",
+   "cat": "Corinthian",
    "net": 38.0,
    "total": 63.0,
    "races": [
@@ -110,13 +110,13 @@
    "boat": "GOOD TO GO",
    "cat": "Open",
    "net": 58.0,
-   "total": 103.0,
+   "total": 104.0,
    "races": [
     18.0,
     4.0,
     13.0,
     13.0,
-    45.0,
+    46.0,
     10.0
    ],
    "codes": [
@@ -135,13 +135,13 @@
    "boat": "ARETê",
    "cat": "Open",
    "net": 59.0,
-   "total": 115.0,
+   "total": 116.0,
    "races": [
     13.0,
     9.0,
     7.0,
     9.0,
-    56.0,
+    57.0,
     21.0
    ],
    "codes": [
@@ -185,11 +185,11 @@
    "boat": "HEDGEHOG",
    "cat": "Corinthian",
    "net": 70.0,
-   "total": 129.0,
+   "total": 130.0,
    "races": [
     5.0,
     11.0,
-    59.0,
+    60.0,
     14.0,
     16.0,
     24.0
@@ -210,11 +210,11 @@
    "boat": "PATAKIN",
    "cat": "Open",
    "net": 73.0,
-   "total": 122.0,
+   "total": 123.0,
    "races": [
     3.0,
     33.0,
-    49.0,
+    50.0,
     7.0,
     4.0,
     26.0
@@ -235,13 +235,13 @@
    "boat": "SAVASANA",
    "cat": "Open",
    "net": 81.0,
-   "total": 140.0,
+   "total": 141.0,
    "races": [
     19.0,
     3.0,
     1.0,
     52.0,
-    59.0,
+    60.0,
     6.0
    ],
    "codes": [
@@ -310,13 +310,13 @@
    "boat": "ANOTHER AFFAIR",
    "cat": "Open",
    "net": 102.0,
-   "total": 163.0,
+   "total": 164.0,
    "races": [
     7.0,
     18.0,
     20.0,
     2.0,
-    61.0,
+    62.0,
     55.0
    ],
    "codes": [
@@ -335,13 +335,13 @@
    "boat": "VAMOS",
    "cat": "Open",
    "net": 103.0,
-   "total": 150.0,
+   "total": 151.0,
    "races": [
     46.0,
     19.0,
     4.0,
     32.0,
-    47.0,
+    48.0,
     2.0
    ],
    "codes": [
@@ -384,12 +384,12 @@
    "sail": "ESP 1170",
    "boat": "YUPI",
    "cat": "Mixed Plus",
-   "net": 118.0,
-   "total": 203.0,
+   "net": 119.0,
+   "total": 204.0,
    "races": [
     39.0,
     5.0,
-    44.0,
+    45.0,
     20.0,
     10.0,
     85.0
@@ -406,6 +406,31 @@
   },
   {
    "pos": 17,
+   "sail": "FIN 1634",
+   "boat": "LIQUID SUN",
+   "cat": "Corinthian",
+   "net": 124.0,
+   "total": 216.0,
+   "races": [
+    11.0,
+    37.0,
+    37.0,
+    10.0,
+    92.0,
+    29.0
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 5
+  },
+  {
+   "pos": 18,
    "sail": "SWE 1489",
    "boat": "ELVIS",
    "cat": "Open",
@@ -414,10 +439,10 @@
    "races": [
     24.0,
     78.0,
-    43.0,
+    44.0,
     15.0,
     13.0,
-    29.0
+    28.0
    ],
    "codes": [
     null,
@@ -430,19 +455,19 @@
    "discard": 2
   },
   {
-   "pos": 18,
+   "pos": 19,
    "sail": "USA 1561",
    "boat": "ROWDY",
    "cat": "Open",
    "net": 126.0,
-   "total": 172.0,
+   "total": 171.0,
    "races": [
     36.0,
     29.0,
     8.0,
     26.0,
     27.0,
-    46.0
+    45.0
    ],
    "codes": [
     null,
@@ -455,44 +480,19 @@
    "discard": 6
   },
   {
-   "pos": 19,
-   "sail": "USA 833",
-   "boat": "RELATIVE OBSCURITY",
-   "cat": "Open",
-   "net": 129.0,
-   "total": 188.0,
-   "races": [
-    10.0,
-    59.0,
-    15.0,
-    29.0,
-    53.0,
-    22.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "discard": 2
-  },
-  {
    "pos": 20,
    "sail": "TUR 1389",
    "boat": "TEAM NAUTIQUE YACHTING",
    "cat": "One Pro",
-   "net": 129.0,
-   "total": 173.0,
+   "net": 128.0,
+   "total": 172.0,
    "races": [
     12.0,
     34.0,
     18.0,
     21.0,
     44.0,
-    44.0
+    43.0
    ],
    "codes": [
     null,
@@ -506,6 +506,31 @@
   },
   {
    "pos": 21,
+   "sail": "USA 833",
+   "boat": "RELATIVE OBSCURITY",
+   "cat": "Open",
+   "net": 130.0,
+   "total": 189.0,
+   "races": [
+    10.0,
+    59.0,
+    15.0,
+    29.0,
+    54.0,
+    22.0
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 2
+  },
+  {
+   "pos": 22,
    "sail": "AUS 828",
    "boat": "JOUST70",
    "cat": "Open",
@@ -530,7 +555,7 @@
    "discard": 6
   },
   {
-   "pos": 22,
+   "pos": 23,
    "sail": "GBR 1906",
    "boat": "SARDONYX",
    "cat": "Open",
@@ -553,31 +578,6 @@
     null
    ],
    "discard": 2
-  },
-  {
-   "pos": 23,
-   "sail": "POR 1797",
-   "boat": "BáBá",
-   "cat": "Open",
-   "net": 135.0,
-   "total": 189.0,
-   "races": [
-    32.0,
-    2.0,
-    47.0,
-    47.0,
-    7.0,
-    54.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "discard": 6
   },
   {
    "pos": 24,
@@ -606,15 +606,40 @@
   },
   {
    "pos": 25,
+   "sail": "POR 1797",
+   "boat": "BáBá",
+   "cat": "Open",
+   "net": 136.0,
+   "total": 190.0,
+   "races": [
+    32.0,
+    2.0,
+    48.0,
+    47.0,
+    7.0,
+    54.0
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 6
+  },
+  {
+   "pos": 26,
    "sail": "CHI 218",
    "boat": "DUCASSE SAILING TEAM",
    "cat": "Corinthian",
    "net": 138.0,
-   "total": 183.0,
+   "total": 184.0,
    "races": [
     33.0,
     21.0,
-    45.0,
+    46.0,
     24.0,
     22.0,
     38.0
@@ -630,7 +655,32 @@
    "discard": 3
   },
   {
-   "pos": 26,
+   "pos": 27,
+   "sail": "BRA 1196",
+   "boat": "EL ENEMIGO TEAM - BTG PACTUAL",
+   "cat": "Open",
+   "net": 138.0,
+   "total": 189.0,
+   "races": [
+    37.0,
+    25.0,
+    51.0,
+    25.0,
+    24.0,
+    27.0
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 3
+  },
+  {
+   "pos": 28,
    "sail": "GBR 1247",
    "boat": "JELVIS",
    "cat": "Open",
@@ -655,41 +705,16 @@
    "discard": 6
   },
   {
-   "pos": 27,
-   "sail": "BRA 1196",
-   "boat": "EL ENEMIGO TEAM - BTG PACTUAL",
-   "cat": "Open",
-   "net": 139.0,
-   "total": 189.0,
-   "races": [
-    37.0,
-    25.0,
-    50.0,
-    25.0,
-    24.0,
-    28.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "discard": 3
-  },
-  {
-   "pos": 28,
+   "pos": 29,
    "sail": "USA 684",
    "boat": "LEVEL 5",
    "cat": "Open",
-   "net": 140.0,
-   "total": 206.0,
+   "net": 141.0,
+   "total": 207.0,
    "races": [
     66.0,
     22.0,
-    42.0,
+    43.0,
     30.0,
     6.0,
     40.0
@@ -705,7 +730,7 @@
    "discard": 1
   },
   {
-   "pos": 29,
+   "pos": 30,
    "sail": "BRA 1527",
    "boat": "TO NESSA",
    "cat": "Open",
@@ -730,18 +755,18 @@
    "discard": 4
   },
   {
-   "pos": 30,
+   "pos": 31,
    "sail": "POR 1846",
    "boat": "PEIXARANHA",
    "cat": "Corinthian",
-   "net": 144.0,
-   "total": 222.0,
+   "net": 145.0,
+   "total": 224.0,
    "races": [
     1.0,
     23.0,
-    54.0,
+    55.0,
     33.0,
-    78.0,
+    79.0,
     33.0
    ],
    "codes": [
@@ -755,7 +780,7 @@
    "discard": 5
   },
   {
-   "pos": 31,
+   "pos": 32,
    "sail": "MON 1172",
    "boat": "GSPOT",
    "cat": "Open",
@@ -780,18 +805,18 @@
    "discard": 4
   },
   {
-   "pos": 32,
+   "pos": 33,
    "sail": "BRA 1226",
    "boat": "MINDSET",
    "cat": "Open",
-   "net": 154.3,
-   "total": 233.3,
+   "net": 155.3,
+   "total": 234.3,
    "races": [
     6.0,
     26.0,
     59.3,
     79.0,
-    48.0,
+    49.0,
     15.0
    ],
    "codes": [
@@ -805,16 +830,16 @@
    "discard": 4
   },
   {
-   "pos": 33,
+   "pos": 34,
    "sail": "GER 1250",
    "boat": "PAINT IT GREY",
    "cat": "Young",
    "net": 157.0,
-   "total": 236.0,
+   "total": 237.0,
    "races": [
     43.0,
     48.0,
-    79.0,
+    80.0,
     12.0,
     34.0,
     20.0
@@ -830,18 +855,18 @@
    "discard": 3
   },
   {
-   "pos": 34,
+   "pos": 35,
    "sail": "SWE 713",
    "boat": "TYRA",
    "cat": "Open",
    "net": 159.0,
-   "total": 226.0,
+   "total": 227.0,
    "races": [
     35.0,
     38.0,
     11.0,
     44.0,
-    67.0,
+    68.0,
     31.0
    ],
    "codes": [
@@ -855,16 +880,16 @@
    "discard": 5
   },
   {
-   "pos": 35,
+   "pos": 36,
    "sail": "ESP 961",
    "boat": "NOTICIA",
    "cat": "Open",
-   "net": 159.0,
-   "total": 241.0,
+   "net": 160.0,
+   "total": 242.0,
    "races": [
     26.0,
     20.0,
-    61.0,
+    62.0,
     23.0,
     29.0,
     82.0
@@ -880,18 +905,18 @@
    "discard": 6
   },
   {
-   "pos": 36,
+   "pos": 37,
    "sail": "POR 570",
    "boat": "BTA",
    "cat": "Corinthian",
    "net": 161.0,
-   "total": 211.0,
+   "total": 212.0,
    "races": [
     23.0,
     43.0,
     40.0,
     43.0,
-    50.0,
+    51.0,
     12.0
    ],
    "codes": [
@@ -905,44 +930,19 @@
    "discard": 5
   },
   {
-   "pos": 37,
-   "sail": "ESP 1122",
-   "boat": "LET IT BE",
-   "cat": "Corinthian",
-   "net": 162.0,
-   "total": 246.0,
-   "races": [
-    56.0,
-    84.0,
-    39.0,
-    39.0,
-    15.0,
-    13.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "discard": 2
-  },
-  {
    "pos": 38,
    "sail": "ESP 665",
    "boat": "ABRIL VERDE",
    "cat": "Corinthian",
-   "net": 170.0,
+   "net": 169.0,
    "total": 267.0,
    "races": [
     54.0,
     32.0,
     22.0,
     17.0,
-    97.0,
-    45.0
+    98.0,
+    44.0
    ],
    "codes": [
     null,
@@ -959,12 +959,12 @@
    "sail": "DEN 1566",
    "boat": "LADY IN RED",
    "cat": "Open",
-   "net": 170.0,
-   "total": 229.0,
+   "net": 171.0,
+   "total": 230.0,
    "races": [
     28.0,
     44.0,
-    55.0,
+    56.0,
     59.0,
     25.0,
     18.0
@@ -985,13 +985,13 @@
    "boat": "MAGATRON",
    "cat": "Open",
    "net": 176.0,
-   "total": 241.0,
+   "total": 242.0,
    "races": [
     65.0,
     14.0,
     21.0,
     16.0,
-    65.0,
+    66.0,
     60.0
    ],
    "codes": [
@@ -1002,46 +1002,21 @@
     null,
     null
    ],
-   "discard": 1
+   "discard": 5
   },
   {
    "pos": 41,
-   "sail": "USA 385",
-   "boat": "PROGRESS",
-   "cat": "Open",
-   "net": 180.0,
-   "total": 258.0,
-   "races": [
-    62.0,
-    49.0,
-    28.0,
-    78.0,
-    14.0,
-    27.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "discard": 4
-  },
-  {
-   "pos": 42,
    "sail": "USA 65",
    "boat": "CATAPULT",
    "cat": "Open",
-   "net": 184.0,
-   "total": 285.0,
+   "net": 185.0,
+   "total": 286.0,
    "races": [
     48.0,
     36.0,
     12.0,
     101.0,
-    77.0,
+    78.0,
     11.0
    ],
    "codes": [
@@ -1055,18 +1030,18 @@
    "discard": 4
   },
   {
-   "pos": 43,
+   "pos": 42,
    "sail": "AUT 1090",
    "boat": "PHANTOM7",
    "cat": "Open",
-   "net": 185.0,
-   "total": 242.0,
+   "net": 186.0,
+   "total": 244.0,
    "races": [
     45.0,
     16.0,
-    48.0,
+    49.0,
     57.0,
-    57.0,
+    58.0,
     19.0
    ],
    "codes": [
@@ -1077,71 +1052,46 @@
     null,
     null
    ],
-   "discard": 4
-  },
-  {
-   "pos": 44,
-   "sail": "FIN 1634",
-   "boat": "LIQUID SUN",
-   "cat": "Corinthian",
-   "net": 186.0,
-   "total": 287.0,
-   "races": [
-    11.0,
-    37.0,
-    37.0,
-    10.0,
-    91.0,
-    101.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    "DNC"
-   ],
-   "discard": 6
-  },
-  {
-   "pos": 45,
-   "sail": "POR 152",
-   "boat": "SAILCASCAIS",
-   "cat": "Open",
-   "net": 194.1,
-   "total": 263.1,
-   "races": [
-    42.0,
-    15.0,
-    46.1,
-    49.0,
-    69.0,
-    42.0
-   ],
-   "codes": [
-    null,
-    null,
-    "PTS",
-    null,
-    null,
-    null
-   ],
    "discard": 5
   },
   {
-   "pos": 46,
+   "pos": 43,
+   "sail": "ESP 1122",
+   "boat": "LET IT BE",
+   "cat": "Corinthian",
+   "net": 192.3,
+   "total": 276.3,
+   "races": [
+    56.0,
+    84.0,
+    39.0,
+    39.0,
+    15.0,
+    43.3
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    "PRP"
+   ],
+   "discard": 2
+  },
+  {
+   "pos": 44,
    "sail": "DEN 1398",
    "boat": "SIRENA CHICO",
    "cat": "One Pro",
    "net": 195.0,
-   "total": 277.0,
+   "total": 278.0,
    "races": [
     31.0,
     42.0,
     9.0,
     63.0,
-    82.0,
+    83.0,
     50.0
    ],
    "codes": [
@@ -1155,7 +1105,7 @@
    "discard": 5
   },
   {
-   "pos": 47,
+   "pos": 45,
    "sail": "MEX 1655",
    "boat": "ZAGUERO",
    "cat": "Corinthian",
@@ -1180,18 +1130,43 @@
    "discard": 4
   },
   {
-   "pos": 48,
+   "pos": 46,
+   "sail": "USA 385",
+   "boat": "PROGRESS",
+   "cat": "Open",
+   "net": 199.0,
+   "total": 277.0,
+   "races": [
+    62.0,
+    49.0,
+    28.0,
+    78.0,
+    14.0,
+    46.0
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 4
+  },
+  {
+   "pos": 47,
    "sail": "USA 202",
    "boat": "WARCANOE",
    "cat": "Open",
-   "net": 205.0,
-   "total": 291.0,
+   "net": 206.0,
+   "total": 292.0,
    "races": [
     25.0,
     86.0,
     23.0,
     51.0,
-    71.0,
+    72.0,
     35.0
    ],
    "codes": [
@@ -1205,18 +1180,18 @@
    "discard": 2
   },
   {
-   "pos": 49,
+   "pos": 48,
    "sail": "TUR 1486",
    "boat": "EKER KAYMAK",
    "cat": "One Pro",
-   "net": 220.0,
-   "total": 307.0,
+   "net": 221.0,
+   "total": 309.0,
    "races": [
     69.0,
     17.0,
-    56.0,
+    57.0,
     11.0,
-    87.0,
+    88.0,
     67.0
    ],
    "codes": [
@@ -1230,18 +1205,43 @@
    "discard": 5
   },
   {
+   "pos": 49,
+   "sail": "POR 152",
+   "boat": "SAILCASCAIS",
+   "cat": "Open",
+   "net": 222.1,
+   "total": 323.1,
+   "races": [
+    42.0,
+    15.0,
+    46.1,
+    49.0,
+    70.0,
+    101.0
+   ],
+   "codes": [
+    null,
+    null,
+    "PTS",
+    null,
+    null,
+    "RET"
+   ],
+   "discard": 6
+  },
+  {
    "pos": 50,
    "sail": "GER 1719",
    "boat": "PAINT IT BLACK",
    "cat": "Open",
-   "net": 225.0,
-   "total": 326.0,
+   "net": 226.0,
+   "total": 327.0,
    "races": [
     49.0,
     101.0,
     14.0,
     64.0,
-    66.0,
+    67.0,
     32.0
    ],
    "codes": [
@@ -1256,15 +1256,40 @@
   },
   {
    "pos": 51,
+   "sail": "BRA 1556",
+   "boat": "JAMAICA RUM",
+   "cat": "Open",
+   "net": 226.0,
+   "total": 327.0,
+   "races": [
+    59.0,
+    101.0,
+    78.0,
+    27.0,
+    45.0,
+    17.0
+   ],
+   "codes": [
+    null,
+    "DSQ",
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 2
+  },
+  {
+   "pos": 52,
    "sail": "MON 730",
    "boat": "CHARISMA V H992 SAILING TEAM",
    "cat": "Open",
-   "net": 236.0,
-   "total": 328.0,
+   "net": 237.0,
+   "total": 329.0,
    "races": [
     92.0,
     46.0,
-    85.0,
+    86.0,
     61.0,
     21.0,
     23.0
@@ -1280,18 +1305,18 @@
    "discard": 1
   },
   {
-   "pos": 52,
+   "pos": 53,
    "sail": "GER 1898",
    "boat": "DIVA",
    "cat": "One Pro",
-   "net": 236.0,
-   "total": 303.0,
+   "net": 237.0,
+   "total": 305.0,
    "races": [
     41.0,
     51.0,
-    67.0,
+    68.0,
     42.0,
-    55.0,
+    56.0,
     47.0
    ],
    "codes": [
@@ -1305,16 +1330,16 @@
    "discard": 3
   },
   {
-   "pos": 53,
+   "pos": 54,
    "sail": "BRA 1666",
    "boat": "HIGHLANDERS",
    "cat": "Open",
-   "net": 237.0,
-   "total": 338.0,
+   "net": 238.0,
+   "total": 339.0,
    "races": [
     8.0,
     101.0,
-    46.0,
+    47.0,
     101.0,
     1.0,
     81.0
@@ -1330,18 +1355,18 @@
    "discard": 2
   },
   {
-   "pos": 54,
+   "pos": 55,
    "sail": "CAN 282",
    "boat": "TRIAL",
    "cat": "One Pro",
-   "net": 245.0,
-   "total": 329.0,
+   "net": 246.0,
+   "total": 331.0,
    "races": [
     53.0,
     65.0,
-    64.0,
+    65.0,
     54.0,
-    84.0,
+    85.0,
     9.0
    ],
    "codes": [
@@ -1355,19 +1380,19 @@
    "discard": 5
   },
   {
-   "pos": 55,
+   "pos": 56,
    "sail": "EST 1796",
    "boat": "LENNY",
    "cat": "Corinthian",
-   "net": 254.0,
-   "total": 320.0,
+   "net": 255.0,
+   "total": 321.0,
    "races": [
     38.0,
     50.0,
-    63.0,
+    64.0,
     66.0,
-    60.0,
-    43.0
+    61.0,
+    42.0
    ],
    "codes": [
     null,
@@ -1380,16 +1405,16 @@
    "discard": 4
   },
   {
-   "pos": 56,
+   "pos": 57,
    "sail": "USA 240",
    "boat": "STAMPEDE",
    "cat": "Open",
-   "net": 256.0,
-   "total": 333.0,
+   "net": 257.0,
+   "total": 334.0,
    "races": [
     77.0,
     61.0,
-    70.0,
+    71.0,
     41.0,
     23.0,
     61.0
@@ -1405,41 +1430,16 @@
    "discard": 1
   },
   {
-   "pos": 57,
-   "sail": "ITA 1478",
-   "boat": "CICLONE",
-   "cat": "Open",
-   "net": 256.0,
-   "total": 338.0,
-   "races": [
-    44.0,
-    82.0,
-    66.0,
-    55.0,
-    52.0,
-    39.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "discard": 2
-  },
-  {
    "pos": 58,
    "sail": "SUI 1808",
    "boat": "TARTE - 3NUITS.COM",
    "cat": "Corinthian",
    "net": 257.0,
-   "total": 341.0,
+   "total": 342.0,
    "races": [
     64.0,
     69.0,
-    84.0,
+    85.0,
     40.0,
     43.0,
     41.0
@@ -1456,18 +1456,43 @@
   },
   {
    "pos": 59,
+   "sail": "ITA 1478",
+   "boat": "CICLONE",
+   "cat": "Open",
+   "net": 258.0,
+   "total": 340.0,
+   "races": [
+    44.0,
+    82.0,
+    67.0,
+    55.0,
+    53.0,
+    39.0
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 2
+  },
+  {
+   "pos": 60,
    "sail": "GBR 108",
    "boat": "SPENCER RIGGING",
    "cat": "Open",
-   "net": 259.0,
-   "total": 360.0,
+   "net": 269.1,
+   "total": 370.1,
    "races": [
     63.0,
     47.0,
     101.0,
     101.0,
     12.0,
-    36.0
+    46.1
    ],
    "codes": [
     null,
@@ -1475,49 +1500,24 @@
     "DNF",
     "DNC",
     null,
-    null
+    "PTS"
    ],
    "discard": 3
   },
   {
-   "pos": 60,
+   "pos": 61,
    "sail": "NED 1087",
    "boat": "MR HENRI",
    "cat": "Corinthian",
-   "net": 272.0,
-   "total": 350.0,
+   "net": 274.0,
+   "total": 352.0,
    "races": [
     78.0,
     63.0,
-    53.0,
+    54.0,
     19.0,
-    72.0,
+    73.0,
     65.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "discard": 1
-  },
-  {
-   "pos": 61,
-   "sail": "POR 1329",
-   "boat": "ODESSA",
-   "cat": "Corinthian",
-   "net": 278.0,
-   "total": 345.0,
-   "races": [
-    67.0,
-    64.0,
-    57.0,
-    48.0,
-    58.0,
-    51.0
    ],
    "codes": [
     null,
@@ -1534,12 +1534,12 @@
    "sail": "POR 105",
    "boat": "UNIFHORM/HENRI LLOYD",
    "cat": "One Pro",
-   "net": 279.0,
-   "total": 380.0,
+   "net": 280.0,
+   "total": 381.0,
    "races": [
     51.0,
     101.0,
-    51.0,
+    52.0,
     58.0,
     32.0,
     87.0
@@ -1556,42 +1556,42 @@
   },
   {
    "pos": 63,
-   "sail": "BRA 1556",
-   "boat": "JAMAICA RUM",
-   "cat": "Open",
-   "net": 281.0,
-   "total": 382.0,
+   "sail": "POR 1329",
+   "boat": "ODESSA",
+   "cat": "Corinthian",
+   "net": 280.0,
+   "total": 347.0,
    "races": [
+    67.0,
+    64.0,
+    58.0,
+    48.0,
     59.0,
-    101.0,
-    77.0,
-    27.0,
-    101.0,
-    17.0
+    51.0
    ],
    "codes": [
     null,
-    "DSQ",
     null,
     null,
-    "DNC",
+    null,
+    null,
     null
    ],
-   "discard": 2
+   "discard": 1
   },
   {
    "pos": 64,
    "sail": "BRA 1440",
    "boat": "SACI",
    "cat": "Corinthian",
-   "net": 282.0,
-   "total": 368.0,
+   "net": 283.0,
+   "total": 369.0,
    "races": [
     80.0,
     53.0,
     38.0,
     38.0,
-    73.0,
+    74.0,
     86.0
    ],
    "codes": [
@@ -1609,14 +1609,14 @@
    "sail": "HUN 1686",
    "boat": "FANTOM",
    "cat": "Open",
-   "net": 283.0,
-   "total": 366.0,
+   "net": 284.0,
+   "total": 368.0,
    "races": [
     73.0,
     67.0,
-    73.0,
+    74.0,
     56.0,
-    83.0,
+    84.0,
     14.0
    ],
    "codes": [
@@ -1631,17 +1631,42 @@
   },
   {
    "pos": 66,
+   "sail": "ESP 669",
+   "boat": "BODEGAS VILLANUEVA",
+   "cat": "Corinthian",
+   "net": 286.0,
+   "total": 387.0,
+   "races": [
+    75.0,
+    40.0,
+    41.0,
+    101.0,
+    35.0,
+    95.0
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    "DNC",
+    null,
+    null
+   ],
+   "discard": 4
+  },
+  {
+   "pos": 67,
    "sail": "ESP 663",
    "boat": "ABRIL ROJO",
    "cat": "Corinthian",
-   "net": 287.0,
-   "total": 383.0,
+   "net": 288.0,
+   "total": 385.0,
    "races": [
     86.0,
     39.0,
-    52.0,
     53.0,
-    96.0,
+    53.0,
+    97.0,
     57.0
    ],
    "codes": [
@@ -1655,7 +1680,7 @@
    "discard": 5
   },
   {
-   "pos": 67,
+   "pos": 68,
    "sail": "AUS 1668",
    "boat": "THE BULL",
    "cat": "Open",
@@ -1680,18 +1705,18 @@
    "discard": 2
   },
   {
-   "pos": 68,
+   "pos": 69,
    "sail": "FIN 787",
    "boat": "SOLID FUN",
    "cat": "Corinthian",
-   "net": 297.0,
-   "total": 385.0,
+   "net": 299.0,
+   "total": 387.0,
    "races": [
     57.0,
     55.0,
-    71.0,
+    72.0,
     28.0,
-    86.0,
+    87.0,
     88.0
    ],
    "codes": [
@@ -1705,16 +1730,16 @@
    "discard": 6
   },
   {
-   "pos": 69,
+   "pos": 70,
    "sail": "POR 661",
    "boat": "AP HOTELS",
    "cat": "Corinthian",
-   "net": 301.0,
-   "total": 394.0,
+   "net": 302.0,
+   "total": 395.0,
    "races": [
     71.0,
     73.0,
-    69.0,
+    70.0,
     68.0,
     20.0,
     93.0
@@ -1730,18 +1755,18 @@
    "discard": 6
   },
   {
-   "pos": 70,
+   "pos": 71,
    "sail": "GBR 1867",
    "boat": "GENIUS",
    "cat": "One Pro",
-   "net": 301.0,
-   "total": 386.0,
+   "net": 302.0,
+   "total": 387.0,
    "races": [
     85.0,
     60.0,
     26.0,
     84.0,
-    63.0,
+    64.0,
     68.0
    ],
    "codes": [
@@ -1755,18 +1780,18 @@
    "discard": 1
   },
   {
-   "pos": 71,
+   "pos": 72,
    "sail": "DEN 1185",
    "boat": "SASSY / FAT MOOSE",
    "cat": "Open",
-   "net": 304.0,
-   "total": 392.0,
+   "net": 305.0,
+   "total": 393.0,
    "races": [
     88.0,
     66.0,
     34.0,
     45.0,
-    80.0,
+    81.0,
     79.0
    ],
    "codes": [
@@ -1780,16 +1805,16 @@
    "discard": 1
   },
   {
-   "pos": 72,
+   "pos": 73,
    "sail": "ESP 1893",
    "boat": "WILCO",
    "cat": "Open",
-   "net": 311.0,
-   "total": 412.0,
+   "net": 312.0,
+   "total": 413.0,
    "races": [
     81.0,
     101.0,
-    86.0,
+    87.0,
     82.0,
     9.0,
     53.0
@@ -1805,16 +1830,16 @@
    "discard": 2
   },
   {
-   "pos": 73,
+   "pos": 74,
    "sail": "FRA 1911",
    "boat": "JOUR J",
    "cat": "Open",
-   "net": 315.0,
-   "total": 412.0,
+   "net": 316.0,
+   "total": 413.0,
    "races": [
     97.0,
     75.0,
-    81.0,
+    82.0,
     46.0,
     30.0,
     83.0
@@ -1830,18 +1855,18 @@
    "discard": 1
   },
   {
-   "pos": 74,
+   "pos": 75,
    "sail": "BER 11",
    "boat": "FREQUENT FLYER",
    "cat": "One Pro",
-   "net": 315.0,
-   "total": 407.0,
+   "net": 317.0,
+   "total": 409.0,
    "races": [
     55.0,
     30.0,
-    75.0,
+    76.0,
     65.0,
-    90.0,
+    91.0,
     92.0
    ],
    "codes": [
@@ -1855,18 +1880,18 @@
    "discard": 6
   },
   {
-   "pos": 75,
+   "pos": 76,
    "sail": "ITA 1490",
    "boat": "T.ONE",
    "cat": "One Pro",
-   "net": 317.0,
-   "total": 407.0,
+   "net": 319.0,
+   "total": 409.0,
    "races": [
     90.0,
     62.0,
-    80.0,
+    81.0,
     35.0,
-    88.0,
+    89.0,
     52.0
    ],
    "codes": [
@@ -1880,18 +1905,18 @@
    "discard": 1
   },
   {
-   "pos": 76,
+   "pos": 77,
    "sail": "BRA 1267",
    "boat": "CAPIM CANELA",
    "cat": "Open",
-   "net": 320.0,
-   "total": 396.0,
+   "net": 322.0,
+   "total": 398.0,
    "races": [
     76.0,
     76.0,
-    74.0,
+    75.0,
     76.0,
-    64.0,
+    65.0,
     30.0
    ],
    "codes": [
@@ -1905,7 +1930,7 @@
    "discard": 1
   },
   {
-   "pos": 77,
+   "pos": 78,
    "sail": "ITA 1798",
    "boat": "J CURVE",
    "cat": "Open",
@@ -1930,7 +1955,7 @@
    "discard": 4
   },
   {
-   "pos": 78,
+   "pos": 79,
    "sail": "POR 1046",
    "boat": "UON",
    "cat": "One Pro",
@@ -1955,18 +1980,18 @@
    "discard": 3
   },
   {
-   "pos": 79,
+   "pos": 80,
    "sail": "NOR 645",
    "boat": "HELLY HANSEN BAGDAD II",
    "cat": "Corinthian",
-   "net": 329.0,
-   "total": 416.0,
+   "net": 331.0,
+   "total": 418.0,
    "races": [
     87.0,
     71.0,
-    58.0,
+    59.0,
     73.0,
-    54.0,
+    55.0,
     73.0
    ],
    "codes": [
@@ -1980,18 +2005,18 @@
    "discard": 1
   },
   {
-   "pos": 80,
+   "pos": 81,
    "sail": "USA 639",
    "boat": "NORBOY",
    "cat": "Open",
-   "net": 330.0,
-   "total": 419.0,
+   "net": 332.0,
+   "total": 421.0,
    "races": [
     89.0,
     88.0,
-    65.0,
+    66.0,
     75.0,
-    68.0,
+    69.0,
     34.0
    ],
    "codes": [
@@ -2005,18 +2030,18 @@
    "discard": 1
   },
   {
-   "pos": 81,
+   "pos": 82,
    "sail": "USA 1863",
    "boat": "DIME",
    "cat": "Corinthian",
-   "net": 331.0,
-   "total": 414.0,
+   "net": 332.0,
+   "total": 416.0,
    "races": [
     61.0,
     45.0,
-    83.0,
+    84.0,
     77.0,
-    70.0,
+    71.0,
     78.0
    ],
    "codes": [
@@ -2030,18 +2055,18 @@
    "discard": 3
   },
   {
-   "pos": 82,
+   "pos": 83,
    "sail": "ESP 1419",
    "boat": "AUDYO TENERIFE",
    "cat": "Corinthian",
-   "net": 335.0,
-   "total": 420.0,
+   "net": 337.0,
+   "total": 422.0,
    "races": [
     82.0,
     85.0,
-    41.0,
+    42.0,
     67.0,
-    76.0,
+    77.0,
     69.0
    ],
    "codes": [
@@ -2055,18 +2080,18 @@
    "discard": 2
   },
   {
-   "pos": 83,
+   "pos": 84,
    "sail": "TUR 442",
    "boat": "DENIZCIK",
    "cat": "Open",
-   "net": 344.0,
-   "total": 445.0,
+   "net": 345.0,
+   "total": 446.0,
    "races": [
     47.0,
     58.0,
     101.0,
     101.0,
-    79.0,
+    80.0,
     59.0
    ],
    "codes": [
@@ -2080,41 +2105,16 @@
    "discard": 3
   },
   {
-   "pos": 84,
-   "sail": "ESP 669",
-   "boat": "BODEGAS VILLANUEVA",
-   "cat": "Corinthian",
-   "net": 346.0,
-   "total": 447.0,
-   "races": [
-    75.0,
-    40.0,
-    101.0,
-    101.0,
-    35.0,
-    95.0
-   ],
-   "codes": [
-    null,
-    null,
-    "DNF",
-    "DNC",
-    null,
-    null
-   ],
-   "discard": 3
-  },
-  {
    "pos": 85,
    "sail": "FRA 1089",
    "boat": "LIFT TICKET",
    "cat": "Corinthian",
-   "net": 346.0,
-   "total": 447.0,
+   "net": 347.0,
+   "total": 448.0,
    "races": [
     74.0,
     101.0,
-    82.0,
+    83.0,
     62.0,
     38.0,
     90.0
@@ -2134,14 +2134,14 @@
    "sail": "GER 726",
    "boat": "SENSACIóN",
    "cat": "Corinthian",
-   "net": 347.0,
-   "total": 423.0,
+   "net": 348.0,
+   "total": 425.0,
    "races": [
     101.0,
     70.0,
-    76.0,
+    77.0,
     60.0,
-    46.0,
+    47.0,
     70.0
    ],
    "codes": [
@@ -2159,14 +2159,14 @@
    "sail": "GBR 937",
    "boat": "POWDER MONKEY",
    "cat": "Corinthian",
-   "net": 349.0,
-   "total": 450.0,
+   "net": 351.0,
+   "total": 452.0,
    "races": [
     70.0,
     79.0,
-    78.0,
+    79.0,
     101.0,
-    51.0,
+    52.0,
     71.0
    ],
    "codes": [
@@ -2184,14 +2184,14 @@
    "sail": "SWE 458",
    "boat": "LIMONCELLO LL",
    "cat": "Corinthian",
-   "net": 361.0,
-   "total": 462.0,
+   "net": 363.0,
+   "total": 464.0,
    "races": [
     101.0,
     101.0,
-    60.0,
+    61.0,
     36.0,
-    75.0,
+    76.0,
     89.0
    ],
    "codes": [
@@ -2209,14 +2209,14 @@
    "sail": "TUR 111",
    "boat": "MARMARA YELKEN",
    "cat": "Young",
-   "net": 362.0,
-   "total": 463.0,
+   "net": 364.0,
+   "total": 465.0,
    "races": [
     101.0,
     101.0,
-    72.0,
+    73.0,
     69.0,
-    62.0,
+    63.0,
     58.0
    ],
    "codes": [
@@ -2234,14 +2234,14 @@
    "sail": "SUI 1852",
    "boat": "IVA",
    "cat": "Corinthian",
-   "net": 370.0,
-   "total": 461.0,
+   "net": 371.0,
+   "total": 463.0,
    "races": [
     68.0,
     80.0,
-    91.0,
+    92.0,
     74.0,
-    74.0,
+    75.0,
     74.0
    ],
    "codes": [
@@ -2259,12 +2259,12 @@
    "sail": "USA 496",
    "boat": "RIFF",
    "cat": "Mixed Plus",
-   "net": 373.0,
-   "total": 467.0,
+   "net": 374.0,
+   "total": 468.0,
    "races": [
     94.0,
     87.0,
-    88.0,
+    89.0,
     81.0,
     42.0,
     75.0
@@ -2284,12 +2284,12 @@
    "sail": "POR 1685",
    "boat": "HOTEL VALVERDE",
    "cat": "Open",
-   "net": 380.0,
-   "total": 481.0,
+   "net": 381.0,
+   "total": 482.0,
    "races": [
     58.0,
     52.0,
-    68.0,
+    69.0,
     101.0,
     101.0,
     101.0
@@ -2306,42 +2306,17 @@
   },
   {
    "pos": 93,
-   "sail": "FRA 1583",
-   "boat": "EURO-VOILES",
-   "cat": "Corinthian",
-   "net": 384.0,
-   "total": 485.0,
-   "races": [
-    91.0,
-    74.0,
-    62.0,
-    101.0,
-    93.0,
-    64.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    "DNF",
-    null,
-    null
-   ],
-   "discard": 4
-  },
-  {
-   "pos": 94,
    "sail": "FIN 1542",
    "boat": "TEAM ELVING",
    "cat": "Corinthian",
-   "net": 384.0,
-   "total": 476.0,
+   "net": 385.0,
+   "total": 478.0,
    "races": [
     84.0,
     77.0,
-    87.0,
+    88.0,
     70.0,
-    92.0,
+    93.0,
     66.0
    ],
    "codes": [
@@ -2355,18 +2330,43 @@
    "discard": 5
   },
   {
+   "pos": 94,
+   "sail": "FRA 1583",
+   "boat": "EURO-VOILES",
+   "cat": "Corinthian",
+   "net": 386.0,
+   "total": 487.0,
+   "races": [
+    91.0,
+    74.0,
+    63.0,
+    101.0,
+    94.0,
+    64.0
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    "DNF",
+    null,
+    null
+   ],
+   "discard": 4
+  },
+  {
    "pos": 95,
    "sail": "GBR 1591",
    "boat": "JUST RIGHT",
    "cat": "One Pro",
-   "net": 394.0,
-   "total": 495.0,
+   "net": 395.0,
+   "total": 496.0,
    "races": [
     95.0,
     72.0,
     101.0,
     101.0,
-    49.0,
+    50.0,
     77.0
    ],
    "codes": [
@@ -2384,14 +2384,14 @@
    "sail": "NED 964",
    "boat": "MOORE DRV",
    "cat": "Corinthian",
-   "net": 409.0,
-   "total": 502.0,
+   "net": 410.0,
+   "total": 504.0,
    "races": [
     93.0,
     83.0,
-    93.0,
+    94.0,
     80.0,
-    81.0,
+    82.0,
     72.0
    ],
    "codes": [
@@ -2402,21 +2402,21 @@
     null,
     null
    ],
-   "discard": 1
+   "discard": 3
   },
   {
    "pos": 97,
    "sail": "BRA 1618",
    "boat": "IRRATIONAL EXUBERANCE",
    "cat": "Open",
-   "net": 414.0,
-   "total": 515.0,
+   "net": 416.0,
+   "total": 517.0,
    "races": [
     83.0,
     101.0,
-    90.0,
+    91.0,
     72.0,
-    85.0,
+    86.0,
     84.0
    ],
    "codes": [
@@ -2434,14 +2434,14 @@
    "sail": "ARG 1191",
    "boat": "NEGRONI",
    "cat": "Corinthian",
-   "net": 429.0,
-   "total": 530.0,
+   "net": 430.0,
+   "total": 531.0,
    "races": [
     96.0,
     81.0,
     101.0,
     101.0,
-    89.0,
+    90.0,
     62.0
    ],
    "codes": [
@@ -2459,14 +2459,14 @@
    "sail": "POR 1783",
    "boat": "OUT WITH THE BUOYS",
    "cat": "Corinthian",
-   "net": 431.0,
-   "total": 525.0,
+   "net": 432.0,
+   "total": 527.0,
    "races": [
     79.0,
     89.0,
-    89.0,
+    90.0,
     83.0,
-    94.0,
+    95.0,
     91.0
    ],
    "codes": [
@@ -2484,14 +2484,14 @@
    "sail": "POL 1588",
    "boat": "GRP METIKAM N'FUN YACHTING",
    "cat": "Corinthian",
-   "net": 445.0,
-   "total": 546.0,
+   "net": 447.0,
+   "total": 548.0,
    "races": [
     72.0,
     90.0,
-    92.0,
+    93.0,
     101.0,
-    95.0,
+    96.0,
     96.0
    ],
    "codes": [

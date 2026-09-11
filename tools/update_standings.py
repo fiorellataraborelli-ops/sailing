@@ -16,6 +16,11 @@ import json, os, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESULTS = os.path.join(ROOT, 'data/event/results.json')
+# Where the team stood at each race count. "Moved up 14 places" has to be measured
+# against the standing after five races, not against whatever the payload happens to
+# hold — deriving it from the payload meant a second run with no new race compared
+# the position against itself and quietly reported no movement at all.
+HISTORY = os.path.join(ROOT, 'data/event/standing_history.json')
 PAYLOAD = os.path.join(ROOT, 'site/payload.json')
 TEAM = 'GARM'
 DISPLAY = {'OCEANPACT - VIKING': 'Oceanpact - Viking', 'EMPEIRIA': 'Empeiria',
@@ -36,7 +41,12 @@ def main():
     rows = R['rows']
     team = next(r for r in rows if r['boat'].upper() == TEAM)
     o = D['official']
-    prev_pos, prev_races = o['team']['pos'], o['races_scored']
+    hist = json.load(open(HISTORY)) if os.path.exists(HISTORY) else {}
+    hist.setdefault(str(o['races_scored']), o['team']['pos'])      # before this update
+    hist[str(R['races_scored'])] = team['pos']
+    earlier = [int(k) for k in hist if int(k) < R['races_scored']]
+    prev_races = max(earlier) if earlier else R['races_scored']
+    prev_pos = hist[str(prev_races)]
 
     o['races_scored'] = R['races_scored']
     o['fleet_scored'] = R['fleet']
@@ -65,8 +75,9 @@ def main():
         f"{'nd' if min(team['races']) == 2 else 'th'} — the best of the regatta — and the team "
         f"has moved from {prev_pos}th after {prev_races} races to {team['pos']}th after "
         f"{R['races_scored']}.")
+    json.dump(hist, open(HISTORY, 'w'), indent=1, sort_keys=True)
     json.dump(D, open(PAYLOAD, 'w'), ensure_ascii=False)
-    print(f"Garm {prev_pos}th -> {team['pos']}th of {R['fleet']}, "
+    print(f"Garm {prev_pos}th after {prev_races} -> {team['pos']}th of {R['fleet']}, "
           f"net {team['net']:g} / total {team['total']:g}, scores {' '.join(fmt(team))}")
     print('top 5:', ', '.join(f"{r['pos']} {nice(r['boat'])} {r['net']:g}" for r in rows[:5]))
 
