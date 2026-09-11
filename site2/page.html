@@ -572,8 +572,8 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
       that tacks four times badly.</p>
     <div class="tiles" id="mv-tiles" style="margin-bottom:16px;"></div>
     <div class="gridhead" style="grid-template-columns:1.4fr .6fr .8fr .6fr .8fr .8fr;">
-      <span>Boat</span><span>Tacks</span><span>kn / tack</span><span>Gybes</span>
-      <span>kn / gybe</span><span>Total cost</span>
+      <span>Boat</span><span>Tacks</span><span>m / tack</span><span>Gybes</span>
+      <span>m / gybe</span><span>Ground lost</span>
     </div>
     <div class="scroller" id="mv-rows"></div>
     <p class="note" id="mv-note"></p>
@@ -1416,28 +1416,37 @@ function drawManoeuvres(){
   const rows = Object.entries(R).map(([b, L]) => {
     const tk = L.reduce((s, l) => s + (l.tacks || 0), 0);
     const gy = L.reduce((s, l) => s + (l.gybes || 0), 0);
-    const tl = L.filter(l => l.tloss != null), gl = L.filter(l => l.gloss != null);
-    const tloss = tl.length ? tl.reduce((s, l) => s + l.tloss * l.tacks, 0) / tl.reduce((s, l) => s + l.tacks, 0) : null;
-    const gloss = gl.length ? gl.reduce((s, l) => s + l.gloss * l.gybes, 0) / gl.reduce((s, l) => s + l.gybes, 0) : null;
-    return {b, team: b === D.meta.legteam, tk, gy, tloss, gloss,
-            cost: (tloss || 0) * tk + (gloss || 0) * gy};
+    // metres of ground, weighted by how many manoeuvres each leg contributed
+    const per = (field, count) => {
+      const ls = L.filter(l => l[field] != null && l[count] > 0);
+      const n = ls.reduce((s, l) => s + l[count], 0);
+      return n ? ls.reduce((s, l) => s + l[field] * l[count], 0) / n : null;
+    };
+    return {b, team: b === D.meta.legteam, tk, gy,
+            tloss: per('tloss_m', 'tacks'), gloss: per('gloss_m', 'gybes'),
+            tsec: per('tloss_s', 'tacks'), gsec: per('gloss_s', 'gybes'),
+            cost: L.reduce((s, l) => s + (l.loss_m || 0), 0),
+            secs: L.reduce((s, l) => s + (l.loss_s || 0), 0)};
   }).filter(r => r.tk + r.gy > 0).sort((a, b) => a.cost - b.cost);
 
   const g = rows.find(r => r.team);
   const med = a => { const v = a.slice().sort((x, y) => x - y); return v[Math.floor(v.length / 2)]; };
   $('mv-tiles').innerHTML = !g ? '' : [
-    ['Tacks', g.tk], ['Cost per tack', g.tloss == null ? '—' : g.tloss.toFixed(2) + ' kn'],
-    ['Gybes', g.gy], ['Cost per gybe', g.gloss == null ? '—' : g.gloss.toFixed(2) + ' kn'],
-    ['Total cost', g.cost.toFixed(0) + ' kn'],
+    ['Tacks', g.tk],
+    ['Cost per tack', g.tloss == null ? '—' : g.tloss.toFixed(1) + ' m'],
+    ['Gybes', g.gy],
+    ['Cost per gybe', g.gloss == null ? '—' : g.gloss.toFixed(1) + ' m'],
+    ['Ground lost', g.cost.toFixed(0) + ' m'],
+    ['Time to win it back', g.secs.toFixed(0) + ' s'],
     ['Rank of ' + rows.length, rows.findIndex(r => r.team) + 1],
   ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
 
   $('mv-rows').innerHTML = pinTeam(rows).map(({r, rank}) =>
     `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.4fr .6fr .8fr .6fr .8fr .8fr;">
       <span>${posCell(rank)}${esc(r.team ? 'Garm' : r.b)}</span>
-      <span class="tnum">${r.tk}</span><span class="tnum">${r.tloss == null ? '—' : r.tloss.toFixed(2)}</span>
-      <span class="tnum">${r.gy}</span><span class="tnum">${r.gloss == null ? '—' : r.gloss.toFixed(2)}</span>
-      <span class="tnum">${r.cost.toFixed(0)}</span></div>`).join('');
+      <span class="tnum">${r.tk}</span><span class="tnum">${r.tloss == null ? '—' : r.tloss.toFixed(1)}</span>
+      <span class="tnum">${r.gy}</span><span class="tnum">${r.gloss == null ? '—' : r.gloss.toFixed(1)}</span>
+      <span class="tnum">${r.cost.toFixed(0)} m</span></div>`).join('');
 
   const mt = med(rows.filter(r => r.tloss != null).map(r => r.tloss));
   const mg = med(rows.filter(r => r.gloss != null).map(r => r.gloss));
@@ -1445,13 +1454,15 @@ function drawManoeuvres(){
   const rateOk = g && g.tloss != null && g.tloss <= mt;
   $('mv-note').innerHTML =
     `<b>${rows.length < 12 ? 'Median of ' + rows.length + ' boats' : 'Fleet median'}: ` +
-    `${mt.toFixed(2)} kn a tack, ${mg.toFixed(2)} kn a gybe, over ` +
+    `${mt.toFixed(1)} m a tack, ${mg.toFixed(1)} m a gybe, over ` +
     `${mtk} tacks and ${mgy} gybes.</b> ` +
-    (g ? `Garm gives away ${g.cost.toFixed(0)} kn across the race, ${rows.findIndex(r => r.team) + 1} ` +
-         `of ${rows.length} on total cost. Each tack costs ${g.tloss.toFixed(2)} kn against a median of ` +
-         `${mt.toFixed(2)}${rateOk ? ', better than the median' : ''}, and each gybe ` +
-         `${g.gloss.toFixed(2)} against ${mg.toFixed(2)}, over ${g.tk} tacks and ${g.gy} gybes ` +
-         `against ${mtk} and ${mgy}. ` +
+    (g ? `Garm gives away <b>${g.cost.toFixed(0)} m</b> across the race — ` +
+         `${g.secs.toFixed(0)} s of sailing to win back — ${rows.findIndex(r => r.team) + 1} ` +
+         `of ${rows.length} on ground lost. Each tack costs ${g.tloss.toFixed(1)} m ` +
+         `(${g.tsec == null ? '—' : g.tsec.toFixed(1) + ' s'}) against a median of ` +
+         `${mt.toFixed(1)} m${rateOk ? ', better than the median' : ''}, and each gybe ` +
+         `${g.gloss.toFixed(1)} m (${g.gsec == null ? '—' : g.gsec.toFixed(1) + ' s'}) against ` +
+         `${mg.toFixed(1)} m, over ${g.tk} tacks and ${g.gy} gybes against ${mtk} and ${mgy}. ` +
          // which half of the total is actually the problem varies by race, so let the
          // numbers say it rather than asserting race 1's answer every time
          (rateOk && g.tk + g.gy > mtk + mgy
@@ -1462,9 +1473,7 @@ function drawManoeuvres(){
             ? `Dearer than the median and more of them. `
             : `Cleaner than the median and fewer of them. `) : '') +
     `<br><br><span style="color:var(--faint);">A manoeuvre is a settled crossing of the wind, not a ` +
-    `speed dip, so surfing downwind does not inflate the gybe count. Cost is the speed lost through ` +
-    `each one; total cost sums it over every manoeuvre, and is a comparison between boats rather ` +
-    `than a distance.</span>`;
+    `speed dip, so surfing downwind does not inflate the gybe count. ${D.legs.lossDef || ''}</span>`;
 }
 
 /* ---------------- fleet ---------------- */
@@ -1565,14 +1574,37 @@ function drawVmg(){
   const dr = D.legs.drivers[vRace] || {};
   const small = beats.length < 12;
   const drag = us ? us.l.svmg - us.l.vmg : null;
+  // The first beat is one leg of four. Ranking the whole race's upwind and downwind
+  // separately is the fairer read, and the two can differ sharply: in race 5 Garm is
+  // 9th of 20 on the first beat and 3rd across both beats.
+  const avg = a => a.reduce((x, y) => x + y, 0) / a.length;
+  const overall = (kind, field) => {
+    const v = Object.entries(R).map(([b, L]) => {
+      const ls = L.filter(l => l.kind === kind && l[field] != null);
+      return ls.length ? {b, v: avg(ls.map(l => l[field]))} : null;
+    }).filter(Boolean).sort((a, b) => b.v - a.v);
+    const me = v.find(x => x.b === D.meta.legteam);
+    // competition ranking: boats on the same figure share a place rather than being
+    // ordered by whatever the sort happened to do. Garm ties for third here, and
+    // taking the index would have printed fourth.
+    return me ? {v: me.v, rank: v.filter(x => x.v > me.v).length + 1, n: v.length} : null;
+  };
+  const upAll = overall('beat', stdy ? 'svmg' : 'vmg');
+  const dnAll = overall('run', stdy ? 'svmg' : 'vmg');
+  const beat1Rank = us ? beats.filter(x => fV(x.l) > fV(us.l)).length + 1 : null;
   $('vmg-tiles').innerHTML = [
     ['Garm VMG, beat 1', us ? sp2(fV(us.l)) : '—'],
     [small ? 'Median of ' + beats.length : 'Fleet median', sp2(med)],
-    ['Rank of ' + beats.length, us ? (beats.findIndex(x => x.b === D.meta.legteam) + 1) : '—'],
+    ['Rank of ' + beats.length, us ? beat1Rank : '—'],
     ['Garm TWA', us ? fW(us.l).toFixed(1) + '°' : '—'],
     ['Cost of turning', drag == null ? '—' : drag.toFixed(2) + ' kn'],
     ['Leg spent turning', us && us.l.keep != null ? ((1 - us.l.keep) * 100).toFixed(0) + '%' : '—'],
-  ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
+    ['Upwind, whole race', upAll ? upAll.v.toFixed(2) + ' kn' : '—',
+     upAll ? upAll.rank + ' of ' + upAll.n : ''],
+    ['Downwind, whole race', dnAll ? dnAll.v.toFixed(2) + ' kn' : '—',
+     dnAll ? dnAll.rank + ' of ' + dnAll.n : ''],
+  ].map(([k, v, c]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div>` +
+    (c ? `<div class="c">${c}</div>` : '') + `</div>`).join('');
   $('vmg-rows').innerHTML = beats.map(x =>
     `<div class="grid ${x.b === D.meta.legteam ? 'team' : ''}" style="grid-template-columns:1.5fr .8fr .8fr .8fr .8fr .8fr;">
       <span>${esc(x.b === D.meta.legteam ? 'Garm' : x.b)}</span>
@@ -1588,7 +1620,15 @@ function drawVmg(){
       <span class="tnum" style="font-weight:700;">${l.svmg == null ? '—' : l.svmg.toFixed(2)}</span>
       <span class="tnum">${l.twa.toFixed(0)}°</span>
       <span class="tnum">${l.tacks}/${l.gybes}</span></div>`).join('');
-  $('vmg-note').innerHTML = small ?
+  const wholeRace = (upAll && dnAll)
+    ? `<b>Across the whole race</b>, not just the first beat, Garm makes ${upAll.v.toFixed(2)} kn ` +
+      `upwind — <b>${upAll.rank} of ${upAll.n}</b> — and ${dnAll.v.toFixed(2)} kn downwind, ` +
+      `${dnAll.rank} of ${dnAll.n}. ` +
+      (upAll.rank < beat1Rank
+        ? `The first beat alone understates it: on that leg the boat is ${beat1Rank}.` : '') +
+      `<br><br>`
+    : '';
+  $('vmg-note').innerHTML = wholeRace + (small ?
     `<b>Garm's own numbers, measured the same way as Tuesday's.</b> Only ${beats.length} boats logged ` +
     `this race, so the rank and the median beside it are against those ${beats.length} — the VMG, SOG ` +
     `and TWA are Garm's and do not depend on who else logged. What the fleet did is in the event's ` +
@@ -1609,7 +1649,7 @@ function drawVmg(){
     `${D.legs.steady_window_s.tack[0]} s to +${D.legs.steady_window_s.tack[1]} s around a tack and ` +
     `${D.legs.steady_window_s.gybe[0]} s to +${D.legs.steady_window_s.gybe[1]} s around a gybe. Those ` +
     `windows are measured, not assumed: across the fleet, speed at the crossing falls to 71% of the ` +
-    `approach for a tack and 64% for a gybe, and is back on its plateau by +10 s and +15 s.</span>`;
+    `approach for a tack and 64% for a gybe, and is back on its plateau by +10 s and +15 s.</span>`);
 }
 
 /* ---------------- competitor velocity ---------------- */

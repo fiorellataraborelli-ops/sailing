@@ -209,9 +209,14 @@ def main():
                 sub = [q for q in tr if l.start_ts_ms <= q[0] <= end]
                 wd = w[i] if i < len(w) else w[-1]
                 m = manoeuvres(sub, wd)
-                v = leg_vmg(sub, wd, l.kind == 'beat', mans=m)
+                v = leg_vmg(sub, wd, l.kind == 'beat', mans=m)   # also costs each one
                 tk = [x for x in m if x['kind'] == 'tack']
                 gy = [x for x in m if x['kind'] == 'gybe']
+                # ground lost, in metres and seconds. The old figure was the speed dip
+                # in knots, which cannot be weighed against anything: a 3.5 kn dip for
+                # four seconds and the same dip for twenty are not the same price.
+                cost = lambda g, k: round(st.mean([x[k] for x in g if k in x]), 1) \
+                    if any(k in x for x in g) else None
                 path = sum(math.hypot((r[1] - q[1]) * 111320,
                                       (r[2] - q[2]) * 111320 * math.cos(math.radians(q[1])))
                            for q, r in zip(sub, sub[1:]))
@@ -229,14 +234,23 @@ def main():
                              'stwa': v.get('steady_twa_deg'), 'keep': v.get('steady_share'),
                              'extra': round(path - straight),
                              'tacks': len(tk), 'gybes': len(gy),
-                             'tloss': round(st.mean([x['loss_kn'] for x in tk]), 2) if tk else None,
-                             'gloss': round(st.mean([x['loss_kn'] for x in gy]), 2) if gy else None})
+                             'tloss_m': cost(tk, 'loss_m'), 'tloss_s': cost(tk, 'loss_s'),
+                             'gloss_m': cost(gy, 'loss_m'), 'gloss_s': cost(gy, 'loss_s'),
+                             'loss_m': round(sum(x.get('loss_m', 0) for x in m)),
+                             'loss_s': round(sum(x.get('loss_s', 0) for x in m)),
+                             'tdip': round(st.mean([x['dip_kn'] for x in tk]), 2) if tk else None,
+                             'gdip': round(st.mean([x['dip_kn'] for x in gy]), 2) if gy else None})
             races.setdefault(rn, {})[b] = legs
 
     out = {'source': 'race_multi_leg segmentation + leg_vmg; per-leg winds from the event '
                      'reports for races 1-4 and measured from the tracks for 5-6',
            'races': races, 'drivers': {}, 'steady_window_s': STEADY_WINDOW_S,
            'wind_source': WIND_SOURCE, 'wind_spread': WIND_SPREAD, 'wind_boats': WIND_BOATS,
+           'loss_def': 'Ground lost to a manoeuvre: what the boat would have made good in the '
+                       'window at its own settled VMG for that leg, minus what it did make good. '
+                       'In metres, and in the seconds needed to win it back at the same VMG. '
+                       'A negative figure means the boat made better VMG through the manoeuvre '
+                       'than it did the rest of the leg.',
            'note': 'The fourth leg is cut at the finish, detected as the boat coming off the '
                    'plane, not at the logger\'s RACE_END — that runs on into the sail home. '
                    'Checked against the event\'s published leg times for races 3 and 4: about '

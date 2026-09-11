@@ -416,7 +416,8 @@ def main():
       # whole page had not been updated.
       'races': race_cards(D, TRACKED),
       'legs': {'races': D['legs']['races'], 'drivers': D['legs']['drivers'],
-               'steady_window_s': D['legs']['steady_window_s']},
+               'steady_window_s': D['legs']['steady_window_s'],
+               'lossDef': D['legs'].get('loss_def')},
       'segments': {'rows': segs, 'caveat': D['segments']['caveat'],
                    'verify': D['segments'].get('verify')},
       'kpi': {'rows': kpi_rows, 'note': D['kpi']['note']},

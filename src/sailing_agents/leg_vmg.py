@@ -24,6 +24,12 @@ Two things that are easy to get wrong, and are handled here:
   and again in a leg average that is quietly measuring manoeuvre count. So the
   averages are computed both ways, and the manoeuvre windows are sized from the
   fleet's own recovery curve rather than assumed. See STEADY_WINDOW_S.
+* What a manoeuvre costs is metres and seconds, not knots. A speed dip of 3.5 kn
+  says nothing on its own — a boat that loses 3.5 kn for four seconds and one that
+  loses it for twenty have paid completely different prices, and neither figure is
+  something a crew can weigh against a shift. The cost here is the ground the boat
+  failed to make good: what it would have gained in the window at its own settled
+  VMG for that leg, minus what it actually gained. See manoeuvre_cost().
 """
 from __future__ import annotations
 import math
@@ -64,6 +70,52 @@ def _steady_mask(track, mans) -> list[bool]:
             if a <= p[0] <= b:
                 keep[i] = False
     return keep
+
+
+def _dmg(track, wind_deg, upwind, i0, i1):
+    """Metres made good along the wind axis between two fixes, integrated."""
+    total = 0.0
+    for j in range(max(1, i0), min(i1, len(track))):
+        dt = (track[j][0] - track[j - 1][0]) / 1000.0
+        if dt <= 0 or dt > 5:
+            continue
+        v = track[j][3] * math.cos(math.radians(_rel(math.degrees(track[j][4]) % 360, wind_deg)))
+        total += (v if upwind else -v) * dt
+    return total
+
+
+def manoeuvre_cost(track, mans, wind_deg: float, upwind: bool, ref_vmg_kn: float):
+    """Ground lost to each manoeuvre, in metres and in seconds.
+
+    The reference is the boat's own settled VMG for the leg — the speed it was
+    making good when it was not turning. Over a manoeuvre's window it would have
+    gained ref x window; it actually gained the integral of its VMG. The shortfall
+    is the cost, in metres of ground, and dividing by the same reference turns it
+    into the seconds of sailing needed to win that ground back.
+
+    Using the leg's own settled VMG rather than a fixed number means a manoeuvre in
+    light air is judged against light-air progress, and it makes the parts sum to
+    the whole: the manoeuvre losses on a leg add up to the difference between the
+    all-fix average and the settled one, which is checked in the tests.
+    """
+    if not mans or not ref_vmg_kn or ref_vmg_kn <= 0:
+        return mans
+    ref_ms = ref_vmg_kn / KNOTS_PER_MS
+    ts = [p[0] for p in track]
+    for m in mans:
+        lo, hi = STEADY_WINDOW_S[m['kind']]
+        a, b = m['at_ms'] + lo * 1000, m['at_ms'] + hi * 1000
+        i0 = next((i for i, t in enumerate(ts) if t >= a), 0)
+        i1 = next((i for i, t in enumerate(ts) if t > b), len(ts))
+        if i1 <= i0 + 1:
+            continue
+        window_s = (ts[min(i1, len(ts)) - 1] - ts[i0]) / 1000.0
+        got = _dmg(track, wind_deg, upwind, i0, i1)
+        lost = ref_ms * window_s - got
+        m['window_s'] = round(window_s, 1)
+        m['loss_m'] = round(lost, 1)
+        m['loss_s'] = round(lost / ref_ms, 1) if ref_ms else None
+    return mans
 
 
 def leg_vmg(track, wind_deg: float, upwind: bool, mans=None) -> dict:
@@ -117,6 +169,9 @@ def leg_vmg(track, wind_deg: float, upwind: bool, mans=None) -> dict:
             'steady_twa_deg': round(sum(v for v, k in zip(twa, keep) if k) / n, 1),
             'steady_share': round(n / len(track), 3),
         })
+        # cost every manoeuvre against that settled VMG, in metres and seconds
+        manoeuvre_cost(track, mans if mans is not None else [], wind_deg, upwind,
+                       out['steady_vmg_kn'])
     return out
 
 
@@ -147,7 +202,9 @@ def manoeuvres(track, wind_deg: float, settle_deg: float = 20.0) -> list[dict]:
                         'entry_kn': round(entry, 2),
                         'min_kn': round(low, 2),
                         'exit_kn': round(exit_, 2),
-                        'loss_kn': round(entry - low, 2),
+                        # the speed dip, kept as a diagnostic. It is not the cost:
+                        # see manoeuvre_cost for metres and seconds.
+                        'dip_kn': round(entry - low, 2),
                         'recovered': exit_ >= entry - 0.3})
         side = s
     return out
