@@ -18,10 +18,20 @@ import sys, glob, os, json, re, datetime, math, statistics as st, unicodedata as
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.sailing_agents.vkx_parser import parse_file
 from src.sailing_agents import race_multi_leg as rml
-from src.sailing_agents.leg_vmg import leg_vmg, manoeuvres, STEADY_WINDOW_S
+from src.sailing_agents.leg_vmg import (leg_vmg, manoeuvres, manoeuvre_cost,
+                                        STEADY_WINDOW_S)
 
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 MS = 1.9438444924406
+# Seconds trimmed from each end of a leg before its speed and angle are averaged.
+# A leg boundary is a mark rounding: for the first half-minute of a run the boat is
+# still bearing away, and for the last it is already rounding up. Including that
+# pulled the mean true wind angle 2 deg fine and the mean speed 0.2 kn slow against
+# the event's own figures for the eight legs it publishes for this boat. Calibrated
+# on those: 30 s drives the speed error to zero (-0.00 kn mean, 0.12 worst) and the
+# angle to within 1.5 deg, where 0 s left errors of 0.54 kn and 5.5 deg. The leg's
+# duration and distance are still the whole leg — only the averages are trimmed.
+EDGE_TRIM_S = 30
 
 # Which race each window belongs to, keyed by the gun itself rather than by the
 # window's position in the file. Counting windows quietly mis-assigns any boat whose
@@ -208,8 +218,15 @@ def main():
                         end = ft
                 sub = [q for q in tr if l.start_ts_ms <= q[0] <= end]
                 wd = w[i] if i < len(w) else w[-1]
+                # manoeuvres are counted and costed over the whole leg — a tack just
+                # after the rounding is a real tack — but the averages describe how the
+                # boat sailed the leg, so they skip the roundings at either end.
+                a0, b0 = l.start_ts_ms + EDGE_TRIM_S * 1000, end - EDGE_TRIM_S * 1000
+                core = [q for q in sub if a0 <= q[0] <= b0] or sub
                 m = manoeuvres(sub, wd)
-                v = leg_vmg(sub, wd, l.kind == 'beat', mans=m)   # also costs each one
+                v = leg_vmg(core, wd, l.kind == 'beat',
+                            mans=[x for x in m if a0 <= x['at_ms'] <= b0])
+                manoeuvre_cost(sub, m, wd, l.kind == 'beat', v.get('steady_vmg_kn') or 0)
                 tk = [x for x in m if x['kind'] == 'tack']
                 gy = [x for x in m if x['kind'] == 'gybe']
                 # ground lost, in metres and seconds. The old figure was the speed dip
@@ -246,6 +263,7 @@ def main():
                      'reports for races 1-4 and measured from the tracks for 5-6',
            'races': races, 'drivers': {}, 'steady_window_s': STEADY_WINDOW_S,
            'wind_source': WIND_SOURCE, 'wind_spread': WIND_SPREAD, 'wind_boats': WIND_BOATS,
+           'edge_trim_s': EDGE_TRIM_S,
            'loss_def': 'Ground lost to a manoeuvre: what the boat would have made good in the '
                        'window at its own settled VMG for that leg, minus what it did make good. '
                        'In metres, and in the seconds needed to win it back at the same VMG. '
