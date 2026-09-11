@@ -34,15 +34,15 @@ RACE_OF_WINDOW = {'2026-09-08': {1: '1', 2: '2'}, '2026-09-09': {1: '3', 2: '4'}
 # mean of 0.9 deg. WIND_SOURCE keeps the distinction visible all the way to the page.
 WIND = {'1': [317, 323, 313, 317], '2': [314, 321, 313, 313],
         '3': [324, 327, 326, 332], '4': [335, 341, 342, 349],
-        '5': [320, 329, 333, 334], '6': [352, 354, 349, 352]}
+        '5': [320, 329, 334, 334], '6': [352, 354, 349, 352]}
 WIND_SOURCE = {r: ('event report' if r in ('1', '2', '3', '4') else 'measured from the tracks')
                for r in WIND}
-WIND_BOATS = {'5': 17, '6': 17}    # how many logs each measured wind is a median of
+WIND_BOATS = {'5': 20, '6': 20}    # how many logs each measured wind is a median of
 # The fleet's own disagreement on each measured leg, as the interquartile width in
 # degrees across the seventeen boats — min-to-max would report one bad boat rather
 # than the spread. Race 5's first run is the one loose leg: the middle half of the
 # fleet spans 18 deg on it, against 2-3 deg everywhere else.
-WIND_SPREAD = {'5': [3, 18, 3, 3], '6': [3, 3, 2, 3]}
+WIND_SPREAD = {'5': [2, 19, 3, 3], '6': [3, 3, 2, 3]}
 MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá': 'Ba ba',
        'Aretê 1872': 'Areté', 'SASSY too': 'Sassy', 'Moore DRV - vakaros 2': 'Moore DRV',
        'TYRA VAKAROS': 'TYRA', 'TYRA VAKAROS2': 'TYRA', 'To Nessa 1527': 'To Nessa',

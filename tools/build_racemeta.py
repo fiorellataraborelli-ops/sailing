@@ -26,6 +26,11 @@ from tools.build_legs import RACE_OF_WINDOW, WIND, WIND_SOURCE, name
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DERIVE = ('5', '6')          # races with no published report
+# The GRIB forecast at each gun, captured once and kept. wind.json holds only the
+# coming two days and the overnight refresh rolls the raced day out of it, so this
+# cannot be re-derived after the fact: 10 September's forecast was already gone by
+# 02:07 the next morning. Written the first time it is seen, read forever after.
+FORECAST = os.path.join(ROOT, 'data/event/forecast_at_gun.json')
 LOCAL_OFFSET_H = 1           # Lisbon is UTC+1 in September
 
 
@@ -115,6 +120,7 @@ def main():
 
     # the wind card's forecast-vs-measured row
     have = {b['race'] for b in D['ib']['bias_rows']}
+    kept = json.load(open(FORECAST)) if os.path.exists(FORECAST) else {}
     # wind.json is {days: [{date, rows: [{hr, raw, ...}]}]} — raw is the GRIB direction
     fc = {}
     wf = os.path.join(ROOT, 'data/wind.json')
@@ -125,11 +131,15 @@ def main():
     for r in D['ib']['races']:
         if r['n'] in have or r['n'] not in {int(x) for x in DERIVE}:
             continue
-        f = fc.get((r['date'], int(r['start_utc'][:2])))
+        live = fc.get((r['date'], int(r['start_utc'][:2])))
+        if live is not None:
+            kept.setdefault(str(r['n']), live)      # first sighting wins, and is kept
+        f = kept.get(str(r['n']))
         D['ib']['bias_rows'].append({
             'race': r['n'], 'forecast': f, 'measured': float(r['legs']['uw1']),
-            'bias': round(((f - r['legs']['uw1'] + 180) % 360) - 180, 1) if f else None,
+            'bias': round(((f - r['legs']['uw1'] + 180) % 360) - 180, 1) if f is not None else None,
             'old_observed': None, 'old_bias': None})
+    json.dump(kept, open(FORECAST, 'w'), indent=1, sort_keys=True)
     D['ib']['bias_rows'].sort(key=lambda b: b['race'])
     D['ib']['wind_source'] = WIND_SOURCE
 

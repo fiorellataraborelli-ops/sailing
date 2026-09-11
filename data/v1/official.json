@@ -216,7 +216,7 @@
  ],
  "race4_note": "Six races scored, one discard. Garm is 15th on 115 net from 172 total, discarding race 2 (57). Race 5 is a 2nd — the best of the regatta — and the team has moved from 29th after 4 races to 15th after 6.",
  "telemetry": {
-  "logs": 58,
+  "logs": 61,
   "day8": 30,
   "day9": 8,
   "day9_boats": [
@@ -243,7 +243,7 @@
   "day10_boats": [
    "Team Sweden"
   ],
-  "day10": 19,
+  "day10": 22,
   "team_day10": true
  },
  "event": {

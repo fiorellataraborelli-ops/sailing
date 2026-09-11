@@ -228,6 +228,29 @@ def ids_all_exist(html):
     return not missing
 
 
+def race_cards(D, tracked):
+    """Per-race, per-boat speed by point of sail, from our own legs and starts."""
+    out = []
+    for rn in tracked:
+        legs, starts = D['legs']['races'].get(str(rn), {}), D['start']['races'].get(str(rn), [])
+        dl = {r['boat']: r['dist_m'] for r in starts}
+        boats = []
+        for b, L in legs.items():
+            beats = [l for l in L if l['kind'] == 'beat' and l['sog']]
+            runs = [l for l in L if l['kind'] == 'run' and l['sog']]
+            if not beats or not runs:
+                continue
+            boats.append({'b': b,
+                          'up': round(sum(l['sog'] for l in beats) / len(beats), 2),
+                          'dn': round(sum(l['sog'] for l in runs) / len(runs), 2),
+                          'ex': round(sum(l['extra'] for l in L)),
+                          'tk': beats[0]['tacks'],
+                          'dl': dl.get(b)})
+        if boats:
+            out.append({'n': rn, 'boats': sorted(boats, key=lambda x: -x['up'])})
+    return out
+
+
 def grids_line_up(html):
     """Every grid-template-columns in a .gridhead must appear on a row template too."""
     heads = re.findall(r'class="gridhead"[^>]*grid-template-columns:([^;"]+)', html)
@@ -382,9 +405,12 @@ def main():
       'fleet': fleet,
       'dayLabel': DAY_LABEL, 'dayNote': DAY_NOTE,
       'startline': startline,
-      'races': [{'n': r['n'], 'boats': [{**{k: b[k] for k in ('b', 'up', 'dn', 'ex', 'dl')},
-                                         'tk': leg_tacks(D, r['n'], b['b'])}
-                                        for b in r['boats']]} for r in D['races']],
+      # The point-of-sail card used to come from the event's own per-race table, which
+      # covers races 1 and 2 and thirteen boats. Everything it needs is in our own leg
+      # and start data for all six races, so it is built from that instead — the card
+      # stopping at race 2 while the sections around it ran to six read as though the
+      # whole page had not been updated.
+      'races': race_cards(D, TRACKED),
       'legs': {'races': D['legs']['races'], 'drivers': D['legs']['drivers'],
                'steady_window_s': D['legs']['steady_window_s']},
       'segments': {'rows': segs, 'caveat': D['segments']['caveat'],

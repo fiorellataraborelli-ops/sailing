@@ -536,7 +536,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 
   <section id="eventlegs" data-tab="race" class="reveal rd-card">
     <div class="cardhead">
-      <div class="title"><span class="n">07</span><h2>Wednesday, leg by leg</h2></div>
+      <div class="title"><span class="n">07</span><h2>The event's leg tables</h2></div>
       <div class="segwrap" style="padding:0;"><div class="seg" id="el-races"></div>
         <div class="seg" id="el-legs"></div></div>
     </div>
@@ -853,16 +853,20 @@ function drawWind(){
     legs.map(([k, v]) => `<div class="tile" style="background:var(--card);"><div class="k">${k}</div>` +
       `<div class="v tnum">${v}°</div></div>`).join('') + `</div></div>`;
 
-  const vals = D.wind.days.flatMap(d => d.races).map(x => x.bias);
+  const vals = D.wind.days.flatMap(d => d.races).map(x => x.bias).filter(v => v != null);
   const B = vals.map(v => (v > 0 ? '+' : '') + v.toFixed(1) + '°');
   const drift = L.dw1 == null ? null : L.dw1 - L.uw1;
   $('w-note').innerHTML =
     // the model ran right of the water in every race until Thursday's second, when it
     // went left — so the direction is read off the sign rather than assumed
-    `<b>The model was ${Math.abs(r.bias).toFixed(1)}° ${r.bias >= 0 ? 'right' : 'left'} of the ` +
-    `water at the gun.</b> ` +
-    `Across the ${['','one','two','three','four','five'][B.length] || B.length} races shown it ran ` +
-    `${B.join(', ')}. ${shape(vals)} ` +
+    (r.bias == null
+      ? `<b>No forecast is held for this gun.</b> The model run that covered it has rolled out of ` +
+        `the forecast file, so there is a measured wind here but nothing to compare it against. `
+      : `<b>The model was ${Math.abs(r.bias).toFixed(1)}° ${r.bias >= 0 ? 'right' : 'left'} of the ` +
+        `water at the gun.</b> `) +
+    (B.length
+      ? `Across the ${['','one','two','three','four','five'][B.length] || B.length} races with a ` +
+        `forecast it ran ${B.join(', ')}. ${shape(vals)} ` : '') +
     (r.derived
       ? `<b>This race has no event report yet</b> — its wind is measured from the boats' own ` +
         `tracks, by the method that reproduces the published figures for races 1–4 to within a ` +
@@ -1267,7 +1271,11 @@ function drawEventLegs(){
   $('el-lede').innerHTML =
     `Race ${elRace}, ${EL_LEGS.find(x => x[0] === elLeg)[1]}, wind ${L.wind}&deg;. ` +
     `${full.length} boats. <b>Start rank against end rank</b> is what a leg is really worth &mdash; ` +
-    `net is the places won or lost on it.`;
+    `net is the places won or lost on it.<br><br>` +
+    `<span style="color:var(--faint);">These are the event's own published tables, and it has only ` +
+    `published them for races ${Object.keys(D.eventLegs.races).join(' and ')} so far. Every other ` +
+    `section on this page &mdash; the leg VMG, the manoeuvre costs, the starts and the tracks &mdash; ` +
+    `covers all ${D.official.races} races from our own telemetry.</span>`;
   $('el-tiles').innerHTML = !g ? '' : [
     ['Garm net', (g.net > 0 ? '+' : '') + g.net],
     ['Into the leg', g.sr], ['Out of it', g.er],

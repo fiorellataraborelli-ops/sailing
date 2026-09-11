@@ -6,7 +6,7 @@
   "2026-09-09",
   "2026-09-10"
  ],
- "n_files": 100,
+ "n_files": 106,
  "marks_estimated": {
   "1": [
    {
@@ -131,61 +131,61 @@
   "5": [
    {
     "after_leg": 1,
-    "lat": 38.677617,
-    "lon": -9.398716,
-    "n_boats": 17,
-    "spread_m": 25.3
+    "lat": 38.677624,
+    "lon": -9.398709,
+    "n_boats": 20,
+    "spread_m": 27.5
    },
    {
     "after_leg": 2,
-    "lat": 38.647623,
-    "lon": -9.372849,
-    "n_boats": 17,
-    "spread_m": 23.2
+    "lat": 38.647645,
+    "lon": -9.372807,
+    "n_boats": 20,
+    "spread_m": 26.7
    },
    {
     "after_leg": 3,
-    "lat": 38.680211,
-    "lon": -9.390953,
-    "n_boats": 17,
-    "spread_m": 22.3
+    "lat": 38.680222,
+    "lon": -9.390914,
+    "n_boats": 20,
+    "spread_m": 17.4
    },
    {
     "after_leg": 4,
-    "lat": 38.650034,
-    "lon": -9.366387,
-    "n_boats": 17,
-    "spread_m": 54.8
+    "lat": 38.650024,
+    "lon": -9.366347,
+    "n_boats": 20,
+    "spread_m": 56.8
    }
   ],
   "6": [
    {
     "after_leg": 1,
-    "lat": 38.689031,
-    "lon": -9.373559,
-    "n_boats": 17,
-    "spread_m": 21.9
+    "lat": 38.689033,
+    "lon": -9.373562,
+    "n_boats": 20,
+    "spread_m": 17.9
    },
    {
     "after_leg": 2,
-    "lat": 38.650936,
-    "lon": -9.37234,
-    "n_boats": 17,
-    "spread_m": 26.9
+    "lat": 38.650926,
+    "lon": -9.372367,
+    "n_boats": 20,
+    "spread_m": 33.1
    },
    {
     "after_leg": 3,
-    "lat": 38.681365,
+    "lat": 38.681364,
     "lon": -9.372764,
-    "n_boats": 17,
-    "spread_m": 11.0
+    "n_boats": 20,
+    "spread_m": 9.9
    },
    {
     "after_leg": 4,
-    "lat": 38.650479,
-    "lon": -9.367393,
-    "n_boats": 17,
-    "spread_m": 53.3
+    "lat": 38.650484,
+    "lon": -9.367408,
+    "n_boats": 20,
+    "spread_m": 46.9
    }
   ]
  },
@@ -304,6 +304,20 @@
    "bytes": 97467
   },
   {
+   "boat": "Dime Piece",
+   "race": 5,
+   "file": "tracks/dime-piece-r5.json",
+   "n": 2866,
+   "bytes": 110721
+  },
+  {
+   "boat": "Dime Piece",
+   "race": 6,
+   "file": "tracks/dime-piece-r6.json",
+   "n": 2511,
+   "bytes": 97214
+  },
+  {
    "boat": "Florida 65",
    "race": 1,
    "file": "tracks/florida-65-r1.json",
@@ -337,6 +351,20 @@
    "file": "tracks/gtg-new-2026-r6.json",
    "n": 2372,
    "bytes": 91868
+  },
+  {
+   "boat": "Henrique",
+   "race": 5,
+   "file": "tracks/henrique-r5.json",
+   "n": 2781,
+   "bytes": 107499
+  },
+  {
+   "boat": "Henrique",
+   "race": 6,
+   "file": "tracks/henrique-r6.json",
+   "n": 2373,
+   "bytes": 91932
   },
   {
    "boat": "J70 Let it be",
@@ -561,6 +589,20 @@
    "file": "tracks/nautique-r2.json",
    "n": 2604,
    "bytes": 101059
+  },
+  {
+   "boat": "Nautique",
+   "race": 5,
+   "file": "tracks/nautique-r5.json",
+   "n": 2737,
+   "bytes": 105850
+  },
+  {
+   "boat": "Nautique",
+   "race": 6,
+   "file": "tracks/nautique-r6.json",
+   "n": 2464,
+   "bytes": 95349
   },
   {
    "boat": "Patakin 3",
