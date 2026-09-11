@@ -2,7 +2,7 @@
 
 J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry
 
-Generated 2026-09-11T09:17:53Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
+Generated 2026-09-11T09:18:08Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
 
 ## Conventions
 
@@ -71,8 +71,14 @@ Generated 2026-09-11T09:17:53Z. Every file here is a projection of the same anal
 | `extra` | Distance sailed beyond the straight line, metres |
 | `tacks` | Settled tacks |
 | `gybes` | Settled gybes |
-| `tloss` | Mean speed lost per tack, knots |
-| `gloss` | Mean speed lost per gybe, knots |
+| `tloss_m` | Mean ground lost per tack, metres — what the boat would have made good in the manoeuvre window at its settled VMG, minus what it did make good |
+| `tloss_s` | The same per tack, as seconds of sailing at that VMG to win it back |
+| `gloss_m` | Mean ground lost per gybe, metres |
+| `gloss_s` | The same per gybe, seconds |
+| `loss_m` | Ground lost to every manoeuvre on the leg, metres |
+| `loss_s` | The same, seconds. Negative means the boat made better VMG through its manoeuvres than over the rest of the leg |
+| `tdip` | Mean speed dip through a tack, knots — a diagnostic, not the cost |
+| `gdip` | Mean speed dip through a gybe, knots |
 
 ### `races`
 

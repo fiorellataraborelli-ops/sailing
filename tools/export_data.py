@@ -39,7 +39,15 @@ FIELDS = {
             '(-10 s to +15 s around a tack, -10 s to +20 s around a gybe)',
     'extra': 'Distance sailed beyond the straight line, metres',
     'tacks': 'Settled tacks', 'gybes': 'Settled gybes',
-    'tloss': f'Mean speed lost per tack, {KN}', 'gloss': f'Mean speed lost per gybe, {KN}'},
+    'tloss_m': 'Mean ground lost per tack, metres — what the boat would have made good in '
+               'the manoeuvre window at its settled VMG, minus what it did make good',
+    'tloss_s': 'The same per tack, as seconds of sailing at that VMG to win it back',
+    'gloss_m': 'Mean ground lost per gybe, metres', 'gloss_s': 'The same per gybe, seconds',
+    'loss_m': 'Ground lost to every manoeuvre on the leg, metres',
+    'loss_s': 'The same, seconds. Negative means the boat made better VMG through its '
+              'manoeuvres than over the rest of the leg',
+    'tdip': f'Mean speed dip through a tack, {KN} — a diagnostic, not the cost',
+    'gdip': f'Mean speed dip through a gybe, {KN}'},
   'segments': {
     'boat': 'Boat', 's0': f'Instantaneous peak speed, {KN}',
     's5': f'Best speed held 5 s, {KN}', 's10': f'Best speed held 10 s, {KN}',
