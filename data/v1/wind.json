@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-12T14:06:34Z",
+ "generated": "2026-09-12T17:03:37Z",
  "source": "Open-Meteo consensus: ICON-EU, ECMWF IFS 0.25, GFS",
  "position": {
   "lat": 38.68,
@@ -34,30 +34,30 @@
     },
     {
      "hr": 13,
-     "raw": 173.0,
+     "raw": 172.1,
      "cor": null,
-     "sp": 52.0,
-     "kn": 1.5,
+     "sp": 49.9,
+     "kn": 1.4,
      "gust": 11.5,
-     "mslp": 1018.2,
+     "mslp": 1018.3,
      "trust": false
     },
     {
      "hr": 14,
-     "raw": 240.6,
+     "raw": 238.2,
      "cor": null,
-     "sp": 26.6,
-     "kn": 1.9,
+     "sp": 24.2,
+     "kn": 1.8,
      "gust": 11.7,
      "mslp": 1017.7,
      "trust": false
     },
     {
      "hr": 15,
-     "raw": 283.3,
+     "raw": 282.6,
      "cor": null,
-     "sp": 17.7,
-     "kn": 2.7,
+     "sp": 18.4,
+     "kn": 2.8,
      "gust": 11.5,
      "mslp": 1017.0,
      "trust": false
@@ -68,15 +68,15 @@
      "cor": null,
      "sp": 24.5,
      "kn": 3.8,
-     "gust": 12.1,
+     "gust": 11.9,
      "mslp": 1016.5,
      "trust": false
     },
     {
      "hr": 17,
-     "raw": 317.7,
+     "raw": 318.4,
      "cor": null,
-     "sp": 18.7,
+     "sp": 17.4,
      "kn": 5.1,
      "gust": 13.6,
      "mslp": 1016.3,
@@ -84,10 +84,10 @@
     },
     {
      "hr": 18,
-     "raw": 326.0,
+     "raw": 326.3,
      "cor": null,
-     "sp": 4.0,
-     "kn": 6.5,
+     "sp": 3.3,
+     "kn": 6.6,
      "gust": 15.9,
      "mslp": 1016.3,
      "trust": false

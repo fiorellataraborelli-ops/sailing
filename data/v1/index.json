@@ -1,7 +1,7 @@
 {
  "dataset": "J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry",
  "version": "v1",
- "generated_utc": "2026-09-12T16:06:45Z",
+ "generated_utc": "2026-09-12T17:38:56Z",
  "base_url": "https://github.com/fiorellataraborelli-ops/sailing/tree/main/data/v1",
  "licence_note": "Telemetry belongs to the boats that recorded it. Scored results and race analysis are the event organisers'. Published here for the teams involved.",
  "conventions": {
