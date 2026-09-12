@@ -79,6 +79,35 @@ header.hero{position:relative;min-height:640px;display:flex;flex-direction:colum
 header.hero > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 40%;}
 .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(58,80,54,.35) 0%,rgba(20,30,20,.55) 100%);}
 .heroin{position:relative;padding:0 24px;color:#fff;max-width:920px;}
+
+/* The mark is a running hound with its streamers trailing, so it enters the way it is
+   drawn to move: across, from the left, settling. The drop-shadow is not decoration —
+   the artwork's greys are pale and the cover is a dark photograph, and without it the
+   head and shoulders disappear into the water. */
+.hound{position:absolute;left:0;right:0;top:50%;display:flex;justify-content:center;
+  pointer-events:none;transform:translateY(-64%);}
+.hound img{width:min(80%,560px);height:auto;opacity:.9;
+  filter:drop-shadow(0 2px 10px rgba(0,0,0,.6)) drop-shadow(0 0 34px rgba(0,0,0,.4));
+  animation:run 1500ms cubic-bezier(.16,.84,.32,1) both;}
+@keyframes run{
+  from{opacity:0;transform:translateX(-18%) scale(1.05);}
+  55%{opacity:.9;}
+  to{opacity:.9;transform:translateX(0) scale(1);}
+}
+/* the words arrive once the hound has settled */
+.heroin > *{animation:rise 700ms ease-out both;}
+.heroin .kicker{animation-delay:640ms;}
+.heroin h1{animation-delay:790ms;}
+.heroin .herobtn{animation-delay:930ms;}
+.heroin .herosub{animation-delay:1030ms;}
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+
+/* the three photographs settle in after it, one then the next */
+.strip div{animation:plate 800ms ease-out both;}
+.strip div:nth-child(1){animation-delay:1080ms;}
+.strip div:nth-child(2){animation-delay:1210ms;}
+.strip div:nth-child(3){animation-delay:1340ms;}
+@keyframes plate{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
 .kicker{font:500 11px var(--mono);letter-spacing:.22em;text-transform:uppercase;
   color:#cfd6c8;margin-bottom:18px;}
 
@@ -99,6 +128,28 @@ header.hero > img{position:absolute;inset:0;width:100%;height:100%;object-fit:co
 .strip img:nth-of-type(1){animation:kb1 16s ease-in-out infinite alternate;}
 .strip div:nth-child(2) img{animation:kb2 18s ease-in-out infinite alternate;}
 .strip div:nth-child(3) img{animation:kb3 20s ease-in-out infinite alternate;}
+
+/* the standing, and what the boat has actually done */
+.ovhead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;
+  flex-wrap:wrap;margin-bottom:20px;}
+.ovlabel{font:500 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:6px;}
+.ovpos{display:flex;align-items:baseline;gap:8px;}
+.ovpos b{font:500 46px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.03em;
+  line-height:1;color:var(--ink);}
+.ovpos span{font-size:15px;color:var(--muted);}
+.ovmoved{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.ovmoved .up{font:500 13px var(--mono);color:var(--deep);background:var(--mint);
+  padding:6px 11px;border-radius:4px;}
+.ovmoved .sub{font-size:11px;color:var(--faint);}
+.wins{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));}
+.win{border:1px solid var(--line);border-left:2px solid var(--lime);border-radius:5px;
+  padding:13px 14px;background:var(--sunk);}
+.win .k{font:500 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:7px;line-height:1.4;}
+.win .v{font:500 22px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+  line-height:1.1;color:var(--ink);}
+.win .c{font-size:11.5px;color:var(--muted);margin-top:5px;}
 
 /* cards */
 .stack{display:flex;flex-direction:column;gap:16px;padding:0 20px;}
@@ -376,8 +427,11 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   .grid.team{margin:0 -6px;padding:14px 10px;}
 }
 
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}
-  .reveal{opacity:1;transform:none;}}
+/* nothing moves for a reader who asked for stillness, and nothing stays hidden either */
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;}
+  .reveal,.heroin > *,.strip div{opacity:1!important;transform:none!important;}
+  .hound img{opacity:.9!important;transform:none!important;}}
 </style>
 
 <div class="shell">
@@ -396,6 +450,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 <header class="hero">
   <img src="__HERO__" alt="The team's boat driving through spray under spinnaker">
   <div class="scrim"></div>
+  <div class="hound" aria-hidden="true"><img src="__DOG__" alt="" width="760" height="141"></div>
   <div class="heroin">
     <div class="kicker">J/70 World Championship &middot; Cascais</div>
     <h1>Per Roman Sailing AI Machine</h1>
@@ -411,6 +466,18 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 </div>
 
 <div class="stack">
+
+  <section id="overview" data-tab="team" class="rd-card">
+    <div class="ovhead">
+      <div>
+        <div class="ovlabel">Standing after <span id="ov-races">&mdash;</span> races</div>
+        <div class="ovpos"><b class="tnum" id="ov-pos">&mdash;</b><span id="ov-fleet"></span></div>
+      </div>
+      <div class="ovmoved" id="ov-moved"></div>
+    </div>
+    <div class="wins" id="ov-wins"></div>
+    <p class="note" id="ov-note"></p>
+  </section>
 
   <section id="summary" data-tab="team" class="rd-card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
@@ -776,6 +843,60 @@ function seg(el, items, active, onPick){
     b.onclick = () => onPick(it.key);
     el.appendChild(b);
   });
+}
+
+/* ---------------- what the boat has done ---------------- */
+/* Every figure here is read from the payload, never typed in, so an achievement
+   cannot outlive the result that earned it. A card only appears if its own test
+   passes — a best race worth showing, a mark rounding inside the top ten, a leg
+   the boat actually led. */
+function drawOverview(){
+  const t = D.official.team, P = D.progress;
+  $('ov-races').textContent = D.official.races;
+  $('ov-pos').textContent = ord(t.pos);
+  $('ov-fleet').textContent = ' of ' + D.official.fleet;
+  $('ov-moved').innerHTML = t.moved > 0
+    ? `<span class="up">&uarr; ${t.moved} place${t.moved === 1 ? '' : 's'}</span>` +
+      `<span class="sub">since the last standing</span>` : '';
+
+  const wins = [];
+  const bestRace = t.races.indexOf(t.best) + 1;
+  if (t.best <= 5) wins.push(['Best race', ord(t.best), `race ${bestRace} of ${D.official.races}`]);
+  // the mark-progress report is published separately and lags the scoreboard, so these
+  // two cards say which races they actually cover rather than borrowing the scoreboard's
+  const pr = P && P.races ? `over races 1–${P.races}` : '';
+  if (P && P.team) wins.push(['Places won after the top mark', '+' + P.team.gain,
+    `${ord(P.ranks.gain_top20[0])} of the ${P.ranks.gain_top20[1]} ahead, ${pr}`]);
+  if (P && P.w1) wins.push(['Best mark rounding',
+    (() => { const w = P.by_race.filter(r => r.w1 != null);
+             const b = w.reduce((a, r) => r.w1 < a.w1 ? r : a);
+             return ord(b.w1); })(),
+    (() => { const w = P.by_race.filter(r => r.w1 != null);
+             const b = w.reduce((a, r) => r.w1 < a.w1 ? r : a);
+             return `race ${b.race}, from ${D.official.fleet} boats`; })()]);
+  // any leg where the boat was quickest of everyone tracked that race
+  let led = null;
+  for (const [rn, R] of Object.entries(D.legs.races)){
+    const me = R[D.meta.legteam]; if (!me) continue;
+    for (const kind of ['beat', 'run']){
+      const ls = Object.values(R).map(L => L.filter(l => l.kind === kind))
+        .filter(a => a.length).map(a => a.reduce((s, l) => s + l.vmg, 0) / a.length);
+      const mine = me.filter(l => l.kind === kind).reduce((s, l, _, a) => s + l.vmg / a.length, 0);
+      if (ls.length >= 12 && !ls.some(v => v > mine + 1e-9))
+        led = {rn, kind, v: mine, n: ls.length};
+    }
+  }
+  if (led) wins.push([led.kind === 'run' ? 'Fastest downwind' : 'Fastest upwind',
+    led.v.toFixed(2) + ' kn', `race ${led.rn}, of ${led.n} boats tracked`]);
+
+  $('ov-wins').innerHTML = wins.map(([k, v, c]) =>
+    `<div class="win"><div class="k">${k}</div><div class="v tnum">${v}</div>` +
+    `<div class="c">${c}</div></div>`).join('');
+  $('ov-note').innerHTML =
+    `${t.sail} &middot; ${esc(t.skipper)} &middot; ${esc(D.meta.venue || 'Cascais')}. ` +
+    (P && P.w1 ? `Rounds the first windward mark ${P.w1.avg}th on average across races ` +
+      `1–${P.races} and finishes ${ord(t.pos)} overall — the boat is quick once it is ` +
+      `going, and starts too deep.` : '');
 }
 
 /* ---------------- summary ---------------- */
@@ -1894,17 +2015,19 @@ function say(q, a){
 /* Below 760 px the page behaves like an app: one screen per tab, a title bar that
    always carries the standing, and every table row rendered as a labelled card.
    Above it, nothing here applies and the desktop layout is untouched. */
+/* Where the boat stands comes first, then the races, then the detail underneath them.
+   Wind and fleet are reference material and sit after the racing. */
 const TABS = [
-  {k:'team',  label:'Team',  title:'Team',
+  {k:'team',  label:'Garm',  title:'Garm',
    icon:'<path d="M3 20l9-16 9 16"/><path d="M12 4v16"/>'},
+  {k:'race',  label:'Races', title:'Race analysis',
+   icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>'},
   {k:'start', label:'Start', title:'Start analysis',
    icon:'<path d="M4 4v16"/><path d="M4 5h13l-2.5 3.5L17 12H4"/>'},
-  {k:'wind',  label:'Wind',  title:'Wind',
-   icon:'<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h8"/>'},
-  {k:'race',  label:'Race',  title:'Race analysis',
-   icon:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>'},
   {k:'tracks', label:'Tracks', title:'Tracks & manoeuvres',
    icon:'<path d="M5 20c4-2 3-7 7-9s3-7 7-9"/><circle cx="5" cy="20" r="1.6"/><circle cx="19" cy="2" r="1.6"/>'},
+  {k:'wind',  label:'Wind',  title:'Wind',
+   icon:'<path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 18h8"/>'},
   {k:'fleet', label:'Fleet', title:'Fleet & benchmark',
    icon:'<path d="M4 19h16"/><path d="M7 19V9l5-5 5 5v10"/><path d="M10 19v-5h4v5"/>'},
   {k:'ask',   label:'Ask',   title:'Ask the analyser',
@@ -1991,7 +2114,7 @@ function drawNav(){
 }
 
 function drawAll(){
-  drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawEventLegs(); drawTracks(); drawManoeuvres(); drawFleet();
+  drawOverview(); drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawEventLegs(); drawTracks(); drawManoeuvres(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
 drawAll(); drawChat(); drawNav(); initShell(); srInit();

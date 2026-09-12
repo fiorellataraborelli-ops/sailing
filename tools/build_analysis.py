@@ -482,7 +482,8 @@ def main():
       'no unraced days': all(d not in html for d in ('2026-09-12', '2026-09-07')),
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,
       # the masthead on desktop and the title bar on mobile
-      'the team mark is in the masthead': html.count('data:image/png;base64,') == 2,
+      # masthead, mobile title bar, and the hound running across the cover
+      'the team mark is in the masthead': html.count('data:image/png;base64,') == 3,
       # a .gridhead and the row template it labels must declare the same columns —
       # they drifted once and nothing complained
       'grid headers match their rows': grids_line_up(html),

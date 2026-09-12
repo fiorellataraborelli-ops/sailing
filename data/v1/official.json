@@ -1,14 +1,14 @@
 {
  "source": "cncascais.com scored results (fetched, not transcribed) + ib-sailing mark-progress standings for races 1-4",
- "updated": "11/09/2026 17:26 UTC",
- "races_scored": 8,
+ "updated": "12/09/2026 16:04 UTC",
+ "races_scored": 10,
  "top": [
   {
    "pos": 1,
    "sail": "BRA 641",
    "boat": "Oceanpact - Viking",
-   "pts": 53.0,
-   "total": 85.0,
+   "pts": 87.0,
+   "total": 118.0,
    "r": [
     9.0,
     1.0,
@@ -17,9 +17,13 @@
     8.0,
     5.0,
     9.0,
-    32.0
+    31.0,
+    13.0,
+    21.0
    ],
    "codes": [
+    null,
+    null,
     null,
     null,
     null,
@@ -38,26 +42,32 @@
     "8",
     "5",
     "9",
-    "32*"
+    "31*",
+    "13",
+    "21"
    ]
   },
   {
    "pos": 2,
-   "sail": "USA 26",
-   "boat": "MidlifeCrisis",
-   "pts": 54.0,
-   "total": 87.0,
+   "sail": "ESP 1283",
+   "boat": "Marnatura",
+   "pts": 103.0,
+   "total": 139.0,
    "r": [
-    21.0,
-    6.0,
+    4.0,
+    8.0,
+    5.0,
     3.0,
     18.0,
-    33.0,
-    4.0,
-    1.0,
-    1.0
+    25.0,
+    20.0,
+    17.0,
+    36.0,
+    3.0
    ],
    "codes": [
+    null,
+    null,
     null,
     null,
     null,
@@ -67,24 +77,26 @@
     null,
     null
    ],
-   "discard": 5,
+   "discard": 9,
    "scores": [
-    "21",
-    "6",
+    "4",
+    "8",
+    "5",
     "3",
     "18",
-    "33*",
-    "4",
-    "1",
-    "1"
+    "25",
+    "20",
+    "17",
+    "36*",
+    "3"
    ]
   },
   {
    "pos": 3,
    "sail": "USA 169",
    "boat": "Empeiria",
-   "pts": 57.0,
-   "total": 114.3,
+   "pts": 115.0,
+   "total": 172.3,
    "r": [
     17.0,
     57.3,
@@ -93,11 +105,15 @@
     5.0,
     1.0,
     4.0,
-    23.0
+    22.0,
+    11.0,
+    48.0
    ],
    "codes": [
     null,
     "PRP",
+    null,
+    null,
     null,
     null,
     null,
@@ -114,62 +130,28 @@
     "5",
     "1",
     "4",
-    "23"
+    "22",
+    "11",
+    "48"
    ]
   },
   {
    "pos": 4,
-   "sail": "ESP 1283",
-   "boat": "Marnatura",
-   "pts": 76.0,
-   "total": 101.0,
+   "sail": "USA 26",
+   "boat": "MidlifeCrisis",
+   "pts": 122.0,
+   "total": 223.0,
    "r": [
-    4.0,
-    8.0,
-    5.0,
-    3.0,
-    18.0,
-    25.0,
-    20.0,
-    18.0
-   ],
-   "codes": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "discard": 6,
-   "scores": [
-    "4",
-    "8",
-    "5",
-    "3",
-    "18",
-    "25*",
-    "20",
-    "18"
-   ]
-  },
-  {
-   "pos": 5,
-   "sail": "MEX 162",
-   "boat": "Algarete",
-   "pts": 102.0,
-   "total": 136.0,
-   "r": [
-    27.0,
-    31.0,
-    30.0,
+    21.0,
     6.0,
     3.0,
-    3.0,
-    2.0,
-    34.0
+    18.0,
+    33.0,
+    4.0,
+    1.0,
+    101.0,
+    35.0,
+    1.0
    ],
    "codes": [
     null,
@@ -178,24 +160,72 @@
     null,
     null,
     null,
+    null,
+    "DSQ",
     null,
     null
    ],
    "discard": 8,
    "scores": [
-    "27",
-    "31",
-    "30",
+    "21",
     "6",
     "3",
+    "18",
+    "33",
+    "4",
+    "1",
+    "DSQ 101*",
+    "35",
+    "1"
+   ]
+  },
+  {
+   "pos": 5,
+   "sail": "USA 1047",
+   "boat": "Good to Go",
+   "pts": 131.0,
+   "total": 177.0,
+   "r": [
+    18.0,
+    4.0,
+    13.0,
+    13.0,
+    46.0,
+    10.0,
+    45.0,
+    6.0,
+    3.0,
+    19.0
+   ],
+   "codes": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "discard": 5,
+   "scores": [
+    "18",
+    "4",
+    "13",
+    "13",
+    "46*",
+    "10",
+    "45",
+    "6",
     "3",
-    "2",
-    "34*"
+    "19"
    ]
   }
  ],
  "team": {
-  "pos": 10,
+  "pos": 9,
   "sail": "SWE 1121",
   "boat": "Garm",
   "skipper": "Per Roman",
@@ -203,11 +233,11 @@
   "r2": 57.0,
   "r3": 10.0,
   "r4": 50.0,
-  "pts": 137.0,
+  "pts": 190.0,
   "gain_total": 65,
   "gain_up": 24,
   "gain_down": 32,
-  "total": 194.0,
+  "total": 247.0,
   "r": [
    16.0,
    57.0,
@@ -216,9 +246,13 @@
    2.0,
    37.0,
    13.0,
-   9.0
+   8.0,
+   41.0,
+   13.0
   ],
   "codes": [
+   null,
+   null,
    null,
    null,
    null,
@@ -237,14 +271,18 @@
    "2",
    "37",
    "13",
-   "9"
+   "8",
+   "41",
+   "13"
   ],
   "best": 2.0,
-  "moved": 5,
+  "moved": 1,
   "r5": 2.0,
   "r6": 37.0,
   "r7": 13.0,
-  "r8": 9.0
+  "r8": 8.0,
+  "r9": 41.0,
+  "r10": 13.0
  },
  "fleet_scored": 100,
  "drive_new": [
@@ -252,7 +290,7 @@
   "Aretê 1872 (BRA 1795 — Areté) 08-09-2026.vkx",
   "To Nessa 1527 (BRA 1527 — To Nessa) 08-09-2026.vkx"
  ],
- "race4_note": "Six races scored, one discard. Garm is 10th on 137 net from 194 total, discarding race 2 (57). Race 5 is a 2nd — the best of the regatta — and the team has moved from 15th after 6 races to 10th after 8.",
+ "race4_note": "Six races scored, one discard. Garm is 9th on 190 net from 247 total, discarding race 2 (57). Race 5 is a 2nd — the best of the regatta — and the team has moved from 10th after 8 races to 9th after 10.",
  "telemetry": {
   "logs": 87,
   "day8": 30,
