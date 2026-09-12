@@ -60,6 +60,28 @@ def _rel(cog_deg: float, wind_deg: float) -> float:
     return ((cog_deg - wind_deg + 180) % 360) - 180
 
 
+def heel_deg(fix) -> float | None:
+    """Heel angle from the orientation quaternion, degrees, unsigned.
+
+    The Atlas logs orientation on every position row and we never read it. Roll about
+    the boat's fore-and-aft axis is the heel, and it checks out against the event's own
+    published figures for the eight legs it covers for this boat: 16.1 against 16.1 on
+    race 3's first beat, 14.3 against 14.4 on the second, 15.7/15.5 and 15.9/15.7 in
+    race 4. Downwind runs about a degree high because the event trims its legs harder
+    than we do at the gybes.
+
+    Heading is deliberately not derived here. It decodes, but leaves an unexplained
+    offset that flips sign between upwind and downwind, so leeway and current stay
+    unreported until that is understood.
+    """
+    if len(fix) < 10:
+        return None
+    w, x, y, z = fix[6:10]
+    if w == x == y == z == 0:
+        return None
+    return abs(math.degrees(math.atan2(2 * (w * x + y * z), 1 - 2 * (x * x + y * y))))
+
+
 def _steady_mask(track, mans) -> list[bool]:
     """True for every fix that is not inside a manoeuvre window."""
     keep = [True] * len(track)
@@ -172,6 +194,9 @@ def leg_vmg(track, wind_deg: float, upwind: bool, mans=None) -> dict:
         # cost every manoeuvre against that settled VMG, in metres and seconds
         manoeuvre_cost(track, mans if mans is not None else [], wind_deg, upwind,
                        out['steady_vmg_kn'])
+    hl = [h for h in (heel_deg(p) for p in track) if h is not None]
+    if hl:
+        out['avg_heel_deg'] = round(sum(hl) / len(hl), 1)
     return out
 
 

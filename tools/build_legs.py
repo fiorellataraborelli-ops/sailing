@@ -250,7 +250,7 @@ def main():
                              'min': round((end - l.start_ts_ms) / 60000, 1),
                              'sog': v.get('avg_sog_kn'),
                              'vmg': v.get('avg_vmg_kn'), 'twa': v.get('avg_twa_deg'),
-                             'eff': v.get('vmg_efficiency'),
+                             'eff': v.get('vmg_efficiency'), 'heel': v.get('avg_heel_deg'),
                              # the same leg with the turns taken out: boat speed rather
                              # than boat speed diluted by manoeuvre count
                              'svmg': v.get('steady_vmg_kn'), 'ssog': v.get('steady_sog_kn'),

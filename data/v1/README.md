@@ -2,7 +2,7 @@
 
 J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry
 
-Generated 2026-09-11T17:28:08Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
+Generated 2026-09-12T10:33:03Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
 
 ## Conventions
 
@@ -24,7 +24,7 @@ Generated 2026-09-11T17:28:08Z. Every file here is a projection of the same anal
 | `segments` | 30 | `segments.json` | `segments.csv` | Maximum speed held over rolling windows, 9 Sep. Transcribed from the event's published table; the hold ratio and ranks are derived here. |
 | `kpi` | 6 | `kpi.json` | `kpi.csv` | Top five and the client boat joined across scored results, the segment table and VMG from the logs. Nulls mean no data, never zero. |
 | `official` | 6 | `official.json` | `official.csv` | Scored standings, not derived from telemetry. |
-| `wind` | 16 | `wind.json` | `wind.csv` | Three-model consensus at the race area, hourly 11:00-18:00 UTC, refreshed every three hours. Raw and bias-corrected direction side by side. |
+| `wind` | 8 | `wind.json` | `wind.csv` | Three-model consensus at the race area, hourly 11:00-18:00 UTC, refreshed every three hours. Raw and bias-corrected direction side by side. |
 | `bias` | 8 | `bias.json` | `bias.csv` | GRIB forecast against wind measured on the water, per race. This is where the +16.1 deg correction comes from, and it is not a constant. |
 | `startline` | 8 | `startline.json` | `startline.csv` | Line geometry per race, with the event's published advantage beside the one our own formula produces from the geometry alone. |
 | `wind_by_leg` | 8 | `wind_by_leg.json` | `wind_by_leg.csv` | Wind bearing measured on each leg of each race by the event. |
