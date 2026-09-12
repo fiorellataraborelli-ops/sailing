@@ -196,6 +196,24 @@ def segs_repaint_themselves(html):
     return not bad
 
 
+def colours_use_tokens(html):
+    """No raw hex outside the theme definitions and the fixed trace palette.
+
+    The restyle left the old palette hardcoded in SVG attributes — 38 of them across
+    the compass, the polar and the beeswarm — so those charts never responded to the
+    theme and drew near-black text on a dark ground.
+    """
+    style = html[html.index('<style>'):html.index('</style>')]
+    body = html[html.index('</style>'):]
+    traces = ''.join(re.findall(r'TK_COLOURS\s*=\s*\[(.*?)\]', body, re.S))
+    stray = [h for h in re.findall(r'(?<![\w-])#[0-9a-fA-F]{6}\b', body) if h not in traces]
+    # the hero sits on its own photographic ground and keeps its own scrim colours
+    stray = [h for h in stray if h.lower() not in ('#0c1116', '#dcecc8', '#cfd6c8', '#ffffff')]
+    if stray:
+        print('  raw colours outside the theme:', ', '.join(sorted(set(stray))))
+    return not stray
+
+
 def classes_all_styled(html):
     """Every class the markup uses must have a rule somewhere in the stylesheet.
 
@@ -463,6 +481,7 @@ def main():
       'grid headers match their rows': grids_line_up(html),
       'every id the script reaches for exists': ids_all_exist(html),
       'every class the markup uses is styled': classes_all_styled(html),
+      'charts take their colours from the theme': colours_use_tokens(html),
       'every segmented control repaints itself': segs_repaint_themselves(html),
       # a phone lays the page out at 980 px without this, and shrinks everything
       'a viewport declared': 'name="viewport" content="width=device-width' in html,

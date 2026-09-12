@@ -453,20 +453,20 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     </div>
     <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
       <svg viewBox="0 0 140 140" style="width:128px;height:128px;flex:none;" role="img" aria-label="Wind compass">
-        <circle cx="70" cy="70" r="60" fill="none" stroke="#e4e6e1"></circle>
-        <circle cx="70" cy="70" r="42" fill="none" stroke="#e4e6e1" stroke-dasharray="2 5"></circle>
-        <g font-family="Lora,serif" font-size="11" font-weight="700" fill="#8a9080" text-anchor="middle">
+        <circle cx="70" cy="70" r="60" fill="none" stroke="var(--line)"></circle>
+        <circle cx="70" cy="70" r="42" fill="none" stroke="var(--line)" stroke-dasharray="2 5"></circle>
+        <g font-family="'IBM Plex Sans',sans-serif" font-size="11" font-weight="700" fill="var(--faint)" text-anchor="middle">
           <text x="70" y="15">N</text><text x="128" y="74">E</text><text x="70" y="133">S</text><text x="12" y="74">W</text>
         </g>
         <g id="n-raw" style="transform-origin:70px 70px;transition:transform .8s ease;">
-          <line x1="70" y1="24" x2="70" y2="100" stroke="#c7cbc1" stroke-width="1.5"></line>
-          <polygon points="70,104 64,92 76,92" fill="#c7cbc1"></polygon>
+          <line x1="70" y1="24" x2="70" y2="100" stroke="var(--bar)" stroke-width="1.5"></line>
+          <polygon points="70,104 64,92 76,92" fill="var(--bar)"></polygon>
         </g>
         <g id="n-cor" class="wind-needle" style="transform-origin:70px 70px;">
-          <line x1="70" y1="20" x2="70" y2="104" stroke="#8bc63f" stroke-width="3"></line>
-          <polygon points="70,110 61,90 79,90" fill="#8bc63f"></polygon>
+          <line x1="70" y1="20" x2="70" y2="104" stroke="var(--lime)" stroke-width="3"></line>
+          <polygon points="70,110 61,90 79,90" fill="var(--lime)"></polygon>
         </g>
-        <circle cx="70" cy="70" r="3" fill="#171a16"></circle>
+        <circle cx="70" cy="70" r="3" fill="var(--ink)"></circle>
       </svg>
       <div style="flex:1;min-width:230px;display:flex;flex-direction:column;gap:10px;">
         <div class="row"><span class="k" id="w-lraw">Raw GRIB model</span><b class="tnum" id="w-raw">&mdash;</b></div>
@@ -502,8 +502,8 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
       <span style="font-size:13px;color:var(--muted);font-weight:600;">Favoured end</span>
       <span class="rd-pill" style="font-size:22px;" id="sl-end">&mdash;</span>
     </div>
-    <div style="height:10px;border-radius:99px;background:linear-gradient(90deg,#8bc63f 0%,#c7cbc1 50%,#e4e6e1 100%);margin-bottom:8px;position:relative;">
-      <span id="sl-dot" style="position:absolute;top:50%;left:24%;width:16px;height:16px;border-radius:50%;background:#171a16;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transform:translate(-50%,-50%);transition:left .5s ease;"></span>
+    <div style="height:10px;border-radius:99px;background:linear-gradient(90deg,var(--lime) 0%,var(--bar) 50%,var(--line) 100%);margin-bottom:8px;position:relative;">
+      <span id="sl-dot" style="position:absolute;top:50%;left:24%;width:16px;height:16px;border-radius:50%;background:var(--ink);border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transform:translate(-50%,-50%);transition:left .5s ease;"></span>
     </div>
     <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--faint);font-weight:600;margin-bottom:16px;">
       <span>Pin favoured</span><span>Even</span><span>Boat favoured</span>
@@ -602,26 +602,26 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
       <div class="panel">
         <div class="h" style="margin-bottom:2px;">Boat speed by point of sail</div>
         <div style="display:flex;gap:16px;align-items:center;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:12px;">
-          <span style="display:flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:50%;background:#8bc63f;display:inline-block;"></span>measured</span>
-          <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:0;border-top:2px dashed #c7cbc1;display:inline-block;"></span>interpolated range</span>
+          <span style="display:flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;border-radius:50%;background:var(--lime);display:inline-block;"></span>measured</span>
+          <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:0;border-top:2px dashed var(--bar);display:inline-block;"></span>interpolated range</span>
         </div>
         <svg viewBox="0 0 320 290" style="width:100%;max-width:420px;height:auto;display:block;" id="polar" role="img" aria-label="Boat speed against true wind angle">
-          <circle cx="160" cy="150" r="40" fill="none" stroke="#e4e6e1"></circle>
-          <circle cx="160" cy="150" r="80" fill="none" stroke="#e4e6e1"></circle>
-          <circle cx="160" cy="150" r="120" fill="none" stroke="#e4e6e1"></circle>
-          <line x1="160" y1="30" x2="160" y2="270" stroke="#e4e6e1"></line>
-          <line x1="40" y1="150" x2="280" y2="150" stroke="#e4e6e1"></line>
-          <path id="p-curve" d="" fill="none" stroke="#c7cbc1" stroke-width="2" stroke-dasharray="5 4"></path>
-          <line id="p-lup" x1="160" y1="150" stroke="#8bc63f" stroke-width="1.5" stroke-dasharray="2 3"></line>
-          <line id="p-ldn" x1="160" y1="150" stroke="#8bc63f" stroke-width="1.5" stroke-dasharray="2 3"></line>
-          <circle id="p-up" r="5" fill="#8bc63f"></circle>
-          <circle id="p-dn" r="5" fill="#8bc63f"></circle>
-          <text id="p-tup" font-family="Lora,serif" font-size="11" font-weight="700" fill="#171a16" text-anchor="middle"></text>
-          <text id="p-tdn" font-family="Lora,serif" font-size="11" font-weight="700" fill="#171a16" text-anchor="middle"></text>
-          <text x="160" y="20" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="middle">0° (wind)</text>
-          <text x="30" y="153" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="end">90°</text>
-          <text x="290" y="153" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="start">90°</text>
-          <text x="160" y="284" font-family="Lora,serif" font-size="10" fill="#8a9080" text-anchor="middle">180°</text>
+          <circle cx="160" cy="150" r="40" fill="none" stroke="var(--line)"></circle>
+          <circle cx="160" cy="150" r="80" fill="none" stroke="var(--line)"></circle>
+          <circle cx="160" cy="150" r="120" fill="none" stroke="var(--line)"></circle>
+          <line x1="160" y1="30" x2="160" y2="270" stroke="var(--line)"></line>
+          <line x1="40" y1="150" x2="280" y2="150" stroke="var(--line)"></line>
+          <path id="p-curve" d="" fill="none" stroke="var(--bar)" stroke-width="2" stroke-dasharray="5 4"></path>
+          <line id="p-lup" x1="160" y1="150" stroke="var(--lime)" stroke-width="1.5" stroke-dasharray="2 3"></line>
+          <line id="p-ldn" x1="160" y1="150" stroke="var(--lime)" stroke-width="1.5" stroke-dasharray="2 3"></line>
+          <circle id="p-up" r="5" fill="var(--lime)"></circle>
+          <circle id="p-dn" r="5" fill="var(--lime)"></circle>
+          <text id="p-tup" font-family="'IBM Plex Sans',sans-serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle"></text>
+          <text id="p-tdn" font-family="'IBM Plex Sans',sans-serif" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle"></text>
+          <text x="160" y="20" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="var(--faint)" text-anchor="middle">0° (wind)</text>
+          <text x="30" y="153" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="var(--faint)" text-anchor="end">90°</text>
+          <text x="290" y="153" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="var(--faint)" text-anchor="start">90°</text>
+          <text x="160" y="284" font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="var(--faint)" text-anchor="middle">180°</text>
         </svg>
         <p class="fine" id="polar-note"></p>
       </div>
@@ -934,8 +934,22 @@ function drawStart(){
 /* Garm rides at the top of every ranked list — it is the boat this page is for, and
    hunting for it in thirty rows is not the job. The sort still decides the ranking:
    each row keeps the position number it earned, so pinning moves the row, not the rank. */
-function pinTeam(sorted){
-  const ranked = sorted.map((r, i) => ({r, rank: i + 1}));
+/* Pin the client boat to the top, keeping the rank the sort actually gave it.
+   `key` reads the value the caller sorted on. Boats sharing that value share a place,
+   the way a results sheet does — without it the table showed two boats on identical
+   figures as 12th and 13th, which is the first thing a reader checks. Direction comes
+   from the already-sorted values, so a caller cannot pass it the wrong way round. */
+function pinTeam(sorted, key){
+  let ranked;
+  const v = key ? sorted.map(key) : null;
+  if (v && v.length > 1 && v.every(x => typeof x === 'number' && isFinite(x))) {
+    const desc = v[0] >= v[v.length - 1];
+    ranked = sorted.map((r, i) => ({
+      r, rank: v.filter(x => desc ? x > v[i] : x < v[i]).length + 1
+    }));
+  } else {
+    ranked = sorted.map((r, i) => ({r, rank: i + 1}));
+  }
   const us = ranked.filter(x => x.r.team);
   return us.length ? [...us, ...ranked.filter(x => !x.r.team)] : ranked;
 }
@@ -1019,7 +1033,7 @@ function drawStartAnalysis(){
 
   drawApproach(rows, g);
 
-  $('sa-rows').innerHTML = pinTeam(rows).map(({r, rank: rk}) =>
+  $('sa-rows').innerHTML = pinTeam(rows, r => r.behind60).map(({r, rank: rk}) =>
     `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.5fr .7fr .6fr .6fr .6fr .9fr .7fr;">
       <span>${posCell(rk)}${esc(r.boat === D.meta.legteam ? 'Garm' : r.boat)}</span>
       <span class="tnum">${r.dist_m.toFixed(1)} m</span><span class="tnum">${r.late_s.toFixed(1)} s</span>
@@ -1442,7 +1456,7 @@ function drawManoeuvres(){
     ['Rank of ' + rows.length, rows.findIndex(r => r.team) + 1],
   ].map(([k, v]) => `<div class="tile"><div class="k">${k}</div><div class="v tnum">${v}</div></div>`).join('');
 
-  $('mv-rows').innerHTML = pinTeam(rows).map(({r, rank}) =>
+  $('mv-rows').innerHTML = pinTeam(rows, r => r.cost).map(({r, rank}) =>
     `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.4fr .6fr .8fr .6fr .8fr .8fr;">
       <span>${posCell(rank)}${esc(r.team ? 'Garm' : r.b)}</span>
       <span class="tnum">${r.tk}</span><span class="tnum">${r.tloss == null ? '—' : r.tloss.toFixed(1)}</span>
@@ -1496,10 +1510,10 @@ function drawFleet(){
         `${b.nm} nm, peak ${sp(b.mx)}. Kept out of the ranking above.`).join('<br>') +
       (mf && mf.day === fDay ? `<br><span style="color:var(--faint);">${esc(mf.what)} ${esc(mf.cost)}</span>` : '')
     : '');
-  $('fleet-rows').innerHTML = pinTeam(rows).map(({r: b, rank}) =>
+  $('fleet-rows').innerHTML = pinTeam(rows, b => b.avg).map(({r: b, rank}) =>
     `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.6fr .9fr .9fr .9fr .9fr .9fr;">
-      <span>${posCell(rank)}${esc(b.name)}</span><span class="tnum">${sp(b.avg)}</span>
-      <span class="tnum">${sp(b.up)}</span><span class="tnum">${sp(b.dn)}</span>
+      <span>${posCell(rank)}${esc(b.name)}</span><span class="tnum">${sp2(b.avg)}</span>
+      <span class="tnum">${sp2(b.up)}</span><span class="tnum">${sp2(b.dn)}</span>
       <span class="tnum">${sp(b.mx)}</span><span class="tnum">${b.nm.toFixed(1)} nm</span></div>`).join('');
 }
 
@@ -1693,25 +1707,25 @@ function drawCompare(){
   });
   const depth = Math.max(...placed.map(p => p.py)) + 42;
   const mx = x(med);
-  let svg = `<line x1="${X0}" y1="${depth - 22}" x2="${X1}" y2="${depth - 22}" stroke="#e4e6e1"/>`;
+  let svg = `<line x1="${X0}" y1="${depth - 22}" x2="${X1}" y2="${depth - 22}" stroke="var(--line)"/>`;
   [lo, med, hi].forEach((v, i) => {
     const px = x(v);
-    svg += `<line x1="${px.toFixed(1)}" y1="${depth - 26}" x2="${px.toFixed(1)}" y2="${depth - 18}" stroke="#c7cbc1"/>` +
-           `<text x="${px.toFixed(1)}" y="${depth - 5}" font-family="Lora,serif" font-size="11" fill="#8a9080" ` +
+    svg += `<line x1="${px.toFixed(1)}" y1="${depth - 26}" x2="${px.toFixed(1)}" y2="${depth - 18}" stroke="var(--bar)"/>` +
+           `<text x="${px.toFixed(1)}" y="${depth - 5}" font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="var(--faint)" ` +
            `text-anchor="${i === 0 ? 'start' : i === 2 ? 'end' : 'middle'}">${v.toFixed(M.dp)}${i === 1 ? ' median' : ''}</text>`;
   });
-  svg += `<line x1="${mx.toFixed(1)}" y1="20" x2="${mx.toFixed(1)}" y2="${depth - 26}" stroke="#c7cbc1" stroke-dasharray="3 4"/>`;
+  svg += `<line x1="${mx.toFixed(1)}" y1="20" x2="${mx.toFixed(1)}" y2="${depth - 26}" stroke="var(--bar)" stroke-dasharray="3 4"/>`;
   placed.forEach(p => {
-    svg += `<circle cx="${p.px.toFixed(1)}" cy="${p.py}" r="${R}" fill="${p.b.team ? '#8bc63f' : '#c7cbc1'}" ` +
-           `stroke="${p.b.team ? '#2f6522' : 'none'}" stroke-width="${p.b.team ? 2 : 0}"><title>${esc(p.b.name)} — ${fmt(p.b[M.k])}</title></circle>`;
+    svg += `<circle cx="${p.px.toFixed(1)}" cy="${p.py}" r="${R}" fill="${p.b.team ? 'var(--lime)' : 'var(--bar)'}" ` +
+           `stroke="${p.b.team ? 'var(--deep)' : 'none'}" stroke-width="${p.b.team ? 2 : 0}"><title>${esc(p.b.name)} — ${fmt(p.b[M.k])}</title></circle>`;
   });
   if (us){
     const p = placed.find(q => q.b.team);
     const right = p.px < 520;
-    svg += `<text x="${(p.px + (right ? 12 : -12)).toFixed(1)}" y="${p.py + 4}" font-family="Lora,serif" ` +
-           `font-size="12" font-weight="700" fill="#171a16" text-anchor="${right ? 'start' : 'end'}">Garm ${fmt(us[M.k])}</text>`;
+    svg += `<text x="${(p.px + (right ? 12 : -12)).toFixed(1)}" y="${p.py + 4}" font-family="'IBM Plex Sans',sans-serif" ` +
+           `font-size="12" font-weight="700" fill="var(--ink)" text-anchor="${right ? 'start' : 'end'}">Garm ${fmt(us[M.k])}</text>`;
   }
-  svg += `<text x="${X0}" y="14" font-family="Lora,serif" font-size="11" font-weight="700" fill="#8a9080">` +
+  svg += `<text x="${X0}" y="14" font-family="'IBM Plex Sans',sans-serif" font-size="11" font-weight="700" fill="var(--faint)">` +
          `${M.label} — ${M.blurb}, ${have.length} boats</text>`;
   $('cmp-plot').innerHTML = svg;
   $('cmp-plot').setAttribute('viewBox', `0 0 640 ${depth}`);
@@ -1729,7 +1743,7 @@ function drawCompare(){
 
   const dash = v => v == null ? '<span style="color:var(--faint);">—</span>' : v;
   const clean = cmpKey === 'svmg1' || cmpKey === 'srun1';
-  $('cmp-rows').innerHTML = pinTeam(have).map(({r: b, rank}) => {
+  $('cmp-rows').innerHTML = pinTeam(have, b => b[M.k]).map(({r: b, rank}) => {
     const d = us ? b[M.k] - us[M.k] : null;
     return `<div class="grid ${b.team ? 'team' : ''}" style="grid-template-columns:1.5fr .75fr .8fr .75fr .6fr .75fr .7fr .8fr .7fr;">
       <span>${posCell(rank)}${esc(b.name)}</span>
@@ -1768,7 +1782,7 @@ function drawSeg(){
   seg($('seg-sort'), [{key:'s0',label:'Peak'},{key:'s60',label:'60 s'},{key:'hold',label:'Hold'}], segKey,
       k => { segKey = k; drawSeg(); });
   const rows = [...D.segments.rows].sort((a, b) => b[segKey] - a[segKey]);
-  $('seg-rows').innerHTML = pinTeam(rows).map(({r, rank}) =>
+  $('seg-rows').innerHTML = pinTeam(rows, r => r[segKey]).map(({r, rank}) =>
     `<div class="grid ${r.team ? 'team' : ''}" style="grid-template-columns:1.5fr .7fr .7fr .7fr .7fr .9fr;">
       <span>${posCell(rank)}${esc(r.boat)}</span><span class="tnum">${r.s0.toFixed(2)}</span>
       <span class="tnum">${r.s10.toFixed(2)}</span><span class="tnum">${r.s30.toFixed(2)}</span>
