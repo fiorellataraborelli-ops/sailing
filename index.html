@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Per Roman AI Sailing Model</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -748,11 +749,14 @@ function drawFleet(){
   rows.forEach(f => {
     const tr = document.createElement('tr');
     tr.innerHTML = [f.file.replace(/\.vkx$/,''), f.t0, f.t1, f.fixes.toLocaleString('en-GB'),
-      f.nm.toFixed(1), f.mx.toFixed(1), f.avg.toFixed(2), f.upAvg.toFixed(2), f.dnAvg.toFixed(2)]
+      f.nm.toFixed(1), f.mx.toFixed(1), n2(f.avg), n2(f.upAvg), n2(f.dnAvg)]
       .map(c => `<td>${c}</td>`).join('');
     tb.appendChild(tr);
   });
 }
+
+const n2 = v => v == null ? '—' : v.toFixed(2);
+const sgn = (v, dp = 1) => v == null ? '—' : (v > 0 ? '+' : '') + v.toFixed(dp) + '°';
 
 /* ---------------- measured vs model ---------------- */
 function rowsOut(id, cells){ document.getElementById(id).innerHTML = cells.map(c => `<td>${c}</td>`).join(''); }
@@ -763,15 +767,16 @@ function drawMv(){
   head('mv-h', ['Race','GRIB forecast','Measured','Error','Old estimate','Old error']);
   $('mv-b').innerHTML = IB.bias_rows.map(r =>
     `<tr><td>Race ${r.race}</td>` + [
-      deg(r.forecast), deg(r.measured),
-      `<span class="pill dn">+${r.bias.toFixed(1)}°</span>`,
+      r.forecast == null ? '—' : deg(r.forecast), deg(r.measured),
+      `<span class="pill dn">${sgn(r.bias)}</span>`,
       r.old_observed == null ? '—' : deg(r.old_observed),
       r.old_bias == null ? '—' : `+${r.old_bias.toFixed(1)}°`
     ].map(c => `<td>${c}</td>`).join('') + '</tr>').join('');
   $('mv-note').innerHTML = (D.ib.bias_trend ? `<b>${D.ib.bias_trend}</b><br><br>` : '') +
     (D.ib.bias_note ? `${D.ib.bias_note}<br><br>` : '') +
     `<b>The GRIB sits +${BIAS.toFixed(1)}° right of the wind the fleet actually raced, on average</b> ` +
-    `— tighter across the two races (${IB.bias_rows.map(r=>'+'+r.bias.toFixed(1)+'°').join(' and ')}) than the ` +
+    `— tighter across the races that carry a forecast ` +
+    `(${IB.bias_rows.filter(r=>r.bias!=null).map(r=>sgn(r.bias)).join(', ')}) than the ` +
     `+${D.meta.bias_old.toFixed(1)}° estimated earlier. That earlier figure averaged the committee's line square with the ` +
     `fleet's beat bearing, which assumed a square line. The report shows the line was ` +
     `${IB.races.map(r=>r.bias_deg+'°').join(' then ')} off square, so the estimate was pulled toward the model by ` +

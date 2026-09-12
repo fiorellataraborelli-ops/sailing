@@ -29,8 +29,12 @@ fold = lambda s: ud.normalize('NFKD', s).encode('ascii', 'ignore').decode().lowe
 
 
 def data_uri(path):
+    """Inline an image. The logo is a PNG because it carries transparency; the
+    photographs are JPEG. Guessing the type from the extension rather than assuming
+    JPEG, which silently mislabelled the logo as one."""
+    kind = 'png' if path.lower().endswith('.png') else 'jpeg'
     with open(path, 'rb') as f:
-        return 'data:image/jpeg;base64,' + base64.b64encode(f.read()).decode()
+        return f'data:image/{kind};base64,' + base64.b64encode(f.read()).decode()
 
 
 def leg_tacks(D, race_n, boat):
@@ -461,7 +465,8 @@ def main():
     html = open(os.path.join(ROOT, 'site2/page.html'), encoding='utf-8').read()
     html = html.replace('__DATA__', json.dumps(payload, ensure_ascii=False, separators=(',', ':')))
     for tok, fn in (('__HERO__', 'hero.jpg'), ('__IMG1__', 'crew.jpg'),
-                    ('__IMG2__', 'hiking.jpg'), ('__IMG3__', 'prize.jpg')):
+                    ('__IMG2__', 'hiking.jpg'), ('__IMG3__', 'prize.jpg'),
+                    ('__DOG__', 'logo-dog.png')):
         html = html.replace(tok, data_uri(os.path.join(IMG, fn)))
 
     # guards against the regressions this page has already had once
@@ -476,6 +481,8 @@ def main():
       # 7 September was the abandoned practice day.
       'no unraced days': all(d not in html for d in ('2026-09-12', '2026-09-07')),
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,
+      # the masthead on desktop and the title bar on mobile
+      'the team mark is in the masthead': html.count('data:image/png;base64,') == 2,
       # a .gridhead and the row template it labels must declare the same columns —
       # they drifted once and nothing complained
       'grid headers match their rows': grids_line_up(html),

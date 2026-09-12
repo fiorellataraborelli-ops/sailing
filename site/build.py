@@ -58,5 +58,7 @@ def build() -> str:
 
 if __name__ == '__main__':
     html = build()
+    assert html.lstrip().startswith('<meta charset="utf-8">'), \
+        'the brief must declare a charset: nothing else does when it is served raw'
     (ROOT / 'index.html').write_text(html, encoding='utf-8')
     print(f'wrote index.html — {len(html)} bytes')

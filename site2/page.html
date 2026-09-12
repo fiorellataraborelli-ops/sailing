@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Garm">
 <meta name="format-detection" content="telephone=no">
-<title>Vakaros Race Analysis</title>
+<title>Garm Race Analysis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -60,9 +60,8 @@ a:hover{color:var(--deep);}
 nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
   gap:20px;padding:16px 24px;background:rgba(240,238,234,.92);backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line);}
-.mark{flex:none;font:600 15px var(--sans);letter-spacing:.14em;text-transform:uppercase;
-  display:flex;align-items:center;gap:2px;}
-.mark span{color:var(--ink);}
+.mark{flex:none;display:flex;align-items:center;}
+.mark img{display:block;width:132px;height:auto;}
 .navpills{display:flex;gap:28px;overflow-x:auto;scrollbar-width:none;}
 .navpills::-webkit-scrollbar{display:none;}
 .navpills a{flex:none;white-space:nowrap;font:500 11px var(--mono);color:var(--faint);
@@ -75,11 +74,14 @@ nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-con
 /* hero */
 header.hero{position:relative;min-height:640px;display:flex;flex-direction:column;align-items:center;
   justify-content:center;text-align:center;background:#0c1116;overflow:hidden;margin:0 0 16px;}
-header.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 40%;}
+/* the backdrop only — the direct child. Unscoped, this also caught the team mark
+   nested inside .heroin and pulled it out of flow, collapsing its plate. */
+header.hero > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 40%;}
 .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(58,80,54,.35) 0%,rgba(20,30,20,.55) 100%);}
 .heroin{position:relative;padding:0 24px;color:#fff;max-width:920px;}
 .kicker{font:500 11px var(--mono);letter-spacing:.22em;text-transform:uppercase;
   color:#cfd6c8;margin-bottom:18px;}
+
 .heroin h1{font-family:var(--sans);font-weight:600;font-size:clamp(34px,5.6vw,60px);
   line-height:1.08;letter-spacing:-.01em;margin:0 0 22px;color:#fff;text-wrap:balance;}
 .herobtn{display:inline-block;background:#fff;color:#0f1417;font:500 12px var(--mono);
@@ -264,7 +266,8 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     background:rgba(240,238,234,.94);backdrop-filter:blur(12px);
     border-bottom:1px solid var(--line);}
   .ab-l{display:flex;align-items:baseline;gap:9px;min-width:0;}
-  .ab-mark{font:600 13px var(--sans);flex:none;letter-spacing:.14em;text-transform:uppercase;}
+  .ab-mark{flex:none;display:flex;align-items:center;}
+  .ab-mark img{display:block;width:96px;height:auto;}
   .ab-mark i{color:var(--ink);font-style:normal;}
   .ab-title{font:400 13px/1 var(--sans);color:var(--muted);
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -295,7 +298,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   header.hero{min-height:200px;}
   .heroin{padding:16px;}
   .heroin h1{font-size:clamp(24px,7vw,32px);margin-bottom:3px;}
-  .kicker{font-size:11px;letter-spacing:.12em;margin-bottom:10px;}
+  .kicker{font-size:10px;letter-spacing:.16em;margin-bottom:9px;}
   .herobtn{display:none;}
   .heroin p{font-size:13px;}
   header.hero,.strip{display:none;}
@@ -380,12 +383,12 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 <div class="shell">
 
 <div class="appbar">
-  <div class="ab-l"><span class="ab-mark">vakaros<i>.</i></span><span class="ab-title" id="ab-title">Team</span></div>
+  <div class="ab-l"><span class="ab-mark"><img src="__DOG__" alt="Garm" width="760" height="141"></span><span class="ab-title" id="ab-title">Team</span></div>
   <div class="ab-r" id="ab-stat"></div>
 </div>
 
 <nav>
-  <span class="mark">vakaros<span>.</span></span>
+  <span class="mark"><img src="__DOG__" alt="Garm" width="760" height="141"></span>
   <div class="navpills" id="nav"></div>
   <a href="#analyser" class="cta">Ask analyser</a>
 </nav>
@@ -394,7 +397,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   <img src="__HERO__" alt="The team's boat driving through spray under spinnaker">
   <div class="scrim"></div>
   <div class="heroin">
-    <div class="kicker">Vakaros Atlas Analysis</div>
+    <div class="kicker">J/70 World Championship &middot; Cascais</div>
     <h1>Per Roman Sailing AI Machine</h1>
     <a href="#wind" class="herobtn">View the analysis</a>
     <p class="herosub" id="herosub">&mdash;</p>
@@ -738,7 +741,7 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 <div style="padding:16px 20px 24px;">
   <a href="https://claude.ai/code/artifact/94f50bb9-dd0f-4d7c-87e1-4b9d07baf81c" target="_blank" rel="noopener" class="rd-card" style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
     <div>
-      <div style="font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Data opportunity, next Vakaros request</div>
+      <div style="font-size:12px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Data opportunity, next request</div>
       <div class="cg" style="font-weight:700;font-size:17px;color:var(--ink);">Two fields in the log would close every remaining gap</div>
       <p style="margin:6px 0 0;font-size:13px;color:var(--muted);line-height:1.6;">Every wind bearing here is reconstructed from GPS geometry, because no boat logged a wind instrument; and marks are inferred from track reversals, because the Atlas records no rounding. A masthead feed and a mark event would replace three inference layers with a measurement &mdash; see the full teardown of this model &rarr;</p>
     </div>
@@ -817,7 +820,7 @@ function drawSummary(){
           : ''));
   $('herosub').textContent = `Team Sweden · ${t.sail} ${t.boat} · J/70 Worlds, Cascais`;
   $('foot').innerHTML =
-    `Built on ${D.meta.logs} Vakaros Atlas VKX logs · ib-sailing race reports · cncascais.com results · ` +
+    `Built on ${D.meta.logs} VKX telemetry logs · ib-sailing race reports · cncascais.com results · ` +
     `Cascais, Portugal · ${D.meta.pos}<br>Wind from a three-model consensus refreshed every three hours. ` +
     `Model bias +${D.meta.bias}°, measured by the fleet itself.`;
 }

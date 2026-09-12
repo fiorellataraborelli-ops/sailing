@@ -150,6 +150,24 @@ def main():
             D['fleet'].append(r2)
             print(f'{day} + {b}: {r2["nm"]} nm, {r2["upAvg"]}/{r2["dnAvg"]} kn up/down')
 
+    # Fleet rows were added a day at a time, some of them before name() learned to
+    # consult the alias table after each peel. That left device filenames as boat
+    # names — "Moore DRV - vakaros", "TYRA VAKAROS2" — and, on 10 September, the same
+    # boat listed twice under two spellings. Normalise every row through the resolver
+    # and keep one per boat per day.
+    ALIASES = {'Moore DRV - vakaros': 'Moore DRV', 'TYRA VAKAROS2': 'TYRA'}
+    seen_rows, cleaned = set(), []
+    for f in D['fleet']:
+        if not f['file'].startswith('Team Sweden'):
+            f['file'] = ALIASES.get(f['file'], f['file'])
+        k = (f['day'], f['file'])
+        if k in seen_rows:
+            print(f'  dropped duplicate fleet row: {f["file"]} on {f["day"]}')
+            continue
+        seen_rows.add(k)
+        cleaned.append(f)
+    D['fleet'] = cleaned
+
     t = D['official']['telemetry']
     for day in LOGS:
         k = 'day' + day[-2:].lstrip('0')

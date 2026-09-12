@@ -2,7 +2,7 @@
 
 J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry
 
-Generated 2026-09-12T10:50:01Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
+Generated 2026-09-12T10:56:45Z. Every file here is a projection of the same analysis the live page renders, so the two cannot disagree. Rebuild with `python3 tools/export_data.py` and `python3 tools/export_tracks.py`.
 
 ## Conventions
 
@@ -18,7 +18,7 @@ Generated 2026-09-12T10:50:01Z. Every file here is a projection of the same anal
 | Dataset | Rows | JSON | CSV | What it is |
 |---|---:|---|---|---|
 | `meta` |  | `meta.json` | — | Venue, calibrated model bias, tacking angle, event dates and telemetry coverage. |
-| `fleet` | 88 | `fleet.json` | `fleet.csv` | One row per decoded .vkx log: session extent, fix count, distance and speed splits. |
+| `fleet` | 87 | `fleet.json` | `fleet.csv` | One row per decoded .vkx log: session extent, fix count, distance and speed splits. |
 | `legs` | 616 | `legs.json` | `legs.csv` | Wind-referenced VMG per boat per leg, plus the correlations between each variable and first-beat VMG across the tracked fleet. |
 | `races` | 25 | `races.json` | `races.csv` | Mark timings, speed splits and start-line position per boat per race, with the race header (gun, line length and bearing, measured wind) alongside. |
 | `segments` | 30 | `segments.json` | `segments.csv` | Maximum speed held over rolling windows, 9 Sep. Transcribed from the event's published table; the hold ratio and ranks are derived here. |
