@@ -5,9 +5,10 @@
   "2026-09-08",
   "2026-09-09",
   "2026-09-10",
-  "2026-09-11"
+  "2026-09-11",
+  "2026-09-12"
  ],
- "n_files": 154,
+ "n_files": 183,
  "marks_estimated": {
   "1": [
    {
@@ -37,6 +38,36 @@
     "lon": -9.432419,
     "n_boats": 29,
     "spread_m": 50.4
+   }
+  ],
+  "10": [
+   {
+    "after_leg": 1,
+    "lat": 38.67323,
+    "lon": -9.499854,
+    "n_boats": 14,
+    "spread_m": 25.0
+   },
+   {
+    "after_leg": 2,
+    "lat": 38.65413,
+    "lon": -9.472268,
+    "n_boats": 14,
+    "spread_m": 26.2
+   },
+   {
+    "after_leg": 3,
+    "lat": 38.673376,
+    "lon": -9.504358,
+    "n_boats": 14,
+    "spread_m": 34.5
+   },
+   {
+    "after_leg": 4,
+    "lat": 38.661349,
+    "lon": -9.459234,
+    "n_boats": 14,
+    "spread_m": 397.9
    }
   ],
   "2": [
@@ -248,6 +279,36 @@
     "n_boats": 22,
     "spread_m": 57.7
    }
+  ],
+  "9": [
+   {
+    "after_leg": 1,
+    "lat": 38.681596,
+    "lon": -9.493738,
+    "n_boats": 15,
+    "spread_m": 32.2
+   },
+   {
+    "after_leg": 2,
+    "lat": 38.654478,
+    "lon": -9.474384,
+    "n_boats": 15,
+    "spread_m": 17.6
+   },
+   {
+    "after_leg": 3,
+    "lat": 38.672618,
+    "lon": -9.487017,
+    "n_boats": 15,
+    "spread_m": 15.3
+   },
+   {
+    "after_leg": 4,
+    "lat": 38.655804,
+    "lon": -9.466728,
+    "n_boats": 15,
+    "spread_m": 161.9
+   }
   ]
  },
  "marks_note": "Median leg-boundary position across boats. The Atlas does not record mark roundings, so these are inferred from track reversals; spread_m is the median distance of individual boats from that median.",
@@ -295,6 +356,20 @@
    "bytes": 85587
   },
   {
+   "boat": "Liquid Sun",
+   "race": 9,
+   "file": "tracks/liquid-sun-r9.json",
+   "n": 2497,
+   "bytes": 96418
+  },
+  {
+   "boat": "Liquid Sun",
+   "race": 10,
+   "file": "tracks/liquid-sun-r10.json",
+   "n": 2352,
+   "bytes": 91231
+  },
+  {
    "boat": "787",
    "race": 1,
    "file": "tracks/787-r1.json",
@@ -335,6 +410,20 @@
    "file": "tracks/787-r8.json",
    "n": 2313,
    "bytes": 89376
+  },
+  {
+   "boat": "787",
+   "race": 9,
+   "file": "tracks/787-r9.json",
+   "n": 2524,
+   "bytes": 97375
+  },
+  {
+   "boat": "787",
+   "race": 10,
+   "file": "tracks/787-r10.json",
+   "n": 2356,
+   "bytes": 91387
   },
   {
    "boat": "Areté",
@@ -379,6 +468,20 @@
    "bytes": 89242
   },
   {
+   "boat": "Ba ba",
+   "race": 9,
+   "file": "tracks/ba-ba-r9.json",
+   "n": 2541,
+   "bytes": 98122
+  },
+  {
+   "boat": "Ba ba",
+   "race": 10,
+   "file": "tracks/ba-ba-r10.json",
+   "n": 2369,
+   "bytes": 91915
+  },
+  {
    "boat": "DIVA-NEU",
    "race": 5,
    "file": "tracks/diva-neu-r5.json",
@@ -405,6 +508,20 @@
    "file": "tracks/diva-neu-r8.json",
    "n": 2277,
    "bytes": 88098
+  },
+  {
+   "boat": "DIVA-NEU",
+   "race": 9,
+   "file": "tracks/diva-neu-r9.json",
+   "n": 2434,
+   "bytes": 94027
+  },
+  {
+   "boat": "DIVA-NEU",
+   "race": 10,
+   "file": "tracks/diva-neu-r10.json",
+   "n": 2368,
+   "bytes": 91875
   },
   {
    "boat": "DIVA-NEU",
@@ -575,6 +692,20 @@
    "bytes": 86268
   },
   {
+   "boat": "J70 Let it be",
+   "race": 9,
+   "file": "tracks/j70-let-it-be-r9.json",
+   "n": 2520,
+   "bytes": 97346
+  },
+  {
+   "boat": "J70 Let it be",
+   "race": 10,
+   "file": "tracks/j70-let-it-be-r10.json",
+   "n": 2361,
+   "bytes": 91649
+  },
+  {
    "boat": "JCurve",
    "race": 1,
    "file": "tracks/jcurve-r1.json",
@@ -708,11 +839,32 @@
    "bytes": 84421
   },
   {
+   "boat": "Mag",
+   "race": 9,
+   "file": "tracks/mag-r9.json",
+   "n": 2367,
+   "bytes": 91487
+  },
+  {
+   "boat": "Mag",
+   "race": 10,
+   "file": "tracks/mag-r10.json",
+   "n": 2362,
+   "bytes": 91626
+  },
+  {
    "boat": "Mike's Vakaros",
    "race": 7,
    "file": "tracks/mike-s-vakaros-r7.json",
    "n": 2385,
    "bytes": 92269
+  },
+  {
+   "boat": "Mike's Vakaros",
+   "race": 9,
+   "file": "tracks/mike-s-vakaros-r9.json",
+   "n": 2449,
+   "bytes": 94598
   },
   {
    "boat": "Mike's Vakaros",
@@ -755,6 +907,20 @@
    "file": "tracks/moore-drv-r8.json",
    "n": 2362,
    "bytes": 91149
+  },
+  {
+   "boat": "Moore DRV",
+   "race": 9,
+   "file": "tracks/moore-drv-r9.json",
+   "n": 2539,
+   "bytes": 98167
+  },
+  {
+   "boat": "Moore DRV",
+   "race": 10,
+   "file": "tracks/moore-drv-r10.json",
+   "n": 2368,
+   "bytes": 91865
   },
   {
    "boat": "Moore DRV",
@@ -932,6 +1098,20 @@
    "bytes": 93169
   },
   {
+   "boat": "RO",
+   "race": 9,
+   "file": "tracks/ro-r9.json",
+   "n": 2621,
+   "bytes": 101329
+  },
+  {
+   "boat": "RO",
+   "race": 10,
+   "file": "tracks/ro-r10.json",
+   "n": 2584,
+   "bytes": 100209
+  },
+  {
    "boat": "Sassy",
    "race": 1,
    "file": "tracks/sassy-r1.json",
@@ -972,6 +1152,20 @@
    "file": "tracks/sardonyx-r8.json",
    "n": 2424,
    "bytes": 93509
+  },
+  {
+   "boat": "Sardonyx",
+   "race": 9,
+   "file": "tracks/sardonyx-r9.json",
+   "n": 2516,
+   "bytes": 97180
+  },
+  {
+   "boat": "Sardonyx",
+   "race": 10,
+   "file": "tracks/sardonyx-r10.json",
+   "n": 2369,
+   "bytes": 91861
   },
   {
    "boat": "Sardonyx",
@@ -1028,6 +1222,20 @@
    "file": "tracks/tyra-r8.json",
    "n": 2273,
    "bytes": 87644
+  },
+  {
+   "boat": "TYRA",
+   "race": 9,
+   "file": "tracks/tyra-r9.json",
+   "n": 2551,
+   "bytes": 98399
+  },
+  {
+   "boat": "TYRA",
+   "race": 10,
+   "file": "tracks/tyra-r10.json",
+   "n": 2308,
+   "bytes": 89387
   },
   {
    "boat": "TYRA",
@@ -1115,6 +1323,20 @@
   },
   {
    "boat": "V-Tarte",
+   "race": 9,
+   "file": "tracks/v-tarte-r9.json",
+   "n": 2547,
+   "bytes": 98339
+  },
+  {
+   "boat": "V-Tarte",
+   "race": 10,
+   "file": "tracks/v-tarte-r10.json",
+   "n": 2364,
+   "bytes": 91687
+  },
+  {
+   "boat": "V-Tarte",
    "race": 1,
    "file": "tracks/v-tarte-r1.json",
    "n": 2522,
@@ -1154,6 +1376,20 @@
    "file": "tracks/vamos-r8.json",
    "n": 2237,
    "bytes": 86403
+  },
+  {
+   "boat": "Vamos",
+   "race": 9,
+   "file": "tracks/vamos-r9.json",
+   "n": 2327,
+   "bytes": 90009
+  },
+  {
+   "boat": "Vamos",
+   "race": 10,
+   "file": "tracks/vamos-r10.json",
+   "n": 2369,
+   "bytes": 91873
   },
   {
    "boat": "Yupi",
@@ -1275,6 +1511,20 @@
    "bytes": 89387
   },
   {
+   "boat": "noticia",
+   "race": 9,
+   "file": "tracks/noticia-r9.json",
+   "n": 2538,
+   "bytes": 98150
+  },
+  {
+   "boat": "noticia",
+   "race": 10,
+   "file": "tracks/noticia-r10.json",
+   "n": 2364,
+   "bytes": 91667
+  },
+  {
    "boat": "Team Sweden",
    "race": 1,
    "file": "tracks/team-sweden-r1.json",
@@ -1315,6 +1565,20 @@
    "file": "tracks/team-sweden-r8.json",
    "n": 2189,
    "bytes": 84480
+  },
+  {
+   "boat": "Team Sweden",
+   "race": 9,
+   "file": "tracks/team-sweden-r9.json",
+   "n": 2458,
+   "bytes": 94917
+  },
+  {
+   "boat": "Team Sweden",
+   "race": 10,
+   "file": "tracks/team-sweden-r10.json",
+   "n": 2357,
+   "bytes": 91398
   },
   {
    "boat": "Team Sweden",

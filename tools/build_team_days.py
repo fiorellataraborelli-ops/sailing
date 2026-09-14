@@ -22,7 +22,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # hands them over a day at a time, so this list grows by one line per day.
 LOGS = {'2026-09-09': '~/Downloads/Sailing Files/vakaros 9-9-2026.vkx',
         '2026-09-10': '~/Downloads/Sailing Files/vakaros 10-9-2026.vkx',
-        '2026-09-11': '~/Downloads/Sailing Files/vakaros 11-9-2026.vkx'}
+        '2026-09-11': '~/Downloads/Sailing Files/vakaros 11-9-2026.vkx',
+        '2026-09-12': '~/Downloads/Sailing Files/vakaros 12-9-2026.vkx'}
 # The event published a peak-and-hold segment table for Wednesday only, so that is
 # the one day the instrument can be checked against someone else's arithmetic.
 VERIFY_DAY = '2026-09-09'

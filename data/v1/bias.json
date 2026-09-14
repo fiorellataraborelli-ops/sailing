@@ -65,6 +65,22 @@
    "bias": null,
    "old_observed": null,
    "old_bias": null
+  },
+  {
+   "race": 9,
+   "forecast": null,
+   "measured": 321.0,
+   "bias": null,
+   "old_observed": null,
+   "old_bias": null
+  },
+  {
+   "race": 10,
+   "forecast": null,
+   "measured": 309.0,
+   "bias": null,
+   "old_observed": null,
+   "old_bias": null
   }
  ]
 }

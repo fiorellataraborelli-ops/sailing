@@ -1,6 +1,6 @@
 {
  "source": "cncascais.com scored results (fetched, not transcribed) + ib-sailing mark-progress standings for races 1-4",
- "updated": "12/09/2026 17:38 UTC",
+ "updated": "14/09/2026 09:25 UTC",
  "races_scored": 10,
  "top": [
   {
@@ -292,7 +292,7 @@
  ],
  "race4_note": "Six races scored, one discard. Garm is 9th on 190 net from 247 total, discarding race 2 (57). Race 5 is a 2nd — the best of the regatta — and the team has moved from 10th after 8 races to 9th after 10.",
  "telemetry": {
-  "logs": 87,
+  "logs": 102,
   "day8": 30,
   "day9": 8,
   "day9_boats": [
@@ -324,7 +324,11 @@
   "day11_boats": [
    "Team Sweden"
   ],
-  "day11": 27
+  "day11": 27,
+  "day12_boats": [
+   "Team Sweden"
+  ],
+  "day12": 15
  },
  "event": {
   "dates": "4–12 September 2026",

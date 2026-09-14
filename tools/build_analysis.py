@@ -14,7 +14,8 @@ IMG = os.path.join(ROOT, 'site2/img')
 OUT = os.path.join(ROOT, 'race-analysis.html')
 
 DAY_LABEL = {'2026-09-08': 'Tue 8 Sep', '2026-09-09': 'Wed 9 Sep',
-             '2026-09-10': 'Thu 10 Sep', '2026-09-11': 'Fri 11 Sep'}
+             '2026-09-10': 'Thu 10 Sep', '2026-09-11': 'Fri 11 Sep',
+             '2026-09-12': 'Sat 12 Sep'}
 DAY_NOTE = {
   '2026-09-08': 'Races 1 and 2. Thirty boats decode here against the event\'s own 34-boat '
                 'analysis set, so fleet-relative figures are a real fleet comparison.',
@@ -24,6 +25,9 @@ DAY_NOTE = {
                 'wind on each leg and the line\'s bias are measured from the tracks.',
   '2026-09-11': 'Races 7 and 8. The widest telemetry of the regatta — 26 logs and 22 — with '
                 'the wind and the line measured from them rather than published.',
+  '2026-09-12': 'Races 9 and 10, the closing day. Fifteen logs and fourteen — half the fleet '
+                'had packed up — but every one of them agrees on both guns, and the measured '
+                'wind holds to a few degrees across the boats on all but two legs.',
 }
 fold = lambda s: ud.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
 
@@ -292,12 +296,17 @@ def main():
     # fleet, one row per log, flagged for the client boat
     # Sunday 7 September was the abandoned practice day — no scored racing, no Garm log.
     # It is dropped rather than shown as a third tab nobody asked for.
-    RACED = ('2026-09-08', '2026-09-09', '2026-09-10', '2026-09-11')
-    # All six. Tuesday's two carry thirty logs each; Wednesday's and Thursday's carry
-    # four or five, Garm's among them, and Wednesday also has the event's own published
-    # four-leg analysis. Anything measured against four boats rather than thirty says so
-    # where it is printed.
-    TRACKED = (1, 2, 3, 4, 5, 6, 7, 8)
+    RACED = ('2026-09-08', '2026-09-09', '2026-09-10', '2026-09-11', '2026-09-12')
+    # Every race the telemetry actually covers, read off the built data rather than
+    # restated. Tuesday's two carry thirty logs each; Wednesday's carry four or five,
+    # Garm's among them, plus the event's own published four-leg analysis; the closing
+    # Saturday carries fifteen and fourteen. Anything measured against four boats
+    # rather than thirty says so where it is printed. Kept by hand this needed editing
+    # on every race day, and the check below that start and legs agree could never
+    # fail for the reason it was written — all three were edited together.
+    TRACKED = tuple(sorted((int(r) for r in
+                            set(D['legs']['races']) & set(D['start']['races'])),
+                           key=int))
     # The wind card carries every racing day. Race 3 turned out to be a Wednesday race,
     # not a Tuesday one — the event's own report is dated 2026-09-09 — so Wednesday has
     # two, and Thursday's two are derived from the logs rather than a published report.
@@ -477,9 +486,13 @@ def main():
       'only tracked races': all(r['n'] in WIND_RACES for d in wind_days for r in d['races'])
                             and all(r['race'] in TRACKED for r in startline),
       'wind days all raced': all(d['date'] in RACED and d['races'] for d in wind_days),
-      # Thursday is now a racing day; Friday and Saturday are not yet, and Sunday
-      # 7 September was the abandoned practice day.
-      'no unraced days': all(d not in html for d in ('2026-09-12', '2026-09-07')),
+      # A day with no racing must never reach the page as a raw ISO date. The list
+      # is the event window minus the days actually raced, so a new race day moves
+      # itself out of it — this guard called 12 September unraced on the morning
+      # its logs arrived.
+      'no unraced days': all(d not in html for d in
+                             (f'2026-09-{n:02d}' for n in range(4, 14))
+                             if d not in RACED),
       'every image inlined': html.count('data:image/jpeg;base64,') == 4,
       # the masthead on desktop and the title bar on mobile
       # masthead, mobile title bar, and the hound running across the cover

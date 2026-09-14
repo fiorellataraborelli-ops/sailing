@@ -133,7 +133,11 @@ def main():
             rn = race_of(day, s)
             if rn and rn not in seen:
                 seen[rn] = (log, s, e)
-    check('a log window for every race', sorted(seen) == races, str(sorted(seen)))
+    # sorted() on race numbers is lexicographic — '10' lands between '1' and '2' —
+    # so this compared ['1','10','2',...] against a numerically sorted list and failed
+    # the moment a tenth race existed. Sort both sides the same way.
+    check('a log window for every race', sorted(seen, key=int) == races,
+          str(sorted(seen, key=int)))
     for rn, (log, s, e) in sorted(seen.items()):
         a = sl.start_analysis(log, s)
         row = next(x for x in D['start']['races'][rn] if x['boat'] == TEAM)
@@ -164,7 +168,7 @@ def main():
     check('page position matches payload', P['official']['team']['pos'] == t['pos'])
     check('page points match payload', close(P['official']['team']['pts'], t['pts'], 0.01))
     check('page gain matches payload', P['official']['team']['gain'] == t['gain_total'])
-    check('page has every race', sorted(P['legs']['races']) == races)
+    check('page has every race', sorted(P['legs']['races'], key=int) == races)
     check('page leg data matches payload',
           P['legs']['races'] == R, 'legs block is carried through unchanged')
 

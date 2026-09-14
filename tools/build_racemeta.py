@@ -25,7 +25,13 @@ from tools.build_legs import RACE_GUN, WIND, WIND_SOURCE, name, race_of
 
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DERIVE = ('5', '6', '7', '8')          # races with no published report
+# Races with no published report, taken from the wind table's own account of where
+# each race's wind came from rather than restated here. Kept by hand this was a list
+# that had to be edited on every race day, and on the day races 9 and 10 arrived it
+# was not — which silently dropped both from the line geometry and took the coach
+# test down with a KeyError.
+DERIVE = tuple(sorted((r for r, src in WIND_SOURCE.items() if src != 'event report'),
+                      key=int))
 # The GRIB forecast at each gun, captured once and kept. wind.json holds only the
 # coming two days and the overnight refresh rolls the raced day out of it, so this
 # cannot be re-derived after the fact: 10 September's forecast was already gone by

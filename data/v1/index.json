@@ -1,7 +1,7 @@
 {
  "dataset": "J/70 World Championship 2026, Cascais — race analysis from Vakaros Atlas telemetry",
  "version": "v1",
- "generated_utc": "2026-09-12T17:38:56Z",
+ "generated_utc": "2026-09-14T09:27:21Z",
  "base_url": "https://github.com/fiorellataraborelli-ops/sailing/tree/main/data/v1",
  "licence_note": "Telemetry belongs to the boats that recorded it. Scored results and race analysis are the event organisers'. Published here for the teams involved.",
  "conventions": {
@@ -25,7 +25,7 @@
    "name": "fleet",
    "json": "fleet.json",
    "csv": "fleet.csv",
-   "rows": 87,
+   "rows": 102,
    "about": "One row per decoded .vkx log: session extent, fix count, distance and speed splits.",
    "fields": {
     "file": "Log file, named for the boat",
@@ -44,7 +44,7 @@
    "name": "legs",
    "json": "legs.json",
    "csv": "legs.csv",
-   "rows": 616,
+   "rows": 732,
    "about": "Wind-referenced VMG per boat per leg, plus the correlations between each variable and first-beat VMG across the tracked fleet.",
    "fields": {
     "race": "Race number",
@@ -174,7 +174,7 @@
    "name": "bias",
    "json": "bias.json",
    "csv": "bias.csv",
-   "rows": 8,
+   "rows": 10,
    "about": "GRIB forecast against wind measured on the water, per race. This is where the +16.1 deg correction comes from, and it is not a constant.",
    "fields": {
     "race": "Race number",
@@ -189,7 +189,7 @@
    "name": "startline",
    "json": "startline.json",
    "csv": "startline.csv",
-   "rows": 8,
+   "rows": 10,
    "about": "Line geometry per race, with the event's published advantage beside the one our own formula produces from the geometry alone.",
    "fields": {
     "race": "Race number",
@@ -205,7 +205,7 @@
    "name": "wind_by_leg",
    "json": "wind_by_leg.json",
    "csv": "wind_by_leg.csv",
-   "rows": 8,
+   "rows": 10,
    "about": "Wind bearing measured on each leg of each race by the event.",
    "fields": {
     "race": "Race number",
@@ -219,7 +219,7 @@
    "name": "daycompare",
    "json": "daycompare.json",
    "csv": "daycompare.csv",
-   "rows": 4,
+   "rows": 3,
    "about": "Boats with a log on both 8 and 9 Sep — same hulls, same crews, different breeze.",
    "fields": null
   },
@@ -243,7 +243,7 @@
    "name": "tracks",
    "json": "tracks/index.json",
    "csv": null,
-   "rows": 154,
+   "rows": 183,
    "about": "Position, SOG, COG and leg index at 2 s for every boat in races 1 and 2, one columnar file per boat per race, plus estimated mark positions. This is what a course plan view or a polar scatter is drawn from.",
    "fields": {
     "t": "seconds since start_utc",

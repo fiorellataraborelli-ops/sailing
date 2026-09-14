@@ -3,7 +3,8 @@
   "2026-09-08": "Tue 8 Sep",
   "2026-09-09": "Wed 9 Sep",
   "2026-09-10": "Thu 10 Sep",
-  "2026-09-11": "Fri 11 Sep"
+  "2026-09-11": "Fri 11 Sep",
+  "2026-09-12": "Sat 12 Sep"
  },
  "rows": [
   {
@@ -28,7 +29,12 @@
    "nm11": 33.1,
    "mx11": 17.6,
    "dn11": 12.64,
-   "up11": 5.41
+   "up11": 5.41,
+   "h12": 5.8,
+   "nm12": 26.4,
+   "mx12": 15.0,
+   "dn12": 10.3,
+   "up12": 4.14
   },
   {
    "boat": "J70 Let it be",
@@ -52,7 +58,12 @@
    "nm11": 32.7,
    "mx11": 17.6,
    "dn11": 12.58,
-   "up11": 5.09
+   "up11": 5.09,
+   "h12": 5.2,
+   "nm12": 27.5,
+   "mx12": 15.0,
+   "dn12": 10.0,
+   "up12": 5.04
   },
   {
    "boat": "Mag",
@@ -76,39 +87,21 @@
    "nm11": 32.8,
    "mx11": 17.0,
    "dn11": 12.38,
-   "up11": 5.64
-  },
-  {
-   "boat": "Yupi",
-   "team": false,
-   "h8": 5.3,
-   "nm8": 36.6,
-   "mx8": 16.7,
-   "dn8": 12.1,
-   "up8": 5.47,
-   "h9": 6.8,
-   "nm9": 37.4,
-   "mx9": 19.8,
-   "dn9": 13.15,
-   "up9": 4.51,
-   "h10": 5.7,
-   "nm10": 33.6,
-   "mx10": 16.6,
-   "dn10": 11.44,
-   "up10": 5.06,
-   "h11": 5.0,
-   "nm11": 34.6,
-   "mx11": 16.7,
-   "dn11": 12.19,
-   "up11": 5.47
+   "up11": 5.64,
+   "h12": 4.7,
+   "nm12": 27.4,
+   "mx12": 17.1,
+   "dn12": 11.92,
+   "up12": 5.16
   }
  ],
  "team_has": [
   "2026-09-08",
   "2026-09-09",
   "2026-09-10",
-  "2026-09-11"
+  "2026-09-11",
+  "2026-09-12"
  ],
  "caveat": "Upwind and downwind are split at 8 knots over the whole session, so the slow bucket also holds pre-start manoeuvring and the sail out and back. A longer day therefore drags the \"upwind\" average down on its own — the downwind and peak figures are the solid ones.",
- "note": "4 boats have a full log for all 4 racing days, Garm among them."
+ "note": "3 boats have a full log for all 5 racing days, Garm among them."
 }
