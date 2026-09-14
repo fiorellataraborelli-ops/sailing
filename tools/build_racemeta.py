@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.sailing_agents.vkx_parser import parse_file
 from src.sailing_agents import race_multi_leg as rml
 from src.sailing_agents import start_line as sl
-from tools.build_legs import RACE_GUN, WIND, WIND_SOURCE, name, race_of
+from tools.build_legs import RACE_GUN, WIND, WIND_SOURCE, GUN_WIND, name, race_of
 
 SRC = os.path.expanduser('~/Downloads/Sailing Files')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -96,6 +96,13 @@ def main():
             per[rn]['brg'].append(bearing(pin, cb))
 
     D = json.load(open(os.path.join(ROOT, 'site/payload.json')))
+    # Derived rows are rebuilt from scratch every run; only the event's own published
+    # rows are kept. Left in place they were never recomputed, so a correction to the
+    # wind they are built on — like referencing bias to the gun rather than the beat —
+    # would have been written to the file and silently ignored on the next build.
+    DERIVED_NOTE = 'derived from the logs'
+    D['ib']['races'] = [r for r in D['ib']['races']
+                        if DERIVED_NOTE not in (r.get('source') or '')]
     existing = {r['n'] for r in D['ib']['races']}
     added = []
     for rn, v in sorted(per.items()):
@@ -104,12 +111,20 @@ def main():
         line_m = round(st.median(v['len']))
         brg = round(st.median(v['brg']), 1)
         wind = WIND[rn]
-        square = square_heading(brg, wind[0])
+        # Bias is referenced to the wind at the gun, not the average over the beat.
+        # Those are different questions: the helm choosing an end faces the first,
+        # and on this course the breeze moved up to 14 deg during a beat, which is
+        # enough to turn a square line into a 10 deg bias or cancel one entirely.
+        gw = GUN_WIND.get(rn, wind[0])
+        square = square_heading(brg, gw)
         # signed angle from the line's square heading to the measured wind: negative
         # means the wind has gone left of square, which pays at the pin
-        off = ((wind[0] - square + 180) % 360) - 180
+        off = ((gw - square + 180) % 360) - 180
         setting = wind[0]        # the event's "setting" column is the course axis
         bias_m = round(line_m * abs(math.sin(math.radians(off))))
+        # how far the breeze moved between the gun and the beat average: a right
+        # shift eats a pin bias, a left shift compounds it
+        shift = round(((wind[0] - gw + 180) % 360) - 180)
         gun = datetime.datetime.fromtimestamp(v['gun'] / 1000, datetime.timezone.utc)
         D['ib']['races'].append({
             'n': int(rn), 'date': v['day'],
@@ -117,6 +132,7 @@ def main():
             'start_utc': gun.strftime('%H:%M:%S'),
             'setting': setting, 'line_brg': brg, 'square': round(square),
             'bias_deg': abs(round(off)), 'bias_m': bias_m,
+            'gun_wind': gw, 'beat_wind': wind[0], 'shift_deg': shift,
             # the wind sitting left of square favours the pin, right of square the boat
             'favoured': 'Pin' if off < 0 else 'Boat',
             'line_m': line_m, 'calc_m': bias_m,
@@ -162,8 +178,8 @@ def main():
 
     json.dump(D, open(os.path.join(ROOT, 'site/payload.json'), 'w'), ensure_ascii=False)
     for rn, line_m, brg, setting, off, bias_m in added:
-        print(f'race {rn}: line {line_m} m bearing {brg}, square {square_heading(brg, WIND[rn][0]):.0f}, '
-              f'wind {WIND[rn][0]} -> {off:+.0f} deg = {bias_m} m, '
+        print(f'race {rn}: line {line_m} m bearing {brg}, square {square_heading(brg, GUN_WIND.get(rn, WIND[rn][0])):.0f}, '
+              f'gun wind {GUN_WIND.get(rn, WIND[rn][0])} (beat {WIND[rn][0]}) -> {off:+.0f} deg = {bias_m} m, '
               f'{"pin" if off < 0 else "boat"} favoured')
     print('bias rows:', [(b['race'], b['forecast'], b['measured'], b['bias'])
                          for b in D['ib']['bias_rows']])

@@ -41,54 +41,54 @@
    "race": 5,
    "setting": 320,
    "line_m": 988,
-   "bias_deg": 10,
-   "bias_m": 170,
-   "calc_m": 170,
-   "favoured": "Boat"
+   "bias_deg": 1,
+   "bias_m": 19,
+   "calc_m": 19,
+   "favoured": "Pin"
   },
   {
    "race": 6,
    "setting": 352,
    "line_m": 1063,
-   "bias_deg": 6,
-   "bias_m": 118,
-   "calc_m": 118,
-   "favoured": "Boat"
+   "bias_deg": 8,
+   "bias_m": 141,
+   "calc_m": 141,
+   "favoured": "Pin"
   },
   {
    "race": 7,
    "setting": 327,
    "line_m": 986,
-   "bias_deg": 11,
-   "bias_m": 188,
-   "calc_m": 188,
+   "bias_deg": 10,
+   "bias_m": 171,
+   "calc_m": 171,
    "favoured": "Pin"
   },
   {
    "race": 8,
    "setting": 326,
    "line_m": 973,
-   "bias_deg": 13,
-   "bias_m": 214,
-   "calc_m": 214,
+   "bias_deg": 9,
+   "bias_m": 147,
+   "calc_m": 147,
    "favoured": "Pin"
   },
   {
    "race": 9,
    "setting": 321,
    "line_m": 995,
-   "bias_deg": 6,
-   "bias_m": 106,
-   "calc_m": 106,
+   "bias_deg": 10,
+   "bias_m": 174,
+   "calc_m": 174,
    "favoured": "Pin"
   },
   {
    "race": 10,
    "setting": 309,
    "line_m": 994,
-   "bias_deg": 10,
-   "bias_m": 176,
-   "calc_m": 176,
+   "bias_deg": 11,
+   "bias_m": 193,
+   "calc_m": 193,
    "favoured": "Pin"
   }
  ]

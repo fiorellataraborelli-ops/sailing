@@ -1079,7 +1079,15 @@ function drawStart(){
     `<b>${r.favoured} favoured by ${r.bias_m} m on a ${r.line_m.toLocaleString()} m line</b> — ` +
     `${(r.bias_m / r.line_m * 100).toFixed(0)}% of the line's length, free, before anyone has sailed a metre. ` +
     `Our own geometry, working only from the line bearing and the measured wind, gives ${r.calc_m} m: ` +
-    `<b>${err.toFixed(1)}% from the event's published figure.</b> The pin was favoured in every race of the regatta.`;
+    `<b>${err.toFixed(1)}% from the event's published figure.</b> The pin was favoured in every race of the regatta.` +
+    // the bias is the wind at the gun; what the breeze did next decides whether it paid
+    (r.shift_deg == null ? '' :
+      ` Measured at the gun, in ${r.gun_wind}°. Over the beat the wind ` +
+      (Math.abs(r.shift_deg) < 3
+        ? `barely moved (${r.beat_wind}°), so the advantage stood.`
+        : `went ${r.shift_deg > 0 ? 'right' : 'left'} ${Math.abs(r.shift_deg)}° to ${r.beat_wind}°, which ` +
+          (r.shift_deg > 0 ? 'ate into a pin bias — the gain at the gun was handed back on the beat.'
+                           : 'compounded it.')));
 }
 
 /* Garm rides at the top of every ranked list — it is the boat this page is for, and

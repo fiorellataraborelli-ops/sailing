@@ -69,6 +69,17 @@ WIND_BOATS = {'5': 20, '6': 20, '7': 26, '8': 22, '9': 15, '10': 14}   # logs ea
 # degrees across the seventeen boats — min-to-max would report one bad boat rather
 # than the spread. Race 5's first run is the one loose leg: the middle half of the
 # fleet spans 18 deg on it, against 2-3 deg everywhere else.
+# The wind at the gun, not over the whole first beat — measured the same way, but
+# only over the first six minutes after the start. Line bias is a question about the
+# moment the gun goes, and on this course the breeze moved enough during a beat that
+# the two answers differ materially: race 5's line was square at the gun and the
+# wind went right 11 deg during the beat, so the beat-average made a square line look
+# 10 deg pin-biased. Race 9 is the opposite and is the reason this exists — the coach
+# read 12 deg of pin bias off the line, the beat average said 6, and the gun says 10.
+# Stable against the window: 4, 6, 8 and 10 minutes agree to within 2 deg on every race.
+# Races 1-4 keep the event's own published bias; races 3 and 4 have one log between them.
+GUN_WIND = {'5': 309, '6': 338, '7': 328, '8': 330, '9': 317, '10': 308}
+GUN_WIND_BOATS = {'5': 16, '6': 10, '7': 19, '8': 18, '9': 10, '10': 13}
 WIND_SPREAD = {'5': [2, 19, 3, 3], '6': [3, 3, 2, 3],
                '7': [3, 5, 3, 3], '8': [5, 2, 2, 2],
                '9': [2, 3, 4, 8], '10': [1, 9, 1, 6]}
