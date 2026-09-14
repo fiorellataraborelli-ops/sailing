@@ -82,6 +82,13 @@ MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá'
        '1634': 'Liquid Sun', 'Sirena Chico2': 'Sirena Chico'}
 # "8-9-2026", "08.09.2026" and "2026-09-08" all appear as filename suffixes
 DATE = re.compile(r'\s+(?:\d{1,2}[-.]\d{1,2}[-.]\d{4}|\d{4}-\d{2}-\d{2})$')
+# The same date one position in, with a copy number behind it. Re-uploading a batch
+# to Drive makes "vakaros 12-9-2026 2.vkx", and with only the end-anchored pattern
+# above the date survived the peel: the boat came out as "vakaros 12-9-2026 2" and
+# joined the fleet as a boat of its own — Garm's own log ranked against Garm.
+# Fifteen of those would have doubled Saturday's fleet and moved every median.
+DATE_BEFORE_COPY = re.compile(
+    r'\s+(?:\d{1,2}[-.]\d{1,2}[-.]\d{4}|\d{4}-\d{2}-\d{2})(?=\s+\d{1,3}$)')
 # macOS hands back decomposed filenames, so "Aretê" from the disk is not the same
 # string as "Aretê" typed here. Compare on a normalised form.
 _nfc = lambda x: ud.normalize('NFC', x)
@@ -89,8 +96,9 @@ _MAP = {_nfc(k): v for k, v in MAP.items()}
 
 
 def _stem(fn):
-    """Filename with the extension and any trailing date removed."""
+    """Filename with the extension and any date removed, trailing or before a copy number."""
     s = _nfc(re.sub(r'\.vkx.*$', '', fn).strip())
+    s = DATE_BEFORE_COPY.sub('', s)
     return re.sub(r'\s+', ' ', DATE.sub('', s)).strip()
 
 

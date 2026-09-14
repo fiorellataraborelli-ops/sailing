@@ -28,25 +28,19 @@ SRC = os.path.expanduser('~/Downloads/Sailing Files')
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Which race each day's race windows belong to, in order — Wednesday's first
 # window is race 3 — and the measured first-upwind wind for each.
-from tools.build_legs import RACE_GUN, race_of, WIND as LEG_WIND
+from tools.build_legs import RACE_GUN, race_of, name, WIND as LEG_WIND
 # First-upwind wind: published by the event for races 1-4, measured from the tracks
 # from race 5 on (see build_legs.WIND and wind_from_track). Derived from the leg
 # table rather than restated, so a new race day cannot land here with the first
 # beat's wind copied wrongly — or, as happened on adding races 9 and 10, not at all.
 WIND = {r: v[0] for r, v in LEG_WIND.items()}
 MS = 1.9438444924406            # m/s -> knots
-MAP = {'vakaros': 'Team Sweden', 'MLC USA 26 primary': 'MidlifeCrisis', 'Bábá': 'Ba ba',
-       'Aretê 1872': 'Areté', 'SASSY too': 'Sassy', 'Moore DRV - vakaros 2': 'Moore DRV',
-       'TYRA VAKAROS': 'TYRA', 'To Nessa 1527': 'To Nessa', 'Patakin_3': 'Patakin 3',
-       'JCurve2026': 'JCurve', 'Nautique J70': 'Nautique', 'Mike’s Vakaros': "Mike's Vakaros"}
-
-
-def name(fn):
-    """Boat from filename: drop the extension, then a trailing date, then a copy number."""
-    s = re.sub(r'\.vkx.*$', '', fn).strip()
-    s = re.sub(r'\s+\d{1,2}-\d{1,2}-\d{4}$', '', s).strip()   # "vakaros 9-9-2026"
-    s = re.sub(r'\s+\d+$', '', s).strip()                      # "vakaros 10"
-    return MAP.get(s, s)
+# Boat names come from build_legs, not from a second copy of the rule. This file
+# used to carry its own: it knew only hyphenated dates, so "DIVA-NEU 11.9.2026" and
+# "TYRA VAKAROS2 2026-09-11" kept their dates and entered the start table as boats
+# of their own — DIVA-NEU appeared four times, once per race day, and none of the
+# four could be joined to its own leg data. The coach test looks up a boat's beat
+# by name and silently found nothing for every one of them.
 
 
 def cross_time_s(log, gun_ms, pin, boat, sign, window_s=180):

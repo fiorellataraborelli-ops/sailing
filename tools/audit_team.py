@@ -169,6 +169,16 @@ def main():
     check('page points match payload', close(P['official']['team']['pts'], t['pts'], 0.01))
     check('page gain matches payload', P['official']['team']['gain'] == t['gain_total'])
     check('page has every race', sorted(P['legs']['races'], key=int) == races)
+    # A boat name that still carries a date is a filename the peel did not fully
+    # reduce, and it enters the fleet as a boat of its own. Re-uploading a batch to
+    # Drive produces "vakaros 12-9-2026 2.vkx"; before _stem handled a date sitting
+    # in front of a copy number, that became a rival called "vakaros 12-9-2026 2" —
+    # Garm ranked against its own log, on a fleet twice its real size.
+    datey = re.compile(r'\d{1,2}[-.]\d{1,2}[-.]\d{4}|\d{4}-\d{2}-\d{2}')
+    named = {b for R in P['legs']['races'].values() for b in R} | \
+            {x['boat'] for R in P['start']['races'].values() for x in R}
+    check('no boat name carries a date', not [b for b in named if datey.search(b)],
+          str(sorted(b for b in named if datey.search(b))[:4]))
     check('page leg data matches payload',
           P['legs']['races'] == R, 'legs block is carried through unchanged')
 

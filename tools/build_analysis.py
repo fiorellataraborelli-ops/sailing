@@ -147,7 +147,9 @@ def coach_test(D):
     """
     out = []
     sl = {r['n']: r for r in D['ib']['races']}
-    for rn, rows in sorted(D.get('start', {}).get('races', {}).items()):
+    # race numbers are strings here, so a plain sort puts race 10 between 1 and 2 —
+    # and this order is the order the cards render in
+    for rn, rows in sorted(D.get('start', {}).get('races', {}).items(), key=lambda kv: int(kv[0])):
         if len(rows) < MIN_FOR_THIRDS:
             continue
         legs = D['legs']['races'].get(rn, {})
