@@ -18,6 +18,7 @@ import sys, glob, os, json, re, datetime, math, statistics as st, unicodedata as
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.sailing_agents.vkx_parser import parse_file
 from src.sailing_agents import race_multi_leg as rml
+from src.sailing_agents import start_line as sl
 from src.sailing_agents.leg_vmg import (leg_vmg, manoeuvres, manoeuvre_cost,
                                         STEADY_WINDOW_S)
 
@@ -177,6 +178,42 @@ def rolling_kn(tr, win_s=30):
     return out
 
 
+def finish_by_line(log, gun_ms, sub):
+    """When the boat crossed the committee line on the final run, or None.
+
+    These courses finish at the leeward end, on the same line they started from, and
+    the line ends are in the log. So the finish is the last time the boat crosses from
+    the course side to the far side between the two ends — a geometric fact, with no
+    threshold to tune and no dependence on how windy it was.
+
+    This is the primary method because the speed cliff below degrades in light air:
+    on races 7 and 8 the two agree to within 30 s on 25 of 26 and 20 of 22 boats, but
+    on race 9 the speed cliff runs a median 113 s late and on race 10, the lightest
+    race of the regatta, 284 s late on every single boat — the fleet was running home
+    no slower than it had been racing, so there was no cliff to find. Left alone that
+    put nearly five minutes of sailing home inside race 10's final run.
+    """
+    pin, cb = sl.line_at(log, gun_ms)
+    if not pin or not cb:
+        return None
+    sign = sl.resolve_course_side(log, gun_ms, pin, cb)
+    prev, last = None, None
+    for q in sub:
+        v = sl.position_vs_line((q[1], q[2]), pin, cb, sign)
+        if v is None:
+            continue
+        d, a = v['distance_to_line_m'], v['along_line_from_pin']
+        # crossing from the course side outward, and between the ends with a little
+        # slack for a boat shooting the pin. The FIRST such crossing of the final run
+        # is the finish: boats mill about afterwards and re-cross, and taking the last
+        # one put noticia's race 9 at 93 min, the slowest boat in the fleet sample, on
+        # a race they finished 2nd.
+        if prev is not None and prev < 0 <= d and -0.15 <= a <= 1.15:
+            return q[0]
+        prev = d
+    return last
+
+
 def finish_ts(sub):
     """When the boat finished, from the speed trace alone.
 
@@ -240,7 +277,8 @@ def main():
             for i, l in enumerate(race.legs[:4]):
                 end = l.end_ts_ms
                 if i == 3 and l.kind == 'run':           # the last scored leg ends at the finish
-                    ft = finish_ts([q for q in tr if l.start_ts_ms <= q[0] <= end])
+                    seg = [q for q in tr if l.start_ts_ms <= q[0] <= end]
+                    ft = finish_by_line(log, s, seg) or finish_ts(seg)
                     if ft and end - ft > 45_000:
                         trims.append((rn, b, round((end - ft) / 60000, 1)))
                         end = ft
