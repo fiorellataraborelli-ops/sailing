@@ -871,13 +871,22 @@ function drawOverview(){
   // the mark-progress report is published separately and lags the scoreboard, so these
   // two cards say which races they actually cover rather than borrowing the scoreboard's
   const pr = P && P.races ? `over races 1–${P.races}` : '';
-  if (P && P.team) wins.push(['Places won after the top mark', '+' + P.team.gain,
+  // the whole regatta where the logs can extend the event's report, with the report's
+  // own fleet-ranked figure kept as the qualifier — the two are not the same number
+  // and must not be read as one
+  const A = P && P.all;
+  if (A && A.derived && A.derived.length)
+    wins.push(['Places won after the top mark', (A.gain >= 0 ? '+' : '') + A.gain,
+      `over ${A.covered.length} of ${A.races} races · +${P.team.gain} ${pr} by the event's ` +
+      `report, ${ord(P.ranks.gain_top20[0])} of the ${P.ranks.gain_top20[1]} ahead · ` +
+      `races ${A.derived.join(', ')} from the logs`]);
+  else if (P && P.team) wins.push(['Places won after the top mark', '+' + P.team.gain,
     `${ord(P.ranks.gain_top20[0])} of the ${P.ranks.gain_top20[1]} ahead, ${pr}`]);
   if (P && P.w1) wins.push(['Best mark rounding',
-    (() => { const w = P.by_race.filter(r => r.w1 != null);
+    (() => { const w = P.by_race.filter(r => r.w1 != null && r.source !== 'derived');
              const b = w.reduce((a, r) => r.w1 < a.w1 ? r : a);
              return ord(b.w1); })(),
-    (() => { const w = P.by_race.filter(r => r.w1 != null);
+    (() => { const w = P.by_race.filter(r => r.w1 != null && r.source !== 'derived');
              const b = w.reduce((a, r) => r.w1 < a.w1 ? r : a);
              return `race ${b.race}, from ${D.official.fleet} boats`; })()]);
   // any leg where the boat was quickest of everyone tracked that race
@@ -936,7 +945,18 @@ function drawSummary(){
       : `<b>No discard has been applied yet</b> — every boat's points still equal the sum of its ` +
         `finishes.`) +
     `<br><br>Places gained counts positions won between the first windward mark and the finish` +
-    (D.official.gainRaces && D.official.gainRaces < D.official.races
+    (D.progress && D.progress.all && D.progress.all.derived && D.progress.all.derived.length
+      ? ` — <b>${D.progress.all.gain >= 0 ? '+' : ''}${D.progress.all.gain} over ${D.progress.all.covered.length} ` +
+        `of ${D.official.races} races</b>. The event's report measured races 1–${D.official.gainRaces}; ` +
+        `races ${D.progress.all.derived.join(', ')} are estimated from the fleet's own logs by ranking the ` +
+        `logged boats at each mark, a method that reproduces the event's figures to within a place on ` +
+        `the comparable races and runs 7–8 places optimistic on the two Tuesday races.` +
+        (D.progress.w1
+          ? ` Garm rounds the first windward mark <b>${D.progress.w1.avg}th on average</b> — ` +
+            `${D.progress.w1.rank} of ${D.progress.w1.n} — and finishes ${t.pos}th. That gap is ` +
+            `the whole story of the regatta: the boat is quick once it is going and starts too deep.`
+          : '')
+      : D.official.gainRaces && D.official.gainRaces < D.official.races
       ? `, over races 1–${D.official.gainRaces} — the event has not published mark progress for the ` +
         `races since.`
       : `, over all ${D.official.races} races.` +

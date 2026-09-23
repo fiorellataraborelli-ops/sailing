@@ -339,5 +339,7 @@
  },
  "gain_def": "Places won between the first windward mark and the finish, summed over all 8 races — the event's own race-progress report, which covers the full 100-boat fleet.",
  "discard_applied": true,
- "gain_races": 8
+ "gain_races": 8,
+ "gain_all": 56,
+ "gain_all_races": 10
 }

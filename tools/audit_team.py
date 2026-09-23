@@ -107,6 +107,32 @@ def main():
     if PR.get('races_covered', 0) < RES['races_scored']:
         note('progress report behind the scoreboard',
              f"{PR.get('races_covered')} races against {RES['races_scored']} scored")
+    # The first-mark section must run to the end of the regatta, not to the end of the
+    # event's report: one row per scored race, each naming its source, and the derived
+    # ones carrying the validation that lets a reader weigh them. This is the section
+    # that quietly stopped at race 8 while everything around it ran to race 10.
+    pr_rows = D['progress']['by_race']
+    check('first-mark section covers every scored race',
+          [r['race'] for r in pr_rows] == list(range(1, RES['races_scored'] + 1)),
+          str([r['race'] for r in pr_rows]))
+    check('every first-mark row names its source',
+          all(r.get('source') in ('event report', 'derived', 'none') for r in pr_rows))
+    # a race the logs cannot estimate says so, rather than showing a number
+    check('blank first-mark rows say why',
+          all(r.get('why') for r in pr_rows if r.get('source') == 'none'))
+    A = D['progress'].get('all') or {}
+    check('derived first-mark rows carry their validation',
+          not A.get('derived') or (A.get('method_error_places') is not None
+                                   and A.get('method_checked_on', 0) >= 3))
+    # the whole-regatta gain is the sum of the rows it claims to cover, nothing else
+    check('whole-regatta gain sums its own rows',
+          A.get('gain') == sum(r['gain'] for r in pr_rows if r.get('gain') is not None))
+    # the published, fleet-ranked total is untouched by the extension
+    check('published gain total untouched by derived races',
+          t['gain_total'] == pg['gain'])
+    # and the two are the same number only when nothing was derived
+    check('extended and published totals differ iff races were derived',
+          (A.get('gain') != pg['gain']) == bool(A.get('derived')))
 
     # ---- 5. against the log itself, re-read ----------------------------------
     from src.sailing_agents.vkx_parser import parse_file
