@@ -66,13 +66,24 @@ def main():
         o['team']['r%d' % i] = p
     # gain_races and gain_def belong to update_progress, which knows how many races
     # the progress report actually covers. Setting them here overwrote that with 4.
+    # Every figure in this sentence is read from the result, never typed: the count
+    # of races, the discard, which race was the best and what it scored. The first
+    # words used to be the literal "Six races scored", and stayed that way through
+    # ten. A sentence that is nearly all right is the one nobody re-reads.
+    ordn = lambda n: f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
+    words = {6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve'}
+    n_scored = R['races_scored']
+    best = min(team['races'])
+    best_race = team['races'].index(best) + 1
     o['race4_note'] = (
-        f"Six races scored, one discard. Garm is {team['pos']}th on {team['net']:g} net from "
-        f"{team['total']:g} total, discarding race {team['discard']} "
-        f"({team['races'][team['discard']-1]:g}). Race 5 is a {min(team['races']):g}"
-        f"{'nd' if min(team['races']) == 2 else 'th'} — the best of the regatta — and the team "
-        f"has moved from {prev_pos}th after {prev_races} races to {team['pos']}th after "
-        f"{R['races_scored']}.")
+        f"{words.get(n_scored, n_scored)} races scored"
+        + (", one discard" if R.get('discard_applied') else ", no discard yet")
+        + f". Garm is {ordn(team['pos'])} on {team['net']:g} net from {team['total']:g} total"
+        + (f", discarding race {team['discard']} ({team['races'][team['discard']-1]:g})"
+           if team.get('discard') else '')
+        + f". Race {best_race} is a {ordn(int(best))} — the best of the regatta — and the team "
+        f"has moved from {ordn(prev_pos)} after {prev_races} races to {ordn(team['pos'])} after "
+        f"{n_scored}.")
     json.dump(hist, open(HISTORY, 'w'), indent=1, sort_keys=True)
     json.dump(D, open(PAYLOAD, 'w'), ensure_ascii=False)
     print(f"Garm {prev_pos}th after {prev_races} -> {team['pos']}th of {R['fleet']}, "

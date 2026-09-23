@@ -1,6 +1,6 @@
 {
  "source": "cncascais.com scored results (fetched, not transcribed) + ib-sailing mark-progress standings for races 1-4",
- "updated": "14/09/2026 09:25 UTC",
+ "updated": "23/09/2026 09:03 UTC",
  "races_scored": 10,
  "top": [
   {
@@ -290,7 +290,7 @@
   "Aretê 1872 (BRA 1795 — Areté) 08-09-2026.vkx",
   "To Nessa 1527 (BRA 1527 — To Nessa) 08-09-2026.vkx"
  ],
- "race4_note": "Six races scored, one discard. Garm is 9th on 190 net from 247 total, discarding race 2 (57). Race 5 is a 2nd — the best of the regatta — and the team has moved from 10th after 8 races to 9th after 10.",
+ "race4_note": "Ten races scored, one discard. Garm is 9th on 190 net from 247 total, discarding race 2 (57). Race 5 is a 2nd — the best of the regatta — and the team has moved from 10th after 8 races to 9th after 10.",
  "telemetry": {
   "logs": 102,
   "day8": 30,
