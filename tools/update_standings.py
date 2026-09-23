@@ -84,6 +84,9 @@ def main():
         + f". Race {best_race} is a {ordn(int(best))} — the best of the regatta — and the team "
         f"has moved from {ordn(prev_pos)} after {prev_races} races to {ordn(team['pos'])} after "
         f"{n_scored}.")
+    # the whole arc of the regatta, for the page to draw: standing after each scoring
+    # cut, oldest first — 29th after four races, 9th after ten
+    o['history'] = {str(k): v for k, v in sorted(((int(k), v) for k, v in hist.items()))}
     json.dump(hist, open(HISTORY, 'w'), indent=1, sort_keys=True)
     json.dump(D, open(PAYLOAD, 'w'), ensure_ascii=False)
     print(f"Garm {prev_pos}th after {prev_races} -> {team['pos']}th of {R['fleet']}, "

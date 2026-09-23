@@ -1,6 +1,6 @@
 {
  "source": "cncascais.com scored results (fetched, not transcribed) + ib-sailing mark-progress standings for races 1-4",
- "updated": "23/09/2026 09:03 UTC",
+ "updated": "23/09/2026 12:32 UTC",
  "races_scored": 10,
  "top": [
   {
@@ -344,5 +344,11 @@
  "gain_all_races": 9,
  "gain_missing": [
   6
- ]
+ ],
+ "history": {
+  "4": 29,
+  "6": 15,
+  "8": 10,
+  "10": 9
+ }
 }

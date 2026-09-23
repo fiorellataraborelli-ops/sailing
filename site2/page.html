@@ -458,6 +458,31 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   #tracks #tk-plot{order:3;} #tracks #tk-legend{order:4;margin-top:10px;} #tracks #tk-boats{order:5;} #tracks #tk-note{order:6;}
   #tk-play{min-height:44px;font-weight:600;}
 }
+
+/* ---- the opener: where the boat started the regatta and where it finished ---- */
+.arc{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+.arclabel{font:500 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;opacity:.62;margin-bottom:14px;}
+.archead{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:6px;}
+.archead .k{display:block;font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.62;margin-bottom:6px;}
+.archead b{font:500 76px/.95 var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.045em;}
+.arcfrom b{opacity:.42;}
+.arcto b{color:var(--lime);}
+.arcto .of{font-size:14px;opacity:.7;margin-left:8px;}
+.arcarrow{font:500 40px/1 var(--mono);opacity:.5;align-self:center;padding-bottom:8px;}
+.arcstats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(127,127,127,.35);
+  border:1px solid rgba(127,127,127,.35);border-radius:5px;overflow:hidden;margin-top:14px;}
+.arcstat{background:var(--ink);padding:14px 14px 12px;}
+.arcstat .k{font:500 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;opacity:.62;}
+.arcstat .v{font:500 21px var(--mono);font-variant-numeric:tabular-nums;margin-top:6px;letter-spacing:-.02em;}
+.arcstat .v i{font-style:normal;opacity:.42;} .arcstat .v em{font-style:normal;color:var(--lime);}
+.arcstat .c{font-size:11.5px;opacity:.68;margin-top:5px;line-height:1.45;}
+.stack > .strip{margin-top:4px;}
+@media (max-width:760px){
+  .archead b{font-size:66px;}
+  .arcstats{grid-template-columns:1fr 1fr;}
+  .arcarrow{display:none;}
+  .stack > .strip.on{display:grid;}
+}
 </style>
 
 <div class="shell">
@@ -485,24 +510,17 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   </div>
 </header>
 
-<div class="strip">
-  <div><img src="__IMG1__" alt="Crew grinding and trimming upwind"></div>
-  <div><img src="__IMG2__" alt="Full crew hiking out hard off the rail"></div>
-  <div><img src="__IMG3__" alt="Prize ceremony, 44th Copa del Rey MAPFRE"></div>
-</div>
-
 <div class="stack">
 
-  <section id="overview" data-tab="team" class="rd-card">
-    <div class="ovhead">
-      <div>
-        <div class="ovlabel">Standing after <span id="ov-races">&mdash;</span> races</div>
-        <div class="ovpos"><b class="tnum" id="ov-pos">&mdash;</b><span id="ov-fleet"></span></div>
-      </div>
-      <div class="ovmoved" id="ov-moved"></div>
+  <section id="arc" data-tab="team" class="rd-card arc">
+    <div class="arclabel" id="arc-label">&mdash;</div>
+    <div class="archead">
+      <div class="arcfrom"><span class="k" id="arc-fromk">Start</span><b class="tnum" id="arc-from">&mdash;</b></div>
+      <div class="arcarrow" aria-hidden="true">&rarr;</div>
+      <div class="arcto"><span class="k" id="arc-tok">Final</span><b class="tnum" id="arc-to">&mdash;</b><span class="of" id="arc-of"></span></div>
     </div>
-    <div class="wins" id="ov-wins"></div>
-    <p class="note" id="ov-note"></p>
+    <svg id="arc-plot" viewBox="0 0 600 120" style="width:100%;height:auto;display:block" role="img"></svg>
+    <div class="arcstats" id="arc-stats"></div>
   </section>
 
   <section id="progress" data-tab="team" class="rd-card">
@@ -526,6 +544,26 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     </div>
     <p class="fine" id="pg-note"></p>
   </section>
+
+  <section id="overview" data-tab="team" class="rd-card">
+    <div class="ovhead">
+      <div>
+        <div class="ovlabel">Standing after <span id="ov-races">&mdash;</span> races</div>
+        <div class="ovpos"><b class="tnum" id="ov-pos">&mdash;</b><span id="ov-fleet"></span></div>
+      </div>
+      <div class="ovmoved" id="ov-moved"></div>
+    </div>
+    <div class="wins" id="ov-wins"></div>
+    <p class="note" id="ov-note"></p>
+  </section>
+
+<div class="strip" data-tab="team">
+  <div><img src="__IMG1__" alt="Crew grinding and trimming upwind"></div>
+  <div><img src="__IMG2__" alt="Full crew hiking out hard off the rail"></div>
+  <div><img src="__IMG3__" alt="Prize ceremony, 44th Copa del Rey MAPFRE"></div>
+</div>
+
+
 
   <section id="summary" data-tab="team" class="rd-card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
@@ -1043,6 +1081,91 @@ function pgInit(){
     pgRace = ks[0]; pgSeg(); pgCaption(); pgPlay(true);
   };
   $('pg-scrub').oninput = e => { pgAll = false; pgStop(); pgT = Number(e.target.value) / 100 * 3; pgPaint(); };
+}
+
+
+/* ---------------- the opener ---------------- */
+/* The regatta in one line: standing after each scoring cut, first to last, with the
+   final figure counted down from the first. Nothing here is typed — the history is
+   written by update_standings as the scoreboard moves, and the four counts under it
+   come from the same data the cards use. */
+function drawArc(){
+  if (!$('arc-plot')) return;
+  const t = D.official.team;
+  const H = Object.entries(D.official.history || {}).map(([k, v]) => [Number(k), v]).sort((a, b) => a[0] - b[0]);
+  $('arc-label').textContent = `${t.boat} · ${t.sail} · J/70 World Championship, Cascais · ${D.official.fleet} boats`;
+  $('arc-of').textContent = `of ${D.official.fleet}`;
+  if (H.length < 2){ $('arc-from').textContent = ord(t.pos); $('arc-to').textContent = ord(t.pos); }
+  else {
+    const [r0, p0] = H[0], [r1, p1] = H[H.length - 1];
+    $('arc-fromk').textContent = `After ${r0} races`; $('arc-tok').textContent = `After ${r1} races`;
+    $('arc-from').textContent = ord(p0);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, dur = 1600, t0 = performance.now();
+    const tick = now => {
+      const k = reduce ? 1 : Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      $('arc-to').textContent = ord(Math.round(p0 + (p1 - p0) * e));
+      arcPlot(H, e);
+      if (k < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+  // off the line: rank among the logged boats at +60 s, as a percentile, early against late
+  const pctOf = (rows, me) => { const b = rows.map(x => x.behind60).sort((a, b) => b - a);
+    return 100 * (rows.length - (b.indexOf(me.behind60) + 1)) / (rows.length - 1); };
+  const startPct = races => { const v = [];
+    for (const rn of races){ const rows = D.start.races[rn] || []; const me = rows.find(x => x.boat === D.meta.legteam);
+      if (me && rows.length >= 10) v.push(pctOf(rows, me)); }
+    return v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length) : null; };
+  const e1 = startPct(['1', '2']), e2 = startPct(['5', '6', '7', '8', '9', '10']);
+  const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+  const f1 = Math.round(mean(t.races.slice(0, 4))), f2 = Math.round(mean(t.races.slice(4)));
+  const E = D.progress.event || {};
+  // downwind: races where Garm's steady VMG was top three of a logged fleet of 14 or more
+  const dnTop = Object.entries(D.legs.races).map(([rn, R]) => {
+    const agg = Object.entries(R).map(([b, L]) => { const runs = L.filter(l => l.kind === 'run' && l.svmg);
+      return runs.length ? [b, runs.reduce((s, l) => s + l.svmg, 0) / runs.length] : null; }).filter(Boolean);
+    if (agg.length < 14) return null;
+    const me = agg.find(a => a[0] === D.meta.legteam);
+    if (!me) return null;
+    const r = 1 + agg.filter(a => a[1] > me[1] + 1e-9).length;     // ties share a place
+    return r <= 3 ? {rn: Number(rn), r, n: agg.length} : null;
+  }).filter(Boolean).sort((a, b) => a.rn - b.rn);
+  const stats = [
+    ['Off the line', e1 != null && e2 != null ? `<i>${ord(e1)}</i> → <em>${ord(e2)}</em>` : '—',
+     'percentile of the logged fleet at +60 s · races 1–2 → races 5–10'],
+    ['Average finish', `<i>${ord(f1)}</i> → <em>${ord(f2)}</em>`, `races 1–4 → races 5–${t.races.length}, of ${D.official.fleet}`],
+    ['After the top mark', `<em>${E.gain >= 0 ? '+' : ''}${E.gain}</em>`,
+     `places over ${E.gain_races} measured races · upwind ${ord(E.up_rank)} of ${D.official.fleet}`],
+    ['Downwind speed', dnTop.length ? `<em>top 3</em> in ${dnTop.length} races` : '—',
+     dnTop.map(x => `race ${x.rn} ${ord(x.r)} of ${x.n}`).join(' · ') || 'no race with 14 or more boats logged'],
+  ];
+  $('arc-stats').innerHTML = stats.map(([k, v, c]) =>
+    `<div class="arcstat"><div class="k">${k}</div><div class="v">${v}</div><div class="c">${c}</div></div>`).join('');
+}
+function arcPlot(H, e){
+  const W = 600, Hh = 120, L = 34, R = 34, T = 20, B = 26;
+  const xs = H.map((_, i) => L + i * (W - L - R) / (H.length - 1));
+  const pmax = Math.max(...H.map(h => h[1])) + 4;
+  const py = p => T + (p - 1) / (pmax - 1) * (Hh - T - B);
+  const n = e * (H.length - 1);
+  const pts = H.filter((_, i) => i <= n + 1e-6).map(([, p], i) => [xs[i], py(p)]);
+  if (n < H.length - 1 - 1e-6){ const i = Math.floor(n), f = n - i;
+    pts.push([xs[i] + (xs[i + 1] - xs[i]) * f, py(H[i][1] + (H[i + 1][1] - H[i][1]) * f)]); }
+  let s = `<line x1="${L}" y1="${Hh - B}" x2="${W - R}" y2="${Hh - B}" stroke="currentColor" stroke-opacity=".18"/>`;
+  if (pts.length >= 2)
+    s += `<polyline fill="none" stroke="var(--lime)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" ` +
+         `points="${pts.map(p => p.map(v => v.toFixed(1)).join(',')).join(' ')}"/>`;
+  H.forEach(([r, p], i) => {
+    if (i > n + 1e-6) return;
+    const last = i === H.length - 1;
+    const anchor = i === 0 ? 'start' : last ? 'end' : 'middle';
+    const ax = i === 0 ? xs[i] - 6 : last ? xs[i] + 6 : xs[i];
+    s += `<circle cx="${xs[i].toFixed(1)}" cy="${py(p).toFixed(1)}" r="${last ? 6 : 5}" fill="${last ? 'var(--lime)' : 'currentColor'}" stroke="var(--ink)" stroke-width="2"/>` +
+         `<text x="${ax.toFixed(1)}" y="${(py(p) - 11).toFixed(1)}" text-anchor="${anchor}" font-family="var(--mono)" font-size="12" font-weight="600" fill="currentColor">${ord(p)}</text>` +
+         `<text x="${ax.toFixed(1)}" y="${Hh - B + 17}" text-anchor="${anchor}" font-family="var(--mono)" font-size="10" fill="currentColor" fill-opacity=".62">after ${r} races</text>`;
+  });
+  $('arc-plot').innerHTML = s;
+  $('arc-plot').setAttribute('aria-label', 'Standing after each scoring cut: ' + H.map(([r, p]) => `${ord(p)} after ${r}`).join(', '));
 }
 
 function drawOverview(){
@@ -2416,7 +2539,7 @@ function drawNav(){
 }
 
 function drawAll(){
-  drawOverview(); pgInit(); drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawEventLegs(); drawTracks(); drawManoeuvres(); drawFleet();
+  drawArc(); drawOverview(); pgInit(); drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawEventLegs(); drawTracks(); drawManoeuvres(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
 drawAll(); drawChat(); drawNav(); initShell(); srInit();

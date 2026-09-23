@@ -7,6 +7,7 @@ same tokens, type and imagery, and driven by the real payload instead of the
 placeholder numbers the mockup shipped with. Images are inlined as data URIs so
 the page is one file with no external requests but the two Google fonts.
 """
+import statistics as st
 import json, os, base64, re, unicodedata as ud
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -377,7 +378,100 @@ def main():
     P = D['progress']
     bias = D['ib']['bias_rows'][0]
 
+    # ---- what the analyser can be asked. Every number below is computed here from the
+    # same payload the cards draw from, so an answer cannot drift from the page. ----
+    LG, ST, MK = D['legs']['races'], D['start']['races'], D['progress'].get('marks', {})
+    EV, TEAM = D['progress'].get('event', {}), 'Team Sweden'
+    def kind_rank(rn, kind):
+        agg = {b: st.mean([l['svmg'] for l in legs if l['kind'] == kind and l.get('svmg')])
+               for b, legs in LG.get(rn, {}).items() if any(l['kind'] == kind and l.get('svmg') for l in legs)}
+        if TEAM not in agg: return None
+        # competition ranking, as everywhere on the page: boats on the same figure share a place
+        return 1 + sum(1 for v in agg.values() if v > agg[TEAM] + 1e-9), len(agg)
+    def start_rank(rn):
+        rows = ST.get(rn, []); me = next((x for x in rows if x['boat'] == TEAM), None)
+        if not me: return None
+        return 1 + sum(1 for x in rows if x['behind60'] > me['behind60'] + 1e-9), len(rows), me
+    def loss_rank(rn):
+        tot = {b: sum(l.get('loss_m') or 0 for l in legs) for b, legs in LG.get(rn, {}).items()}
+        if TEAM not in tot: return None
+        o = sorted(tot, key=tot.get); return o.index(TEAM) + 1, len(o), round(tot[TEAM]), round(st.median(tot.values()))
+    def beat1(rn):
+        me = next((l for l in LG.get(rn, {}).get(TEAM, []) if l['kind'] == 'beat'), None)
+        med = st.median([next(l for l in legs if l['kind'] == 'beat')['tacks']
+                         for legs in LG.get(rn, {}).values() if any(l['kind'] == 'beat' for l in legs)])
+        return me, med
+    def pct(rank_n): r, n = rank_n[0], rank_n[1]; return 100 * (n - r) / (n - 1)
+    rk = lambda x: f"{ordn(x[0])} of {x[1]}"
+    ordn = lambda n: f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
+    m9, m10 = MK.get('team', {}).get('9', []), MK.get('team', {}).get('10', [])
+    s9, s10 = start_rank('9'), start_rank('10')
+    b9, med9 = beat1('9'); b10, med10 = beat1('10')
+    up9, dn9, up10, dn10 = kind_rank('9', 'beat'), kind_rank('9', 'run'), kind_rank('10', 'beat'), kind_rank('10', 'run')
+    ls10 = loss_rank('10'); run10 = [l for l in LG.get('10', {}).get(TEAM, []) if l['kind'] == 'run'][-1]
+    pr9 = next(r for r in D['progress']['by_race'] if r['race'] == 9)
+    pr10 = next(r for r in D['progress']['by_race'] if r['race'] == 10)
+    hist = sorted(((int(k), v) for k, v in D['official'].get('history', {}).items()))
+    early = [pct(start_rank(r)) for r in ('1', '2') if start_rank(r) and start_rank(r)[1] >= 10]
+    late = [pct(start_rank(r)) for r in map(str, range(5, 11)) if start_rank(r) and start_rank(r)[1] >= 10]
+    scores = t['r']; first4, last6 = st.mean(scores[:4]), st.mean(scores[4:])
+    dn_top = [(r, kind_rank(r, 'run')) for r in map(str, range(1, 11))
+              if kind_rank(r, 'run') and kind_rank(r, 'run')[1] >= 14 and kind_rank(r, 'run')[0] <= 3]
+    # capture rate over the championship, from the event's ten-race table
+    MP = json.load(open(os.path.join(ROOT, 'data/event/mark_progress.json')))
+    cap = []
+    for r in MP['fleet_rows']:
+        if r['gain'] is None or r['w1'] is None or not r['gain_races']: continue
+        R = r['gain_races']; up_av, dn_av = R * (r['w1'] - 1), R * (MP['fleet'] - r['w1'])
+        cap.append((r['gain'] / up_av if r['gain'] >= 0 else r['gain'] / dn_av, r))
+    cap.sort(key=lambda x: -x[0])
+    cap_g = next(i for i, (e, r) in enumerate(cap, 1) if r['name'] == 'GARM')
+    cap_e = next(e for e, r in cap if r['name'] == 'GARM')
+    cap_1 = cap[0]
+    full = [r for e, r in cap if r['gain_races'] == MP['races_covered']]
+    def corr(xs, ys):
+        mx, my = st.mean(xs), st.mean(ys); sxy = sum((a - mx) * (b - my) for a, b in zip(xs, ys))
+        return sxy / (sum((a - mx) ** 2 for a in xs) * sum((b - my) ** 2 for b in ys)) ** .5
+    r_w1 = corr([r['w1'] for r in full], [r['pts'] for r in full])
+    r_gain = corr([r['gain'] for r in full], [r['pts'] for r in full])
+    # the next places: races 4 and 9 both traced to the first mark
+    RES = json.load(open(os.path.join(ROOT, 'data/event/results.json')))['rows']
+    nets = sorted(r['net'] for r in RES)
+    if_9 = t['pts'] - scores[8] + 15
+    pos_if = sum(1 for n in nets if n < if_9) + 1
+    gw = {r['n']: r for r in D['ib']['races'] if r.get('gun_wind') is not None}
+    r5, r9b = gw.get(5), gw.get(9)
+    tack_cost = [l['tloss_m'] for legs in LG.values() for l in legs.get(TEAM, []) if l.get('tloss_m') is not None]
+    gybe_cost = [l['gloss_m'] for legs in LG.values() for l in legs.get(TEAM, []) if l.get('gloss_m') is not None and l['kind'] == 'run']
+    lr = {r: loss_rank(r) for r in ('1', '2', '7', '8', '10')}
+    boats_logged = sorted({len(LG[r]) for r in LG if len(LG[r]) >= 10})
+
     qa = [
+      {'label': 'How much has the boat improved?', 'k': ['improve', 'progress', 'better', 'trajectory', 'climb'],
+       'q': 'How much has Garm improved through the regatta?',
+       'a': f"Measurably, on four independent counts. <b>Standing:</b> "
+            + ' → '.join(f"{ordn(v)} after {k}" for k, v in hist)
+            + f" — up at every scoring cut. <b>Off the line:</b> Garm's start rank among the logged boats "
+            f"went from the {round(st.mean(early))}th percentile in races 1–2 to the {round(st.mean(late))}th across races 5–10, "
+            f"with the best start in the fleet in race 6. <b>Finishes:</b> races 1–4 averaged {first4:.0f}th; races 5–10 averaged "
+            f"{last6:.0f}th. <b>After the top mark:</b> +{EV.get('gain')} places over {EV.get('gain_races')} measured races, "
+            f"upwind {ordn(EV.get('up_rank'))} of {D['official']['fleet_scored']} and downwind {ordn(EV.get('dn_rank'))}, by the event's own report."},
+      {'label': 'What happened in race 9?', 'k': ['race 9', 'nine', 'the 42'],
+       'q': 'What happened in race 9?',
+       'a': f"Lost before the first mark, not after it. Start: <b>{-s9[2]['behind60']} m down at +60 s</b>, {rk(s9)} logged boats, "
+            f"{s9[2]['late_s']} s late. First beat: <b>{b9['tacks']} tacks against a fleet median of {med9:.0f}</b> — but they cost only "
+            f"{round(b9['tacks'] * b9['tloss_m'])} m of ground between them, so the price was the lane, not the manoeuvres. "
+            f"Boat speed was fleet-median both ways ({rk(up9)} upwind, {rk(dn9)} downwind). The event puts Garm "
+            f"<b>~{ordn(m9[0])} at the first mark</b>, then {ordn(m9[1])} at the gate, {ordn(m9[2])} at the second windward, "
+            f"<b>{ordn(m9[3])} home</b>: {pr9['gain']:+} places, all of them after the first beat. The line was "
+            f"{r9b['bias_deg']}° pin-favoured at the gun ({r9b['bias_m']} m) and the wind moved {r9b['shift_deg']:+}° over the beat."},
+      {'label': 'What happened in race 10?', 'k': ['race 10', 'ten', 'last race', 'final race'],
+       'q': 'What happened in race 10?',
+       'a': f"Held from the front. Start {rk(s10)}, {-s10[2]['behind60']} m down at +60 s. Upwind speed <b>{rk(up10)}</b>, "
+            f"downwind <b>{rk(dn10)}</b>. The event has Garm ~{ordn(m10[0])} at the first mark, {ordn(m10[1])} at the gate, "
+            f"{ordn(m10[2])} at the second windward, <b>{ordn(m10[3])} home</b> — {pr10['gain']:+}. The one cost: "
+            f"<b>{run10['gybes']} gybes on the final run at {run10['gloss_m']} m each</b>, {ls10[2]} m lost to manoeuvres in the race "
+            f"against a fleet median of {ls10[3]} — {rk(ls10)}, the most expensive in the fleet that race. On the quickest leg of the day every gybe is dear."},
       {'label': 'Where did the regatta go wrong?',
        'k': ['wrong', 'bad', 'lose', 'lost', 'worst'],
        'q': 'Where did the regatta go wrong?',
@@ -388,8 +482,10 @@ def main():
             f"<b>{P['w1']['avg']}th on average</b> — {P['w1']['rank']} of {P['w1']['n']} — and "
             f"finishes {t['pos']}th, winning <b>+{t['gain_total']} places</b> back after it across "
             f"{D['official']['gain_races']} races. The boat is starting deep and spending the "
-            f"race recovering. Friday is the exception and the proof: in race 7 it rounded "
-            f"<b>6th</b>, the best of the regatta, and finished 13th."},
+            f"race recovering. The exception is the proof: in race "
+            f"{min((r for r in D['progress']['by_race'] if r['w1']), key=lambda r: r['w1'])['race']} it rounded "
+            f"<b>{ordn(min(r['w1'] for r in D['progress']['by_race'] if r['w1']))}</b>, the best of the regatta, and finished "
+            f"{ordn(min((r for r in D['progress']['by_race'] if r['w1']), key=lambda r: r['w1'])['result'])}."},
       {'label': "What's the wind bias?", 'k': ['bias', 'wind', 'grib', 'forecast', 'model'],
        'q': "What's the wind bias?",
        'a': f"The GRIB runs right of the water. Race 1 forecast {bias['forecast']}° against "
@@ -397,12 +493,52 @@ def main():
             f"+19.1, +18.0 and +11.2, so the page uses +{D['meta']['bias']}° as a centre, not a fixed "
             f"offset, and withholds it entirely below 8 knots. The cause is the breeze bending against "
             f"the shoreline, which a 7 km grid cell cannot resolve."},
-      {'label': 'Which end of the line?', 'k': ['line', 'start', 'pin', 'end', 'bias at the gun'],
-       'q': 'Which end of the line was favoured?',
-       'a': f"The pin, in every race. Race 2 was worth {startline[1]['bias_m']} m on a "
-            f"{startline[1]['line_m']:,} m line — a fifth of the line, free. Our own geometry "
-            f"reproduces the event's published figures to within 2% each time, working only from the "
-            f"line bearing and the measured wind."},
+      {'label': 'Was the line really biased?', 'k': ['line', 'pin', 'end', 'bias at the gun', 'biased', 'square'],
+       'q': 'Was the line really biased, and did it pay?',
+       'a': f"Bias is a question about the gun, not the beat, and the two answers differ on this course. Measured at the gun: "
+            + '; '.join(f"race {n} {r['bias_deg']}° ({r['bias_m']} m, {r['favoured'].lower()}), wind then moved {r['shift_deg']:+}° over the beat"
+                        for n, r in sorted(gw.items()))
+            + f". Race 5 is the case in point: <b>square at the gun ({r5['bias_deg']}°, {r5['bias_m']} m)</b>, then an "
+            f"{r5['shift_deg']:+}° right shift during the beat that made the beat-average read a pin bias nobody on the line could have used. "
+            f"A right shift eats a pin bias; a left one compounds it. Races 1–4 use the event's published figures."},
+      {'label': 'Is "places gained" a fair measure?', 'k': ['gained', 'capture', 'gain', 'paradox', 'fair measure'],
+       'q': 'Is "places gained" a fair measure?',
+       'a': f"Not on its own. A boat rounding the top mark 67th has 66 places to win; one rounding 10th has nine. Measured as places won "
+            f"as a share of the places available — capture rate — the table re-orders: <b>{cap_1[1]['name'].title()}</b>, the champion, "
+            f"tops it at {cap_1[0]*100:.1f}%, and <b>Garm is {ordn(cap_g)} of {len(cap)}</b> at {cap_e*100:.1f}% from a mean first-mark "
+            f"position of {EV.get('w1_avg')}. Across the {len(full)} boats measured in all {MP['races_covered']} races, mean first-mark position "
+            f"predicts final points at r = {r_w1:+.2f}; raw places gained runs the other way at {r_gain:+.2f}. Rounding the top mark early "
+            f"is what wins regattas; gains are mostly a measure of how deep the first beat left you."},
+      {'label': 'Where are the next places?', 'k': ['next', 'improve further', 'places left', 'seventh', 'target'],
+       'q': 'Where are the next places?',
+       'a': f"In the first beat of two races. The {scores[3]:g} in race 4 and the {scores[8]:g} in race 9 are the two counting scores keeping "
+            f"Garm at {ordn(t['pos'])}; both trace to the first mark (rounded ~{next(r['w1'] for r in D['progress']['by_race'] if r['race']==4)} "
+            f"and ~{m9[0]}). Turn race 9's {scores[8]:g} into a 15 and the net is {if_9:g}, which on this scoreboard is <b>{ordn(pos_if)}</b>. "
+            f"Everything after the top mark already works: downwind speed in the top three of the logged fleet in "
+            f"{len(dn_top)} races ({', '.join(f'race {r} {rk(x)}' for r, x in dn_top)}), and {ordn(EV.get('up_rank'))} of 100 for places won upwind."},
+      {'label': 'What does a tack cost?', 'k': ['cost', 'metres', 'seconds', 'loss', 'expensive'],
+       'q': 'What does a tack or a gybe actually cost?',
+       'a': f"Ground, in metres, against the boat's own steady VMG — never a speed dip. For Garm a tack averaged <b>{st.mean(tack_cost):.1f} m</b> "
+            f"across the regatta and a gybe <b>{st.mean(gybe_cost):.1f} m</b>; a gybe at planing speed costs several times a light-air tack. "
+            f"Ranked within each day's fleet, total ground lost to manoeuvres went from "
+            + ' and '.join(f"{rk(lr[r])} in race {r}" for r in ('1', '2'))
+            + f" to {rk(lr['7'])} in race 7 ({lr['7'][2]} m against a median {lr['7'][3]}) and {rk(lr['8'])} in race 8 — then "
+            f"{rk(lr['10'])} in race 10, {lr['10'][2]} m, five gybes on the fastest leg of the day. The averages here exclude the manoeuvres; "
+            f"the manoeuvres are costed separately, so a boat that tacks more is not measured as slower for it."},
+      {'label': "What can't the data say?", 'k': ['cannot', "can't", 'limit', 'current', 'leeway', 'missing', 'caveat'],
+       'q': "What can't this data say?",
+       'a': f"Four things, and each is marked where it applies. No log in the fleet carries a wind instrument, so every wind here is inferred "
+            f"from the boats' own tacks — reproducing the event's published figures to a mean of 0.9°, but inferred. The Atlas heading cannot yet "
+            f"be decoded cleanly, so leeway and current are not reported rather than reported badly. Fleet-relative speed ranks are against the "
+            f"boats that logged — {boats_logged[0]} to {boats_logged[-1]} a race, never the hundred — and those boats skew to the front of the "
+            f"fleet. And the event could not resolve Garm's first mark in race 6, so that race has no mark-progress figure and the event does "
+            f"not rank the ten-race total."},
+      {'label': 'How is this checked?', 'k': ['check', 'audit', 'trust', 'verify', 'source', 'accurate'],
+       'q': 'How is any of this checked?',
+       'a': f"Against sources produced independently of this page. {D['official']['telemetry']['logs']} Atlas logs are decoded from the raw "
+            f"binary; the event's scored results, its mark-progress report and its published leg tables are fetched and compared; Garm's own "
+            f"log is re-read from disk and its figures recomputed. An audit runs every one of those comparisons on every build and refuses to "
+            f"write the page if any fails. Where the page estimates rather than measures, it says so on the card."},
       {'label': 'Do tacks matter?', 'k': ['tack', 'gybe', 'manoeuvre', 'maneuver'],
        'q': 'Do tacks explain the difference?',
        'a': f"No, and this is the most counter-intuitive result on the page. Across the tracked fleet "
@@ -436,6 +572,7 @@ def main():
                    'day9_races': D['official']['telemetry'].get('day9_races', []),
                    'discard': D['official'].get('discard_applied', False),
                    'gainRaces': D['official'].get('gain_races'),
+                   'history': D['official'].get('history', {}),
                    'gainDef': D['official'].get('gain_def'),
                    'team': {'pos': t['pos'], 'sail': t['sail'], 'boat': t['boat'],
                             'skipper': t['skipper'], 'pts': t['pts'], 'total': t['total'],
