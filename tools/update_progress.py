@@ -106,6 +106,26 @@ def main():
                   'up': (T['up_rank'], P['fleet']),
                   'dn': (T['dn_rank'], P['fleet']),
                   'gain_top20': None},
+        # the race as it unfolded: Garm's estimated position at each course checkpoint
+        # and the whole fleet's, compact enough to animate on a phone. Order per boat is
+        # [Windward 1, leeward gate, Windward 2, finish]; null where the event could not
+        # resolve that boat at that mark. Sails carry no space so they key cleanly.
+        'marks': {
+            'checkpoints': ['Windward 1', 'Leeward gate', 'Windward 2', 'Finish'],
+            'team': {rn: [m[k]['pos'] for k in ('w1', 'gate', 'w2', 'fin')]
+                     for rn, m in P.get('team_marks', {}).items()},
+            'team_times': {rn: [m[k]['time'] for k in ('w1', 'gate', 'w2', 'fin')]
+                           for rn, m in P.get('team_marks', {}).items()},
+            'team_range': {rn: [[m[k]['lo'], m[k]['hi']] if m[k]['lo'] else None
+                                for k in ('w1', 'gate', 'w2', 'fin')]
+                           for rn, m in P.get('team_marks', {}).items()},
+            'fleet': {rn: [[sail] + [next((r['pos'] for r in (F.get(k) or []) if r['sail'] == sail), None)
+                                    for k in ('w1', 'gate', 'w2', 'fin')]
+                           for sail in sorted({r['sail'] for k in ('w1', 'gate', 'w2', 'fin')
+                                               for r in (F.get(k) or []) if r['sail']})]
+                      for rn, F in P.get('fleet_marks', {}).items()},
+            'names': {r['sail']: r['name'] for r in rows},
+        },
         'event': {k: T[k] for k in ('gain', 'gain_races', 'gain_missing', 'up', 'up_rank',
                                     'dn', 'dn_rank', 'lap', 'leg_total', 'w1_avg', 'w1_rank',
                                     'w1_races')},
