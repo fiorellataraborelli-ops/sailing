@@ -486,6 +486,8 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 .checktbl tr:last-child td{border-bottom:0;}
 .checktbl td.exact{color:var(--green);font-weight:600;}
 .checktbl td.ok{color:var(--muted);}
+.checktbl td.off{color:var(--red,#B4531E);font-weight:600;}
+.checktbl thead + tbody + thead th{padding-top:16px;}
 @media (max-width:760px){
   .checkh{font-size:20px;}
   .checktbl{min-width:0;}
@@ -944,28 +946,30 @@ function seg(el, items, active, onPick){
    headline counts the exact matches. Nothing here is typed — a race with no report has
    no card, and a report with a disagreement would show the disagreement. */
 function drawCheck(){
-  const V = D.validation || [];
+  const V = (D.validation || []).slice().sort((a, b) => b.race - a.race);
   if (!$('check-tbl') || !V.length){ if ($('check')) $('check').hidden = true; return; }
-  const v = V[V.length - 1];
-  const exact = v.rows.filter(r => r.exact), within = v.rows.filter(r => r.ok);
+  const all = V.flatMap(v => v.rows), exact = all.filter(r => r.exact), within = all.filter(r => r.ok);
+  const races = V.map(v => v.race).sort((a, b) => a - b);
   $('check-h').innerHTML =
-    `Race ${v.race}: the event's own report, published after the model — <b>${exact.length} of ${v.n} figures identical</b>, ` +
-    `${within.length} of ${v.n} within tolerance.`;
+    `${races.length > 1 ? 'Races ' + races.join(' and ') : 'Race ' + races[0]}: the event's own reports, published after the model — ` +
+    `<b>${exact.length} of ${all.length} figures identical</b>, ${within.length} of ${all.length} within tolerance.`;
   $('check-why').innerHTML =
     `The model measured the wind from the fleet's own tack headings — the two close-hauled courses straddle the wind, ` +
-    `so their bisector is the wind — and the start line from the committee boat's own position rows in the Atlas logs, ` +
-    `with the bias referenced to the wind at the gun rather than the average over the beat. The event's analysis is ` +
-    `built independently, from its own tracking of ${v.boats_event} boats against the model's ${v.boats_model}. ` +
-    `Where the two agree to the degree and the metre, the method is doing what it claims.`;
-  $('check-tbl').innerHTML =
-    `<thead><tr><th>Figure</th><th>Event's report</th><th>Model, from the logs</th><th>Difference</th></tr></thead><tbody>` +
+    `so their bisector is the wind — the start line from the committee boat's own position rows in the Atlas logs, ` +
+    `with the bias referenced to the wind at the gun rather than the average over the beat, and each boat's tacks, ` +
+    `gybes and leg speeds from its own track. The event's analysis is built independently from its own tracking of ` +
+    `${V[0].boats_event} boats against the model's ${V[0].boats_model}. Where the two agree to the degree, the metre and ` +
+    `the tack, the method is doing what it claims; where they differ, the difference is shown.`;
+  $('check-tbl').innerHTML = V.map(v =>
+    `<thead><tr><th>Race ${v.race}</th><th>Event's report</th><th>Model, from the logs</th><th>Difference</th></tr></thead><tbody>` +
     v.rows.map(r => `<tr><td>${esc(r.k)}</td><td>${esc(r.event)}</td>` +
-      `<td class="${r.exact ? 'exact' : r.ok ? 'ok' : ''}">${esc(r.model)}${r.exact ? ' ✓' : ''}</td><td>${esc(r.diff)}</td></tr>`).join('') +
-    `</tbody>`;
+      `<td class="${r.exact ? 'exact' : r.ok ? 'ok' : 'off'}">${esc(r.model)}${r.exact ? ' ✓' : ''}</td><td>${esc(r.diff)}</td></tr>`).join('') +
+    `</tbody>`).join('');
   $('check-note').textContent =
-    `The model's figures predate the report; the report's are as published for race ${v.race} on ${v.date}. ` +
-    `Speed at the gun and time to the line use the event's start table and the model's own line crossing; ` +
-    `the two measure the moment slightly differently, so those rows are held to a tolerance, not to identity.`;
+    `The model's figures predate the reports; the reports' are as published for ${races.map(r => 'race ' + r).join(' and ')}. ` +
+    `Whole-leg VMG is held against the model's all-fix figure and the event's "straight lines" tables — roundings and ` +
+    `manoeuvres removed — against the model's steady figure. Speed at the gun and time to the line are measured at ` +
+    `slightly different moments by the two methods, so those rows are held to a tolerance, not to identity.`;
 }
 
 /* ---------------- the opener ---------------- */

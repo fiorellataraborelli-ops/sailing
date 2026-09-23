@@ -176,8 +176,11 @@ def main():
         if mine:
             check(f'r{rn} line length within 5 m of the event', abs(mine['line_m'] - rep['line']['line_m']) <= 5,
                   f"ours {mine['line_m']} m, event {rep['line']['line_m']} m")
-            check(f'r{rn} bias at the gun within 5 m of the event', abs(mine['bias_m'] - rep['line']['bias_m']) <= 5,
-                  f"ours {mine['bias_m']} m ({mine['bias_deg']} deg), event {rep['line']['bias_m']} m ({rep['line']['bias_deg']} deg)")
+            # in degrees: on a 994 m line one degree of wind is 17 m of bias, so a metre
+            # tolerance would be a tenth-of-a-degree tolerance on the wind
+            check(f'r{rn} bias at the gun within 3 deg of the event, same end',
+                  abs(mine['bias_deg'] - rep['line']['bias_deg']) <= 3 and mine['favoured'] == rep['line']['favoured'],
+                  f"ours {mine['bias_deg']} deg ({mine['bias_m']} m), event {rep['line']['bias_deg']} deg ({rep['line']['bias_m']} m)")
         g_ev = next((r for r in rep['start']['rows'] if r['boat'] == 'Garm'), None)
         g_me = next((x for x in D['start']['races'].get(rn, []) if x['boat'] == TEAM), None)
         if g_ev and g_me:

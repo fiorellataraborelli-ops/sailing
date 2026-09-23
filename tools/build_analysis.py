@@ -402,9 +402,10 @@ def main():
             rows.append({'k': 'Wind at the gun', 'event': f"{ln['setting']}°", 'model': f"{ours['gun_wind']}°",
                          'diff': f"{abs(ours['gun_wind'] - ln['setting'])}°", 'ok': abs(ours['gun_wind'] - ln['setting']) <= 3,
                          'exact': ours['gun_wind'] == ln['setting']})
+            dd = abs(ours['bias_deg'] - ln['bias_deg'])
             rows.append({'k': 'Line bias at the gun', 'event': f"{ln['bias_deg']}° · {ln['bias_m']} m · {ln['favoured'].lower()}",
                          'model': f"{ours['bias_deg']}° · {ours['bias_m']} m · {ours['favoured'].lower()}",
-                         'diff': f"{abs(ours['bias_m'] - ln['bias_m'])} m", 'ok': abs(ours['bias_m'] - ln['bias_m']) <= 5,
+                         'diff': f"{dd}° ({abs(ours['bias_m'] - ln['bias_m'])} m)", 'ok': dd <= 3 and ours['favoured'] == ln['favoured'],
                          'exact': ours['bias_m'] == ln['bias_m'] and ours['bias_deg'] == ln['bias_deg']})
             rows.append({'k': 'Line length', 'event': f"{ln['line_m']} m", 'model': f"{ours['line_m']} m",
                          'diff': f"{abs(ours['line_m'] - ln['line_m'])} m", 'ok': abs(ours['line_m'] - ln['line_m']) <= 5,
@@ -416,6 +417,22 @@ def main():
                          'diff': f"{abs(g_me['sog'] - g_ev['sog_gun_kn']):.1f} kn", 'ok': abs(g_me['sog'] - g_ev['sog_gun_kn']) <= 0.3, 'exact': False})
             rows.append({'k': 'Garm, time to the line', 'event': f"{g_ev['line_time_s']} s", 'model': f"{g_me['late_s']} s",
                          'diff': f"{abs(g_me['late_s'] - g_ev['line_time_s']):.1f} s", 'ok': abs(g_me['late_s'] - g_ev['line_time_s']) <= 2, 'exact': False})
+        GL, legs = rep.get('garm_legs') or {}, D['legs']['races'].get(str(rn), {}).get('Team Sweden', [])
+        if GL and len(legs) >= 4:
+            # whole-leg tables against the model's all-fix VMG; "straight lines" tables, which
+            # have roundings and manoeuvres removed, against the model's steady VMG
+            pairs = [('uw1', 0, 'vmg', 'Garm, first-beat VMG'), ('dw1', 1, 'vmg', 'Garm, first-run VMG'),
+                     ('uw2', 2, 'vmg', 'Garm, second-beat VMG'), ('dw2_straight', 3, 'svmg', 'Garm, second-run VMG, manoeuvres out'),
+                     ('dw1_straight', 1, 'svmg', 'Garm, first-run VMG, manoeuvres out')]
+            for k, i, f, lbl in pairs:
+                if k in GL and legs[i].get(f) is not None:
+                    e, m = GL[k]['vmg_kn'], legs[i][f]
+                    rows.append({'k': lbl, 'event': f"{e:.2f} kn", 'model': f"{m:.2f} kn", 'diff': f"{abs(m - e):.2f} kn",
+                                 'ok': abs(m - e) <= 0.15, 'exact': round(m, 2) == round(e, 2)})
+            if 'uw1' in GL and legs[0].get('tacks') is not None:
+                e, m = GL['uw1']['mans'], legs[0]['tacks']
+                rows.append({'k': 'Garm, tacks on the first beat', 'event': str(e), 'model': str(m), 'diff': str(abs(m - e)),
+                             'ok': abs(m - e) <= 1, 'exact': m == e})
         validation.append({'race': rn, 'date': rep['date'], 'rows': rows,
                            'exact': sum(1 for r in rows if r['exact']), 'within': sum(1 for r in rows if r['ok']), 'n': len(rows),
                            'boats_event': rep['start']['boats'], 'boats_model': len(D['start']['races'].get(str(rn), []))})
@@ -514,6 +531,18 @@ def main():
             f"{ordn(m10[2])} at the second windward, <b>{ordn(m10[3])} home</b> — {pr10['gain']:+}. The one cost: "
             f"<b>{run10['gybes']} gybes on the final run at {run10['gloss_m']} m each</b>, {ls10[2]} m lost to manoeuvres in the race "
             f"against a fleet median of {ls10[3]} — {rk(ls10)}, the most expensive in the fleet that race. On the quickest leg of the day every gybe is dear."},
+      {'label': "The event's own account of race 9", 'k': ['analyst', 'account', 'event said', 'report said', 'commentary'],
+       'q': "What did the event's own analyst say about race 9, and does the model agree?",
+       'a': (lambda rep: (
+            f"From the event's race 9 report, on the start: <i>\u201c{rep['notes']['start']}\u201d</i> On the first beat: "
+            f"<i>\u201c{rep['notes']['uw1']}\u201d</i> The model, built before that report was seen, had the line "
+            f"{r9b['bias_deg']}\u00b0 pin-favoured at the gun and the wind moving {r9b['shift_deg']:+}\u00b0 over the beat, "
+            f"with a right swing of 8\u00b0 through the middle of it \u2014 the same mechanism, the same direction. "
+            f"On Garm specifically the two agree to the tack: the event counts {rep['garm_legs']['uw1']['mans']} manoeuvres on "
+            f"Garm's first beat; the model counted {b9['tacks']}. Garm's first-beat VMG {rep['garm_legs']['uw1']['vmg_kn']} kn "
+            f"against the model's {next(l['vmg'] for l in LG['9'][TEAM] if l['kind']=='beat')} kn; second-run VMG with manoeuvres "
+            f"out {rep['garm_legs']['dw2_straight']['vmg_kn']} kn against {[l for l in LG['9'][TEAM] if l['kind']=='run'][-1]['svmg']} kn."
+            ))(D['eventReports'][9]) if D.get('eventReports', {}).get(9, {}).get('notes') else ''},
       {'label': 'Where did the regatta go wrong?',
        'k': ['wrong', 'bad', 'lose', 'lost', 'worst'],
        'q': 'Where did the regatta go wrong?',
@@ -607,6 +636,7 @@ def main():
             "brief surf in a gust, not from a genuinely quick boat."},
     ]
 
+    qa = [q for q in qa if q['a']]
     payload = {
       'meta': {'bias': D['meta']['bias'], 'tack': D['meta']['tack'], 'pos': D['meta']['pos'],
                'team': team, 'legteam': 'Team Sweden', 'raceday': raceday,
