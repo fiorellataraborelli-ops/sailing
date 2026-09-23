@@ -1,14 +1,16 @@
 {
  "source": "derived from the fleet's own logs, validated against the event report",
  "note": "Position at each mark, estimated by ranking the logged boats at that mark and reading the fleet position off where those same boats finished. Only races with at least 10 logged boats matched to the scoreboard.",
- "method_error_places": 3.4,
- "method_checked_on": 5,
+ "method_error_places": 4,
+ "method_checked_on": 7,
  "method_error_by_race": {
   "1": -8,
   "2": -7,
   "5": -1,
   "7": 0,
-  "8": 1
+  "8": 1,
+  "9": -7,
+  "10": -4
  },
  "tau_by_race": {
   "1": 0.99,
@@ -116,8 +118,8 @@
    "gain": 10,
    "dn": 10,
    "up": 0,
-   "published_w1": null,
-   "err": null,
+   "published_w1": 59,
+   "err": -7,
    "source": "derived"
   },
   {
@@ -130,8 +132,8 @@
    "gain": 0,
    "dn": -1,
    "up": 1,
-   "published_w1": null,
-   "err": null,
+   "published_w1": 16,
+   "err": -4,
    "source": "derived"
   }
  ]

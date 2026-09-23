@@ -1,0 +1,905 @@
+{
+"note": "places won as a share of places available from the mean first-mark position, over the races the event measured",
+"rows": [
+{
+"pos": 1,
+"boat": "OCEANPACT - VIKING BRA 641",
+"w1": 21.1,
+"gain": 94,
+"gain_races": 10,
+"eff": 0.46766169154228854,
+"pts": 86.0
+},
+{
+"pos": 41,
+"boat": "PAINT IT GREY GER 1250",
+"w1": 66.3,
+"gain": 231,
+"gain_races": 10,
+"eff": 0.3537519142419602,
+"pts": 352.0
+},
+{
+"pos": 17,
+"boat": "DUCASSE SAILING TEAM CHI 218",
+"w1": 41.8,
+"gain": 127,
+"gain_races": 9,
+"eff": 0.34586056644880175,
+"pts": 228.0
+},
+{
+"pos": 2,
+"boat": "MARNATURA ESP 1283",
+"w1": 17.8,
+"gain": 47,
+"gain_races": 9,
+"eff": 0.3108465608465608,
+"pts": 102.0
+},
+{
+"pos": 9,
+"boat": "GARM SWE 1121",
+"w1": 33.0,
+"gain": 87,
+"gain_races": 9,
+"eff": 0.3020833333333333,
+"pts": 190.0
+},
+{
+"pos": 25,
+"boat": "HEDGEHOG USA 1328",
+"w1": 38.6,
+"gain": 112,
+"gain_races": 10,
+"eff": 0.2978723404255319,
+"pts": 265.0
+},
+{
+"pos": 7,
+"boat": "PATAKIN ESP 1135",
+"w1": 30.9,
+"gain": 79,
+"gain_races": 9,
+"eff": 0.29357116313638054,
+"pts": 175.0
+},
+{
+"pos": 97,
+"boat": "J CURVE ITA 1798",
+"w1": 48.5,
+"gain": 52,
+"gain_races": 4,
+"eff": 0.2736842105263158,
+"pts": 728.0
+},
+{
+"pos": 27,
+"boat": "JOUST70 AUS 828",
+"w1": 44.1,
+"gain": 100,
+"gain_races": 9,
+"eff": 0.25779840164990975,
+"pts": 271.0
+},
+{
+"pos": 30,
+"boat": "MINDSET BRA 1226",
+"w1": 47.0,
+"gain": 104,
+"gain_races": 9,
+"eff": 0.25120772946859904,
+"pts": 278.3
+},
+{
+"pos": 47,
+"boat": "DIVA GER 1898",
+"w1": 59.0,
+"gain": 134,
+"gain_races": 10,
+"eff": 0.23103448275862068,
+"pts": 381.0
+},
+{
+"pos": 39,
+"boat": "PHANTOM7 AUT 1090",
+"w1": 53.1,
+"gain": 106,
+"gain_races": 9,
+"eff": 0.22606099381531242,
+"pts": 333.0
+},
+{
+"pos": 37,
+"boat": "ZAGUERO MEX 1655",
+"w1": 40.6,
+"gain": 78,
+"gain_races": 9,
+"eff": 0.21885521885521883,
+"pts": 319.0
+},
+{
+"pos": 14,
+"boat": "LIQUID SUN FIN 1634",
+"w1": 38.3,
+"gain": 73,
+"gain_races": 10,
+"eff": 0.19571045576407506,
+"pts": 218.0
+},
+{
+"pos": 45,
+"boat": "LADY IN RED DEN 1566",
+"w1": 56.3,
+"gain": 94,
+"gain_races": 9,
+"eff": 0.18886879646373317,
+"pts": 360.0
+},
+{
+"pos": 54,
+"boat": "HIGHLANDERS BRA 1666",
+"w1": 48.3,
+"gain": 69,
+"gain_races": 8,
+"eff": 0.18234672304439747,
+"pts": 455.0
+},
+{
+"pos": 57,
+"boat": "JAMAICA RUM BRA 1556",
+"w1": 66.2,
+"gain": 97,
+"gain_races": 9,
+"eff": 0.1653033401499659,
+"pts": 477.0
+},
+{
+"pos": 63,
+"boat": "UON POR 1046",
+"w1": 55.4,
+"gain": 77,
+"gain_races": 9,
+"eff": 0.15727124183006538,
+"pts": 510.0
+},
+{
+"pos": 44,
+"boat": "GSPOT MON 1172",
+"w1": 38.1,
+"gain": 46,
+"gain_races": 8,
+"eff": 0.1549865229110512,
+"pts": 360.0
+},
+{
+"pos": 3,
+"boat": "EMPEIRIA USA 169",
+"w1": 18.7,
+"gain": 24,
+"gain_races": 9,
+"eff": 0.15065913370998119,
+"pts": 114.0
+},
+{
+"pos": 6,
+"boat": "ALGARETE MEX 162",
+"w1": 29.6,
+"gain": 36,
+"gain_races": 9,
+"eff": 0.13986013986013984,
+"pts": 175.0
+},
+{
+"pos": 23,
+"boat": "HSN SAILING TEAM ESP 1214",
+"w1": 40.2,
+"gain": 49,
+"gain_races": 9,
+"eff": 0.1388888888888889,
+"pts": 259.0
+},
+{
+"pos": 32,
+"boat": "LEVEL 5 USA 684",
+"w1": 40.8,
+"gain": 55,
+"gain_races": 10,
+"eff": 0.13819095477386933,
+"pts": 287.0
+},
+{
+"pos": 71,
+"boat": "AP HOTELS POR 661",
+"w1": 75.5,
+"gain": 102,
+"gain_races": 10,
+"eff": 0.13691275167785236,
+"pts": 560.0
+},
+{
+"pos": 26,
+"boat": "MAGATRON USA 1523",
+"w1": 38.6,
+"gain": 51,
+"gain_races": 10,
+"eff": 0.1356382978723404,
+"pts": 269.0
+},
+{
+"pos": 4,
+"boat": "MIDLIFE CRISIS USA 26",
+"w1": 15.4,
+"gain": 17,
+"gain_races": 9,
+"eff": 0.13117283950617284,
+"pts": 122.0
+},
+{
+"pos": 62,
+"boat": "LIMONCELLO LL SWE 458",
+"w1": 63.8,
+"gain": 81,
+"gain_races": 10,
+"eff": 0.12898089171974522,
+"pts": 505.0
+},
+{
+"pos": 22,
+"boat": "NAVIS PORTUGAL POR 284",
+"w1": 35.0,
+"gain": 38,
+"gain_races": 9,
+"eff": 0.12418300653594772,
+"pts": 245.0
+},
+{
+"pos": 28,
+"boat": "SARDONYX GBR 1906",
+"w1": 42.2,
+"gain": 41,
+"gain_races": 9,
+"eff": 0.11057173678532901,
+"pts": 273.0
+},
+{
+"pos": 55,
+"boat": "SPENCER RIGGING GBR 108",
+"w1": 50.6,
+"gain": 49,
+"gain_races": 9,
+"eff": 0.10976702508960573,
+"pts": 459.1
+},
+{
+"pos": 13,
+"boat": "SAVASANA USA 49",
+"w1": 33.5,
+"gain": 35,
+"gain_races": 10,
+"eff": 0.1076923076923077,
+"pts": 216.0
+},
+{
+"pos": 19,
+"boat": "TO NESSA BRA 1527",
+"w1": 28.8,
+"gain": 29,
+"gain_races": 10,
+"eff": 0.10431654676258993,
+"pts": 236.0
+},
+{
+"pos": 11,
+"boat": "ANOTHER AFFAIR POR 1282",
+"w1": 29.4,
+"gain": 21,
+"gain_races": 10,
+"eff": 0.07394366197183098,
+"pts": 211.0
+},
+{
+"pos": 73,
+"boat": "TARTE - 3NUITS.COM SUI 1808",
+"w1": 66.3,
+"gain": 43,
+"gain_races": 10,
+"eff": 0.06584992343032159,
+"pts": 563.0
+},
+{
+"pos": 90,
+"boat": "IVA SUI 1852",
+"w1": 81.9,
+"gain": 52,
+"gain_races": 10,
+"eff": 0.06427688504326329,
+"pts": 672.0
+},
+{
+"pos": 16,
+"boat": "EL ENEMIGO TEAM - BTG PACTUAL BRA 1196",
+"w1": 28.9,
+"gain": 16,
+"gain_races": 10,
+"eff": 0.05734767025089606,
+"pts": 219.0
+},
+{
+"pos": 67,
+"boat": "ODESSA POR 1329",
+"w1": 65.0,
+"gain": 36,
+"gain_races": 10,
+"eff": 0.05625,
+"pts": 525.0
+},
+{
+"pos": 46,
+"boat": "TYRA SWE 713",
+"w1": 45.7,
+"gain": 19,
+"gain_races": 10,
+"eff": 0.042505592841163314,
+"pts": 369.0
+},
+{
+"pos": 40,
+"boat": "WARCANOE USA 202",
+"w1": 46.0,
+"gain": 14,
+"gain_races": 9,
+"eff": 0.0345679012345679,
+"pts": 349.0
+},
+{
+"pos": 24,
+"boat": "PROGRESS USA 385",
+"w1": 34.0,
+"gain": 9,
+"gain_races": 9,
+"eff": 0.030303030303030304,
+"pts": 265.0
+},
+{
+"pos": 85,
+"boat": "SENSACI\u00f3N GER 726",
+"w1": 72.4,
+"gain": 21,
+"gain_races": 10,
+"eff": 0.029411764705882353,
+"pts": 622.0
+},
+{
+"pos": 5,
+"boat": "GOOD TO GO USA 1047",
+"w1": 18.9,
+"gain": 4,
+"gain_races": 9,
+"eff": 0.024829298572315334,
+"pts": 130.0
+},
+{
+"pos": 43,
+"boat": "ELVIS SWE 1489",
+"w1": 46.2,
+"gain": 9,
+"gain_races": 10,
+"eff": 0.01991150442477876,
+"pts": 359.0
+},
+{
+"pos": 86,
+"boat": "T.ONE ITA 1490",
+"w1": 67.3,
+"gain": 8,
+"gain_races": 8,
+"eff": 0.015082956259426848,
+"pts": 631.0
+},
+{
+"pos": 50,
+"boat": "MR HENRI NED 1087",
+"w1": 46.8,
+"gain": 6,
+"gain_races": 9,
+"eff": 0.01455604075691412,
+"pts": 402.0
+},
+{
+"pos": 84,
+"boat": "MARMARA YELKEN TUR 111",
+"w1": 69.8,
+"gain": 10,
+"gain_races": 10,
+"eff": 0.014534883720930232,
+"pts": 620.0
+},
+{
+"pos": 65,
+"boat": "CHARISMA V H992 SAILING TEAM MON 730",
+"w1": 65.3,
+"gain": 6,
+"gain_races": 9,
+"eff": 0.010368066355624678,
+"pts": 513.0
+},
+{
+"pos": 59,
+"boat": "BODEGAS VILLANUEVA ESP 669",
+"w1": 53.6,
+"gain": 3,
+"gain_races": 10,
+"eff": 0.005703422053231939,
+"pts": 494.0
+},
+{
+"pos": 78,
+"boat": "CATAPULT USA 65",
+"w1": 44.4,
+"gain": 1,
+"gain_races": 5,
+"eff": 0.004608294930875576,
+"pts": 589.0
+},
+{
+"pos": 31,
+"boat": "JELVIS GBR 1247",
+"w1": 31.3,
+"gain": -13,
+"gain_races": 10,
+"eff": -0.018922852983988356,
+"pts": 286.3
+},
+{
+"pos": 12,
+"boat": "RELATIVE OBSCURITY USA 833",
+"w1": 26.3,
+"gain": -13,
+"gain_races": 9,
+"eff": -0.019598974822855417,
+"pts": 213.0
+},
+{
+"pos": 81,
+"boat": "CAPIM CANELA BRA 1267",
+"w1": 68.3,
+"gain": -7,
+"gain_races": 10,
+"eff": -0.022082018927444796,
+"pts": 609.0
+},
+{
+"pos": 18,
+"boat": "VAMOS AUS 1451",
+"w1": 29.9,
+"gain": -14,
+"gain_races": 9,
+"eff": -0.022190521477254716,
+"pts": 232.0
+},
+{
+"pos": 60,
+"boat": "FREQUENT FLYER BER 11",
+"w1": 57.7,
+"gain": -10,
+"gain_races": 10,
+"eff": -0.02364066193853428,
+"pts": 495.0
+},
+{
+"pos": 15,
+"boat": "YUPI ESP 1170",
+"w1": 22.3,
+"gain": -17,
+"gain_races": 9,
+"eff": -0.024310024310024308,
+"pts": 218.0
+},
+{
+"pos": 29,
+"boat": "BTA POR 570",
+"w1": 30.9,
+"gain": -19,
+"gain_races": 10,
+"eff": -0.027496382054992764,
+"pts": 277.0
+},
+{
+"pos": 38,
+"boat": "LET IT BE ESP 1122",
+"w1": 35.4,
+"gain": -19,
+"gain_races": 10,
+"eff": -0.029411764705882353,
+"pts": 331.3
+},
+{
+"pos": 87,
+"boat": "JOUR J FRA 1911",
+"w1": 69.1,
+"gain": -10,
+"gain_races": 9,
+"eff": -0.035958288385472846,
+"pts": 632.0
+},
+{
+"pos": 20,
+"boat": "ROWDY USA 1561",
+"w1": 25.6,
+"gain": -27,
+"gain_races": 10,
+"eff": -0.036290322580645164,
+"pts": 237.0
+},
+{
+"pos": 53,
+"boat": "SAILCASCAIS POR 152",
+"w1": 44.7,
+"gain": -22,
+"gain_races": 10,
+"eff": -0.039783001808318265,
+"pts": 419.1
+},
+{
+"pos": 58,
+"boat": "SOLID FUN FIN 787",
+"w1": 54.9,
+"gain": -18,
+"gain_races": 10,
+"eff": -0.03991130820399113,
+"pts": 479.0
+},
+{
+"pos": 94,
+"boat": "DENIZCIK TUR 442",
+"w1": 63.8,
+"gain": -6,
+"gain_races": 4,
+"eff": -0.04143646408839779,
+"pts": 709.0
+},
+{
+"pos": 21,
+"boat": "CALLISTO USA 1474",
+"w1": 28.0,
+"gain": -37,
+"gain_races": 10,
+"eff": -0.05138888888888889,
+"pts": 241.0
+},
+{
+"pos": 33,
+"boat": "NOTICIA ESP 961",
+"w1": 28.7,
+"gain": -34,
+"gain_races": 9,
+"eff": -0.052984260557893105,
+"pts": 292.0
+},
+{
+"pos": 77,
+"boat": "HOTEL VALVERDE POR 1685",
+"w1": 56.7,
+"gain": -24,
+"gain_races": 9,
+"eff": -0.061585835257890686,
+"pts": 585.0
+},
+{
+"pos": 52,
+"boat": "PAINT IT BLACK GER 1719",
+"w1": 48.2,
+"gain": -29,
+"gain_races": 9,
+"eff": -0.06220506220506221,
+"pts": 415.5
+},
+{
+"pos": 10,
+"boat": "TEAM NAUTIQUE YACHTING TUR 1389",
+"w1": 19.8,
+"gain": -56,
+"gain_races": 10,
+"eff": -0.06982543640897755,
+"pts": 210.0
+},
+{
+"pos": 34,
+"boat": "B\u00e1B\u00e1 POR 1797",
+"w1": 31.7,
+"gain": -49,
+"gain_races": 10,
+"eff": -0.07174231332357248,
+"pts": 307.0
+},
+{
+"pos": 51,
+"boat": "LENNY EST 1796",
+"w1": 42.6,
+"gain": -43,
+"gain_races": 10,
+"eff": -0.07491289198606271,
+"pts": 403.0
+},
+{
+"pos": 48,
+"boat": "CICLONE ITA 1478",
+"w1": 44.3,
+"gain": -38,
+"gain_races": 9,
+"eff": -0.07580291242768801,
+"pts": 394.0
+},
+{
+"pos": 42,
+"boat": "EKER KAYMAK TUR 1486",
+"w1": 39.6,
+"gain": -46,
+"gain_races": 10,
+"eff": -0.076158940397351,
+"pts": 354.0
+},
+{
+"pos": 8,
+"boat": "ARET\u00ea BRA 1795",
+"w1": 17.6,
+"gain": -64,
+"gain_races": 10,
+"eff": -0.07766990291262135,
+"pts": 183.0
+},
+{
+"pos": 35,
+"boat": "SIRENA CHICO DEN 1398",
+"w1": 33.9,
+"gain": -55,
+"gain_races": 10,
+"eff": -0.0832072617246596,
+"pts": 311.0
+},
+{
+"pos": 56,
+"boat": "THE BULL AUS 1668",
+"w1": 48.4,
+"gain": -35,
+"gain_races": 8,
+"eff": -0.08478682170542635,
+"pts": 476.8
+},
+{
+"pos": 49,
+"boat": "PEIXARANHA POR 1846",
+"w1": 43.8,
+"gain": -48,
+"gain_races": 10,
+"eff": -0.08540925266903915,
+"pts": 399.0
+},
+{
+"pos": 93,
+"boat": "POWDER MONKEY GBR 937",
+"w1": 75.1,
+"gain": -22,
+"gain_races": 10,
+"eff": -0.08835341365461845,
+"pts": 693.0
+},
+{
+"pos": 74,
+"boat": "LIFT TICKET FRA 1089",
+"w1": 60.1,
+"gain": -43,
+"gain_races": 10,
+"eff": -0.10776942355889724,
+"pts": 570.0
+},
+{
+"pos": 96,
+"boat": "TEAM ELVING FIN 1542",
+"w1": 70.8,
+"gain": -41,
+"gain_races": 10,
+"eff": -0.1404109589041096,
+"pts": 719.0
+},
+{
+"pos": 61,
+"boat": "STAMPEDE USA 240",
+"w1": 50.5,
+"gain": -76,
+"gain_races": 10,
+"eff": -0.15353535353535352,
+"pts": 498.0
+},
+{
+"pos": 72,
+"boat": "AUDYO TENERIFE ESP 1419",
+"w1": 58.0,
+"gain": -65,
+"gain_races": 10,
+"eff": -0.15476190476190477,
+"pts": 560.0
+},
+{
+"pos": 68,
+"boat": "UNIFHORM/HENRI LLOYD POR 105",
+"w1": 52.5,
+"gain": -77,
+"gain_races": 10,
+"eff": -0.16210526315789472,
+"pts": 527.0
+},
+{
+"pos": 36,
+"boat": "ABRIL VERDE ESP 665",
+"w1": 30.1,
+"gain": -115,
+"gain_races": 10,
+"eff": -0.16452074391988555,
+"pts": 318.0
+},
+{
+"pos": 80,
+"boat": "NORBOY USA 639",
+"w1": 63.6,
+"gain": -61,
+"gain_races": 10,
+"eff": -0.16758241758241757,
+"pts": 608.0
+},
+{
+"pos": 91,
+"boat": "NEGRONI ARG 1191",
+"w1": 64.9,
+"gain": -60,
+"gain_races": 10,
+"eff": -0.17094017094017097,
+"pts": 679.0
+},
+{
+"pos": 64,
+"boat": "TRIAL CAN 282",
+"w1": 51.4,
+"gain": -84,
+"gain_races": 10,
+"eff": -0.1728395061728395,
+"pts": 513.0
+},
+{
+"pos": 66,
+"boat": "ABRIL ROJO ESP 663",
+"w1": 52.3,
+"gain": -90,
+"gain_races": 9,
+"eff": -0.20964360587002095,
+"pts": 521.0
+},
+{
+"pos": 98,
+"boat": "MOORE DRV NED 964",
+"w1": 82.6,
+"gain": -37,
+"gain_races": 10,
+"eff": -0.21264367816091947,
+"pts": 767.0
+},
+{
+"pos": 70,
+"boat": "SASSY / FAT MOOSE DEN 1185",
+"w1": 51.4,
+"gain": -94,
+"gain_races": 9,
+"eff": -0.21490626428898033,
+"pts": 557.0
+},
+{
+"pos": 95,
+"boat": "JUST RIGHT GBR 1591",
+"w1": 63.1,
+"gain": -75,
+"gain_races": 9,
+"eff": -0.22583559168925024,
+"pts": 709.0
+},
+{
+"pos": 88,
+"boat": "EURO-VOILES FRA 1583",
+"w1": 64.5,
+"gain": -85,
+"gain_races": 10,
+"eff": -0.23943661971830985,
+"pts": 646.0
+},
+{
+"pos": 69,
+"boat": "GENIUS GBR 1867",
+"w1": 49.5,
+"gain": -125,
+"gain_races": 10,
+"eff": -0.24752475247524752,
+"pts": 528.0
+},
+{
+"pos": 83,
+"boat": "DIME USA 1863",
+"w1": 59.7,
+"gain": -102,
+"gain_races": 10,
+"eff": -0.2531017369727047,
+"pts": 615.0
+},
+{
+"pos": 76,
+"boat": "WILCO ESP 1893",
+"w1": 55.9,
+"gain": -121,
+"gain_races": 10,
+"eff": -0.2743764172335601,
+"pts": 584.0
+},
+{
+"pos": 92,
+"boat": "IRRATIONAL EXUBERANCE BRA 1618",
+"w1": 68.1,
+"gain": -88,
+"gain_races": 10,
+"eff": -0.2758620689655172,
+"pts": 680.0
+},
+{
+"pos": 82,
+"boat": "SACI BRA 1440",
+"w1": 57.4,
+"gain": -130,
+"gain_races": 10,
+"eff": -0.3051643192488263,
+"pts": 612.0
+},
+{
+"pos": 99,
+"boat": "GRP METIKAM N'FUN YACHTING POL 1588",
+"w1": 71.7,
+"gain": -87,
+"gain_races": 9,
+"eff": -0.34157832744405187,
+"pts": 792.0
+},
+{
+"pos": 75,
+"boat": "HELLY HANSEN BAGDAD II NOR 645",
+"w1": 48.7,
+"gain": -176,
+"gain_races": 10,
+"eff": -0.34307992202729043,
+"pts": 576.0
+},
+{
+"pos": 100,
+"boat": "OUT WITH THE BUOYS POR 1783",
+"w1": 81.4,
+"gain": -59,
+"gain_races": 8,
+"eff": -0.39650537634408617,
+"pts": 811.0
+},
+{
+"pos": 79,
+"boat": "FANTOM HUN 1686",
+"w1": 57.9,
+"gain": -157,
+"gain_races": 9,
+"eff": -0.41435735022433356,
+"pts": 602.0
+},
+{
+"pos": 89,
+"boat": "RIFF USA 496",
+"w1": 57.8,
+"gain": -181,
+"gain_races": 10,
+"eff": -0.42890995260663506,
+"pts": 665.0
+}
+]
+}

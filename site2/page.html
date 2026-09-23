@@ -874,14 +874,20 @@ function drawOverview(){
   // the whole regatta where the logs can extend the event's report, with the report's
   // own fleet-ranked figure kept as the qualifier — the two are not the same number
   // and must not be read as one
-  const A = P && P.all;
-  if (A && A.derived && A.derived.length)
+  const A = P && P.all, E = P && P.event;
+  if (E)
+    // the event's own championship figures: it does not rank the total when a race is
+    // unmeasured, so the ranks shown are the ones it does publish
+    wins.push(['Places won after the top mark', (E.gain >= 0 ? '+' : '') + E.gain,
+      `over ${E.gain_races} of ${P.races} races` +
+      (E.gain_missing && E.gain_missing.length ? ` (race ${E.gain_missing.join(', ')} unmeasured)` : '') +
+      ` · upwind ${E.up >= 0 ? '+' : ''}${E.up}, ${ord(E.up_rank)} of ${P.fleet}` +
+      ` · downwind ${E.dn >= 0 ? '+' : ''}${E.dn}, ${ord(E.dn_rank)} of ${P.fleet}`]);
+  else if (A && A.derived && A.derived.length)
     wins.push(['Places won after the top mark', (A.gain >= 0 ? '+' : '') + A.gain,
       `over ${A.covered.length} of ${A.races} races · +${P.team.gain} ${pr} by the event's ` +
-      `report, ${ord(P.ranks.gain_top20[0])} of the ${P.ranks.gain_top20[1]} ahead · ` +
-      `races ${A.derived.join(', ')} from the logs`]);
-  else if (P && P.team) wins.push(['Places won after the top mark', '+' + P.team.gain,
-    `${ord(P.ranks.gain_top20[0])} of the ${P.ranks.gain_top20[1]} ahead, ${pr}`]);
+      `report · races ${A.derived.join(', ')} from the logs`]);
+  else if (P && P.team) wins.push(['Places won after the top mark', '+' + P.team.gain, pr]);
   if (P && P.w1) wins.push(['Best mark rounding',
     (() => { const w = P.by_race.filter(r => r.w1 != null && r.source !== 'derived');
              const b = w.reduce((a, r) => r.w1 < a.w1 ? r : a);
@@ -945,14 +951,27 @@ function drawSummary(){
       : `<b>No discard has been applied yet</b> — every boat's points still equal the sum of its ` +
         `finishes.`) +
     `<br><br>Places gained counts positions won between the first windward mark and the finish` +
-    (D.progress && D.progress.all && D.progress.all.derived && D.progress.all.derived.length
+    (D.progress && D.progress.event
+      ? ((E) => ` — <b>${E.gain >= 0 ? '+' : ''}${E.gain} over ${E.gain_races} of ${D.official.races} races</b>` +
+          (E.gain_missing && E.gain_missing.length
+            ? ` (the event could not resolve the first mark in race ${E.gain_missing.join(', ')}, so it does not ` +
+              `rank that total; the split it does rank: upwind <b>${E.up >= 0 ? '+' : ''}${E.up}, ${ord(E.up_rank)} of ` +
+              `${D.progress.fleet}</b>, downwind <b>${E.dn >= 0 ? '+' : ''}${E.dn}, ${ord(E.dn_rank)} of ${D.progress.fleet}</b>).`
+            : `. Upwind ${E.up >= 0 ? '+' : ''}${E.up} (${ord(E.up_rank)} of ${D.progress.fleet}), downwind ` +
+              `${E.dn >= 0 ? '+' : ''}${E.dn} (${ord(E.dn_rank)} of ${D.progress.fleet}).`) +
+          (D.progress.w1
+            ? ` Garm rounds the first windward mark <b>${Number.isInteger(D.progress.w1.avg) ? ord(D.progress.w1.avg) : D.progress.w1.avg.toFixed(1) + 'th'} on average</b> — ` +
+              `${ord(D.progress.w1.rank)} of ${D.progress.w1.n} — and finishes ${t.pos}th. That gap is ` +
+              `the whole story of the regatta: the boat is quick once it is going and starts too deep.`
+            : ''))(D.progress.event)
+      : D.progress && D.progress.all && D.progress.all.derived && D.progress.all.derived.length
       ? ` — <b>${D.progress.all.gain >= 0 ? '+' : ''}${D.progress.all.gain} over ${D.progress.all.covered.length} ` +
         `of ${D.official.races} races</b>. The event's report measured races 1–${D.official.gainRaces}; ` +
         `races ${D.progress.all.derived.join(', ')} are estimated from the fleet's own logs by ranking the ` +
         `logged boats at each mark, a method that reproduces the event's figures to within a place on ` +
         `the comparable races and runs 7–8 places optimistic on the two Tuesday races.` +
         (D.progress.w1
-          ? ` Garm rounds the first windward mark <b>${D.progress.w1.avg}th on average</b> — ` +
+          ? ` Garm rounds the first windward mark <b>${Number.isInteger(D.progress.w1.avg) ? ord(D.progress.w1.avg) : D.progress.w1.avg.toFixed(1) + 'th'} on average</b> — ` +
             `${D.progress.w1.rank} of ${D.progress.w1.n} — and finishes ${t.pos}th. That gap is ` +
             `the whole story of the regatta: the boat is quick once it is going and starts too deep.`
           : '')
@@ -961,7 +980,7 @@ function drawSummary(){
         `races since.`
       : `, over all ${D.official.races} races.` +
         (D.progress && D.progress.w1
-          ? ` Garm rounds the first windward mark <b>${D.progress.w1.avg}th on average</b> — ` +
+          ? ` Garm rounds the first windward mark <b>${Number.isInteger(D.progress.w1.avg) ? ord(D.progress.w1.avg) : D.progress.w1.avg.toFixed(1) + 'th'} on average</b> — ` +
             `${D.progress.w1.rank} of ${D.progress.w1.n} — and finishes ${t.pos}th. That gap is ` +
             `the whole story of the regatta: the boat is quick once it is going and starts too deep.`
           : ''));

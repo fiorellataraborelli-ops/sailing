@@ -89,10 +89,24 @@ def main():
              f"legs for {len(races)} of {RES['races_scored']} scored races")
 
     # ---- 4. against the race-progress report ---------------------------------
-    PR = json.load(open(os.path.join(ROOT, 'data/event/progress.json')))
+    PR = json.load(open(os.path.join(ROOT, 'data/event/mark_progress.json')))
     pg = next(r for r in PR['fleet_rows'] if r['boat'].startswith(EVENT_NAME))
     check('gain total matches progress', t['gain_total'] == pg['gain'])
     check('gain split matches progress', (t['gain_up'], t['gain_down']) == (pg['up'], pg['dn']))
+    # the championship row and the team block on the same page must say the same thing
+    check('team block agrees with its own fleet row',
+          (PR['team']['gain'], PR['team']['up'], PR['team']['dn'], PR['team']['w1_avg'])
+          == (pg['gain'], pg['up'], pg['dn'], pg['w1']))
+    # the sum of the per-race rows is the championship total, on the races it covers
+    check('per-race gains sum to the championship total',
+          sum(r['gain'] for r in PR['team_by_race'] if r['gain'] is not None) == PR['team']['gain'],
+          str(sum(r['gain'] for r in PR['team_by_race'] if r['gain'] is not None)))
+    check('the unmeasured race is the one with no first mark',
+          [r['race'] for r in PR['team_by_race'] if r['w1'] is None] == PR['team']['gain_missing'])
+    # the event's per-race results agree with the scoreboard, race by race
+    check('mark-progress results match the scoreboard',
+          all(close(float(r['result']), g['races'][r['race'] - 1], 0.01)
+              for r in PR['team_by_race'] if r['race'] <= len(g['races'])))
     # the progress report and the scoreboard are published separately and the scoreboard
     # is corrected more often, so a race can legitimately differ until the report catches
     # up. Report it; do not fail on it.
@@ -133,6 +147,12 @@ def main():
     # and the two are the same number only when nothing was derived
     check('extended and published totals differ iff races were derived',
           (A.get('gain') != pg['gain']) == bool(A.get('derived')))
+    E = D['progress'].get('event') or {}
+    check('page carries the event\'s own ranks',
+          E.get('up_rank') == PR['team']['up_rank'] and E.get('dn_rank') == PR['team']['dn_rank']
+          and E.get('w1_rank') == PR['team']['w1_rank'])
+    check('no derived row is shown as a source',
+          all(r.get('source') == 'event report' for r in pr_rows))
 
     # ---- 5. against the log itself, re-read ----------------------------------
     from src.sailing_agents.vkx_parser import parse_file

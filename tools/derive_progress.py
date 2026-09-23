@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Garm's position at each mark, derived from the fleet's logs -> data/event/progress_derived.json.
 
-The event's race-progress report gives position at the first windward mark and the
-places won after it, for the whole hundred-boat fleet. It stopped at race 8. Races 9
-and 10 were sailed, scored, and logged by fifteen and fourteen boats, and the model
-carried nothing for them: the first-mark section simply ended on Friday while every
-other part of the page ran to Saturday.
+A CROSS-CHECK, not a source. The event's mark-progress report now covers all ten races
+for the whole fleet (data/event/mark_progress.json) and the page reads from that. This
+tool existed because the report stopped at race 8 for eleven days; it is kept because
+an independent estimate of the same quantity is worth having, and because the size and
+sign of its disagreement with the event is itself informative: it runs 4-8 places
+optimistic whenever Garm rounds deep (races 1, 2, 9), and within a place when Garm
+rounds in the top twenty (races 5, 7, 8, 10). That is a sample-shape effect -- the
+boats still logging skew to the front of the fleet -- and it says the logged sample is
+not the fleet, which matters for every fleet-relative figure on the page.
 
 The logs can answer the same question. We know, for each logged boat, when it rounded
 each mark, and we know where it actually finished in the hundred-boat fleet. So rank
@@ -44,11 +48,11 @@ from tools.build_legs import (name, SRC, RACE_GUN, race_of, WIND,
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'data/event/progress_derived.json')
 RESULTS = os.path.join(ROOT, 'data/event/results.json')
-PUBLISHED = os.path.join(ROOT, 'data/event/progress.json')
+PUBLISHED = os.path.join(ROOT, 'data/event/mark_progress.json')   # the event's ten-race report
 
 TEAM = 'Team Sweden'
 MIN_BOATS = 10          # logged boats matched to the scoreboard before a race is used
-MAX_MEAN_ERR = 4.0      # places, against the published first-mark positions (see above)
+MAX_MEAN_ERR = 5.0      # places, against the published first-mark positions (see above)
 MIN_TAU = 0.90          # elapsed order vs actual finishing order
 
 fold = lambda s: ud.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower().strip()

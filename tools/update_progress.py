@@ -9,8 +9,8 @@ whole 100-boat fleet — which turns a bare number into a ranked one.
 import json, os
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SRC = os.path.join(ROOT, 'data/event/progress.json')
-DERIVED = os.path.join(ROOT, 'data/event/progress_derived.json')   # tools/derive_progress.py
+SRC = os.path.join(ROOT, 'data/event/mark_progress.json')      # the event's ten-race report
+DERIVED = os.path.join(ROOT, 'data/event/progress_derived.json')   # tools/derive_progress.py, cross-check only
 PAYLOAD = os.path.join(ROOT, 'site/payload.json')
 
 
@@ -29,15 +29,21 @@ def merged_by_race(published, derived, scored):
     rows = []
     for rn in range(1, scored + 1):
         p, d = pub.get(rn), der.get(rn)
-        if p and p.get('w1') is not None:
-            rows.append({**p, 'source': 'event report'})
+        if p:
+            row = {**p, 'source': 'event report'}
+            if p.get('w1') is None:
+                row['why'] = 'the event could not resolve the first mark for this race'
+            # the logs' own estimate rides alongside as a cross-check, never as the figure
+            if d:
+                row['derived_w1'] = d['w1']
+            rows.append(row)
         elif d:
             rows.append({'race': rn, 'result': d['result'], 'w1': d['w1'], 'gain': d['gain'],
                          'up': d['up'], 'dn': d['dn'], 'legs': f"logs, {d['boats']} boats",
                          'source': 'derived', 'boats': d['boats']})
         else:
-            rows.append({**(p or {'race': rn}), 'w1': None, 'gain': None,
-                         'source': 'none', 'why': 'too few boats logged to estimate'})
+            rows.append({'race': rn, 'w1': None, 'gain': None,
+                         'source': 'none', 'why': 'no report and too few boats logged to estimate'})
     return rows
 
 
@@ -54,6 +60,7 @@ def main():
     DV = json.load(open(DERIVED)) if os.path.exists(DERIVED) else None
     rows = P['fleet_rows']
     g = next(r for r in rows if r['boat'].startswith('GARM'))
+    T = P['team']
     scored = D['official']['races_scored']
     by_race = merged_by_race(P['team_by_race'], DV, scored)
     derived_races = [r['race'] for r in by_race if r['source'] == 'derived']
@@ -65,11 +72,12 @@ def main():
 
     t = D['official']['team']
     t.update(gain_total=g['gain'], gain_up=g['up'], gain_down=g['dn'])
-    D['official']['gain_races'] = P['races_covered']
+    D['official']['gain_races'] = T['gain_races']          # 9: the event could not measure race 6
+    D['official']['gain_missing'] = T['gain_missing']
     D['official']['gain_def'] = (
-        'Places won between the first windward mark and the finish, summed over all '
-        f"{P['races_covered']} races — the event's own race-progress report, which covers "
-        f"the full {P['fleet']}-boat fleet.")
+        'Places won between the first windward mark and the finish, summed over the '
+        f"{T['gain_races']} of {P['races_covered']} races the event could measure — its own "
+        f"mark-progress report, covering the full {P['fleet']}-boat fleet.")
 
     top20 = [r for r in rows if r['pos'] <= 20]
     D['progress'] = {
@@ -89,13 +97,18 @@ def main():
                 'method_error_by_race': DV.get('method_error_by_race') if DV else None},
         # position at the first windward mark: the sharpest measure of how deep the
         # boat is coming off the line, and lower is better
-        'w1': ({'avg': g['w1'],
-                'rank': rank(rows, 'w1', g['w1'], False)[0],
-                'n': rank(rows, 'w1', g['w1'], False)[1]} if g.get('w1') else None),
-        'ranks': {'gain': rank(rows, 'gain', g['gain']),
-                  'up': rank(rows, 'up', g['up']),
-                  'dn': rank(rows, 'dn', g['dn']),
-                  'gain_top20': rank(top20, 'gain', g['gain'])},
+        'w1': ({'avg': T['w1_avg'], 'rank': T['w1_rank'], 'n': P['fleet'],
+                'races': T['w1_races']} if T.get('w1_avg') else None),
+        # the event's own ranks where it publishes them. It does not rank Garm on total
+        # gain — nine races measured against other boats' ten is not a fair table — so
+        # neither do we; the top-20 comparison that used to sit on the card is gone with it
+        'ranks': {'gain': None,
+                  'up': (T['up_rank'], P['fleet']),
+                  'dn': (T['dn_rank'], P['fleet']),
+                  'gain_top20': None},
+        'event': {k: T[k] for k in ('gain', 'gain_races', 'gain_missing', 'up', 'up_rank',
+                                    'dn', 'dn_rank', 'lap', 'leg_total', 'w1_avg', 'w1_rank',
+                                    'w1_races')},
         'best_up': max((r for r in rows if r['up'] is not None), key=lambda r: r['up']),
         'top': [{'pos': r['pos'], 'boat': r['boat'].rsplit(' ', 2)[0].title(),
                  'gain': r['gain'], 'up': r['up'], 'dn': r['dn']} for r in top20[:5]],
@@ -104,15 +117,15 @@ def main():
     D['official']['gain_all_races'] = len(with_gain)
     json.dump(D, open(PAYLOAD, 'w'), ensure_ascii=False)
     r = D['progress']['ranks']
+    print(f"event: gain {T['gain']:+d} over {T['gain_races']} of {P['races_covered']} races (missing {T['gain_missing']}), "
+          f"up {T['up']:+d} rank {T['up_rank']}/{P['fleet']}, dn {T['dn']:+d} rank {T['dn_rank']}/{P['fleet']}, "
+          f"mean first mark {T['w1_avg']} rank {T['w1_rank']}/{P['fleet']}")
     print(f"first-mark rows: {len(by_race)} races, "
           f"{sum(1 for x in by_race if x['source']=='event report')} published, "
           f"{len(derived_races)} derived {derived_races}, "
           f"{sum(1 for x in by_race if x['source']=='none')} blank; "
           f"gain over {len(with_gain)} races {gain_all:+d}")
-    print(f"gains over {P['races_covered']} races: total {g['gain']:+d} (rank {r['gain'][0]}/{r['gain'][1]}, "
-          f"{r['gain_top20'][0]}/{r['gain_top20'][1]} among the top 20), "
-          f"upwind {g['up']:+d} (rank {r['up'][0]}/{r['up'][1]}), "
-          f"downwind {g['dn']:+d} (rank {r['dn'][0]}/{r['dn'][1]})")
+
 
 
 if __name__ == '__main__':
