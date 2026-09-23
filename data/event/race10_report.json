@@ -1,0 +1,265 @@
+{
+ "source": "ib-sailing.com per-race report, race 10 (protected; read from the page as opened by the team, 23 Sep 2026)",
+ "race": 10,
+ "date": "2026-09-12",
+ "wind_legs": {
+  "uw1": 309,
+  "dw1": 321,
+  "uw2": 312,
+  "dw2": 318
+ },
+ "line": {
+  "bias_deg": 11,
+  "bias_m": 194,
+  "favoured": "Pin",
+  "line_m": 994,
+  "setting": 308
+ },
+ "start": {
+  "note": "Start table, ordered by distance to leader at +60 s; Basis = hull",
+  "boats": 19,
+  "rows": [
+   {
+    "boat": "Sardonyx",
+    "line_cog_m": 3.5,
+    "line_hdg_m": 2.6,
+    "line_time_s": 1.6,
+    "dtl_gun_m": -12.5,
+    "dtl_30_m": 0,
+    "dtl_60_m": 0,
+    "bias_used_m": 190.6,
+    "sog_gun_kn": 5.6,
+    "vmg_gun_kn": 1.3
+   },
+   {
+    "boat": "WarCanoe",
+    "line_cog_m": 0.8,
+    "line_hdg_m": 0.3,
+    "line_time_s": 0.2,
+    "dtl_gun_m": -8.1,
+    "dtl_30_m": -4,
+    "dtl_60_m": -3,
+    "bias_used_m": 192.1,
+    "sog_gun_kn": 2.9,
+    "vmg_gun_kn": 1.5
+   },
+   {
+    "boat": "Diva",
+    "line_cog_m": 0.9,
+    "line_hdg_m": 0.6,
+    "line_time_s": 0.3,
+    "dtl_gun_m": -21.8,
+    "dtl_30_m": -11,
+    "dtl_60_m": -15,
+    "bias_used_m": 178.4,
+    "sog_gun_kn": 6.0,
+    "vmg_gun_kn": 2.6
+   },
+   {
+    "boat": "SolidFun",
+    "line_cog_m": 4.7,
+    "line_hdg_m": 4.3,
+    "line_time_s": 2.4,
+    "dtl_gun_m": -33.3,
+    "dtl_30_m": -21,
+    "dtl_60_m": -22,
+    "bias_used_m": 171.6,
+    "sog_gun_kn": 5.8,
+    "vmg_gun_kn": 2.9
+   },
+   {
+    "boat": "RelativeObscurity",
+    "line_cog_m": 3.6,
+    "line_hdg_m": 3.0,
+    "line_time_s": 1.8,
+    "dtl_gun_m": -39.9,
+    "dtl_30_m": -27,
+    "dtl_60_m": -27,
+    "bias_used_m": 164.1,
+    "sog_gun_kn": 6.2,
+    "vmg_gun_kn": 3.9
+   },
+   {
+    "boat": "Garm",
+    "line_cog_m": 4.5,
+    "line_hdg_m": 3.9,
+    "line_time_s": 2.5,
+    "dtl_gun_m": -35.0,
+    "dtl_30_m": -26,
+    "dtl_60_m": -29,
+    "bias_used_m": 169.5,
+    "sog_gun_kn": 5.1,
+    "vmg_gun_kn": 1.9
+   },
+   {
+    "boat": "Marnatura",
+    "line_cog_m": 2.0,
+    "line_hdg_m": 1.7,
+    "line_time_s": 0.9,
+    "dtl_gun_m": -45.8,
+    "dtl_30_m": -29,
+    "dtl_60_m": -33,
+    "bias_used_m": 155.6,
+    "sog_gun_kn": 6.7,
+    "vmg_gun_kn": 0.9
+   },
+   {
+    "boat": "LiquidSun",
+    "line_cog_m": -5.6,
+    "line_hdg_m": -5.2,
+    "line_time_s": 5.7,
+    "dtl_gun_m": 0.0,
+    "dtl_30_m": -33,
+    "dtl_60_m": -49,
+    "bias_used_m": 193.8,
+    "sog_gun_kn": 3.7,
+    "vmg_gun_kn": -0.4
+   },
+   {
+    "boat": "Fantom",
+    "line_cog_m": 3.9,
+    "line_hdg_m": 3.6,
+    "line_time_s": 1.9,
+    "dtl_gun_m": -57.2,
+    "dtl_30_m": -47,
+    "dtl_60_m": -53,
+    "bias_used_m": 146.9,
+    "sog_gun_kn": 6.0,
+    "vmg_gun_kn": 3.4
+   },
+   {
+    "boat": "Tyra",
+    "line_cog_m": 2.5,
+    "line_hdg_m": 2.3,
+    "line_time_s": 1.4,
+    "dtl_gun_m": -91.9,
+    "dtl_30_m": -81,
+    "dtl_60_m": -85,
+    "bias_used_m": 110.3,
+    "sog_gun_kn": 6.5,
+    "vmg_gun_kn": 1.5
+   },
+   {
+    "boat": "Baba",
+    "line_cog_m": 5.0,
+    "line_hdg_m": 4.9,
+    "line_time_s": 3.3,
+    "dtl_gun_m": -88.4,
+    "dtl_30_m": -79,
+    "dtl_60_m": -86,
+    "bias_used_m": 116.9,
+    "sog_gun_kn": 5.3,
+    "vmg_gun_kn": 1.2
+   },
+   {
+    "boat": "Vamos",
+    "line_cog_m": 2.0,
+    "line_hdg_m": 1.8,
+    "line_time_s": 0.7,
+    "dtl_gun_m": -97.2,
+    "dtl_30_m": -86,
+    "dtl_60_m": -87,
+    "bias_used_m": 104.5,
+    "sog_gun_kn": 6.8,
+    "vmg_gun_kn": 4.0
+   },
+   {
+    "boat": "Stampede",
+    "line_cog_m": 2.8,
+    "line_hdg_m": 3.3,
+    "line_time_s": 2.5,
+    "dtl_gun_m": -106.1,
+    "dtl_30_m": -93,
+    "dtl_60_m": -96,
+    "bias_used_m": 97.6,
+    "sog_gun_kn": 6.3,
+    "vmg_gun_kn": -0.7
+   },
+   {
+    "boat": "LetItBe",
+    "line_cog_m": -0.1,
+    "line_hdg_m": -0.3,
+    "line_time_s": 5.9,
+    "dtl_gun_m": -87.7,
+    "dtl_30_m": -102,
+    "dtl_60_m": -112,
+    "bias_used_m": 114.8,
+    "sog_gun_kn": 6.1,
+    "vmg_gun_kn": 3.7
+   },
+   {
+    "boat": "Noticia",
+    "line_cog_m": 4.8,
+    "line_hdg_m": 4.6,
+    "line_time_s": 3.3,
+    "dtl_gun_m": -178.3,
+    "dtl_30_m": -171,
+    "dtl_60_m": -178,
+    "bias_used_m": 27.3,
+    "sog_gun_kn": 4.6,
+    "vmg_gun_kn": 2.6
+   },
+   {
+    "boat": "Magatron",
+    "line_cog_m": 7.2,
+    "line_hdg_m": 6.8,
+    "line_time_s": 5.7,
+    "dtl_gun_m": -178.8,
+    "dtl_30_m": -177,
+    "dtl_60_m": -186,
+    "bias_used_m": 29.9,
+    "sog_gun_kn": 4.0,
+    "vmg_gun_kn": 1.7
+   },
+   {
+    "boat": "MooreDRV",
+    "line_cog_m": 17.3,
+    "line_hdg_m": 16.7,
+    "line_time_s": 9.6,
+    "dtl_gun_m": -160.5,
+    "dtl_30_m": -161,
+    "dtl_60_m": -189,
+    "bias_used_m": 59.4,
+    "sog_gun_kn": 4.9,
+    "vmg_gun_kn": 2.5
+   },
+   {
+    "boat": "VTarte",
+    "line_cog_m": 9.4,
+    "line_hdg_m": 8.8,
+    "line_time_s": 5.8,
+    "dtl_gun_m": -178.0,
+    "dtl_30_m": -183,
+    "dtl_60_m": -202,
+    "bias_used_m": 32.7,
+    "sog_gun_kn": 4.2,
+    "vmg_gun_kn": 1.9
+   },
+   {
+    "boat": "EuroVoiles",
+    "line_cog_m": 17.1,
+    "line_hdg_m": 17.3,
+    "line_time_s": 13.8,
+    "dtl_gun_m": -211.0,
+    "dtl_30_m": -221,
+    "dtl_60_m": -243,
+    "bias_used_m": 11.3,
+    "sog_gun_kn": 6.0,
+    "vmg_gun_kn": 6.0
+   }
+  ]
+ },
+ "captured": [
+  "wind_legs",
+  "line",
+  "start"
+ ],
+ "not_yet_captured": [
+  "1st upwind table",
+  "1st downwind table",
+  "mark roundings",
+  "gate",
+  "2nd upwind",
+  "2nd downwind"
+ ]
+}

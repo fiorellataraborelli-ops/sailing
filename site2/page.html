@@ -470,6 +470,27 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   .arcarrow{display:none;}
   .stack > .strip.on{display:grid;}
 }
+
+/* ---- the independent check: the event's report against what the model had already said ---- */
+.check{border-left:3px solid var(--green);}
+.checklabel{font:500 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;}
+.checkh{font:600 22px/1.25 var(--sans,inherit);letter-spacing:-.01em;margin:0 0 10px;}
+.checkh b{color:var(--green);}
+.checkwhy{font-size:13.5px;line-height:1.6;color:var(--body,var(--ink));margin:0 0 14px;}
+.checktbl{width:100%;border-collapse:collapse;min-width:520px;}
+.checktbl th{font:500 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:right;
+  padding:0 0 8px;border-bottom:1px solid var(--line);}
+.checktbl th:first-child{text-align:left;}
+.checktbl td{padding:8px 0;border-bottom:1px solid var(--line);text-align:right;font:500 13px var(--mono);font-variant-numeric:tabular-nums;}
+.checktbl td:first-child{text-align:left;font:500 13px var(--sans,inherit);color:var(--body,var(--ink));}
+.checktbl tr:last-child td{border-bottom:0;}
+.checktbl td.exact{color:var(--green);font-weight:600;}
+.checktbl td.ok{color:var(--muted);}
+@media (max-width:760px){
+  .checkh{font-size:20px;}
+  .checktbl{min-width:0;}
+  .checktbl th:nth-child(4),.checktbl td:nth-child(4){display:none;}
+}
 </style>
 
 <div class="shell">
@@ -498,6 +519,14 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
 </header>
 
 <div class="stack">
+
+  <section id="check" data-tab="team" class="rd-card check">
+    <div class="checklabel">Independent check</div>
+    <h2 class="checkh" id="check-h">&mdash;</h2>
+    <p class="checkwhy" id="check-why"></p>
+    <div class="scroller"><table class="checktbl" id="check-tbl"></table></div>
+    <p class="fine" id="check-note"></p>
+  </section>
 
   <section id="arc" data-tab="team" class="rd-card arc">
     <div class="arclabel" id="arc-label">&mdash;</div>
@@ -907,6 +936,37 @@ function seg(el, items, active, onPick){
    cannot outlive the result that earned it. A card only appears if its own test
    passes — a best race worth showing, a mark rounding inside the top ten, a leg
    the boat actually led. */
+
+
+/* ---------------- the independent check ---------------- */
+/* The event's per-race report, read in after the fact, against the figures the model had
+   already produced from the fleet's own logs. Every row is a pair from the payload; the
+   headline counts the exact matches. Nothing here is typed — a race with no report has
+   no card, and a report with a disagreement would show the disagreement. */
+function drawCheck(){
+  const V = D.validation || [];
+  if (!$('check-tbl') || !V.length){ if ($('check')) $('check').hidden = true; return; }
+  const v = V[V.length - 1];
+  const exact = v.rows.filter(r => r.exact), within = v.rows.filter(r => r.ok);
+  $('check-h').innerHTML =
+    `Race ${v.race}: the event's own report, published after the model — <b>${exact.length} of ${v.n} figures identical</b>, ` +
+    `${within.length} of ${v.n} within tolerance.`;
+  $('check-why').innerHTML =
+    `The model measured the wind from the fleet's own tack headings — the two close-hauled courses straddle the wind, ` +
+    `so their bisector is the wind — and the start line from the committee boat's own position rows in the Atlas logs, ` +
+    `with the bias referenced to the wind at the gun rather than the average over the beat. The event's analysis is ` +
+    `built independently, from its own tracking of ${v.boats_event} boats against the model's ${v.boats_model}. ` +
+    `Where the two agree to the degree and the metre, the method is doing what it claims.`;
+  $('check-tbl').innerHTML =
+    `<thead><tr><th>Figure</th><th>Event's report</th><th>Model, from the logs</th><th>Difference</th></tr></thead><tbody>` +
+    v.rows.map(r => `<tr><td>${esc(r.k)}</td><td>${esc(r.event)}</td>` +
+      `<td class="${r.exact ? 'exact' : r.ok ? 'ok' : ''}">${esc(r.model)}${r.exact ? ' ✓' : ''}</td><td>${esc(r.diff)}</td></tr>`).join('') +
+    `</tbody>`;
+  $('check-note').textContent =
+    `The model's figures predate the report; the report's are as published for race ${v.race} on ${v.date}. ` +
+    `Speed at the gun and time to the line use the event's start table and the model's own line crossing; ` +
+    `the two measure the moment slightly differently, so those rows are held to a tolerance, not to identity.`;
+}
 
 /* ---------------- the opener ---------------- */
 /* The regatta in one line: standing after each scoring cut, first to last, with the
@@ -2363,7 +2423,7 @@ function drawNav(){
 }
 
 function drawAll(){
-  drawArc(); drawOverview(); drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawEventLegs(); drawTracks(); drawManoeuvres(); drawFleet();
+  drawCheck(); drawArc(); drawOverview(); drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawEventLegs(); drawTracks(); drawManoeuvres(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
 drawAll(); drawChat(); drawNav(); initShell(); srInit();

@@ -63,8 +63,21 @@ WIND = {'1': [317, 323, 313, 317], '2': [314, 321, 313, 313],
         '5': [320, 329, 334, 334], '6': [352, 354, 349, 352],
         '7': [327, 331, 326, 333], '8': [326, 334, 324, 331],
         '9': [321, 326, 302, 318], '10': [309, 323, 312, 314]}
-WIND_SOURCE = {r: ('event report' if r in ('1', '2', '3', '4') else 'measured from the tracks')
-               for r in WIND}
+# What the tracks said, kept as measured even where the event has since published: the
+# comparison is the validation of the method, and the audit makes it on every build.
+MEASURED_WIND = {r: list(v) for r, v in WIND.items() if r not in ('1', '2', '3', '4')}
+# The event's per-race reports, where the team has been able to open one and read it
+# in (data/event/raceN_report.json). Its leg winds replace the measured ones, exactly
+# as races 1-4 have used the published figures from the start.
+import json as _json
+EVENT_REPORTS = {}
+for _p in glob.glob(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                 'data/event/race*_report.json')):
+    _r = _json.load(open(_p)); EVENT_REPORTS[str(_r['race'])] = _r
+for _r, _rep in EVENT_REPORTS.items():
+    _w = _rep['wind_legs']; WIND[_r] = [_w['uw1'], _w['dw1'], _w['uw2'], _w['dw2']]
+WIND_SOURCE = {r: ('event report' if r in ('1', '2', '3', '4') or r in EVENT_REPORTS
+                   else 'measured from the tracks') for r in WIND}
 WIND_BOATS = {'5': 20, '6': 20, '7': 26, '8': 22, '9': 15, '10': 14}   # logs each measured wind is a median of
 # The fleet's own disagreement on each measured leg, as the interquartile width in
 # degrees across the seventeen boats — min-to-max would report one bad boat rather

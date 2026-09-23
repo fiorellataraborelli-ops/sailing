@@ -154,6 +154,38 @@ def main():
     check('no derived row is shown as a source',
           all(r.get('source') == 'event report' for r in pr_rows))
 
+    # ---- 4b. against the event's own per-race reports ------------------------
+    # Where the team has opened a per-race report and read it in, the model's own
+    # measurements are held to it: the leg winds the tracks gave against the winds the
+    # event published, the line bias and length from the committee's own line rows
+    # against the event's figures, and Garm's start against the event's start table.
+    # This is the validation of the tack-bisector wind and of the gun-referenced bias,
+    # and it runs on every build for every report there is.
+    from tools.build_legs import MEASURED_WIND, EVENT_REPORTS
+    for rn, rep in sorted(EVENT_REPORTS.items(), key=lambda kv: int(kv[0])):
+        ev = [rep['wind_legs'][k] for k in ('uw1', 'dw1', 'uw2', 'dw2')]
+        me = MEASURED_WIND.get(rn)
+        if me:
+            diffs = [abs(((a - b + 180) % 360) - 180) for a, b in zip(me, ev)]
+            check(f'r{rn} measured leg winds within 5 deg of the event report',
+                  max(diffs) <= 5, f'measured {me}, event {ev}, worst {max(diffs)} deg')
+        row = next((r for r in D['ib']['races'] if str(r['n']) == rn), None)
+        check(f'r{rn} line row on the page is the event report', bool(row) and str(row.get('source', '')).startswith('the event'))
+        # our own geometry for this race, from the line rows the logs carry
+        mine = (D['ib'].get('our_lines') or {}).get(rn)
+        if mine:
+            check(f'r{rn} line length within 5 m of the event', abs(mine['line_m'] - rep['line']['line_m']) <= 5,
+                  f"ours {mine['line_m']} m, event {rep['line']['line_m']} m")
+            check(f'r{rn} bias at the gun within 5 m of the event', abs(mine['bias_m'] - rep['line']['bias_m']) <= 5,
+                  f"ours {mine['bias_m']} m ({mine['bias_deg']} deg), event {rep['line']['bias_m']} m ({rep['line']['bias_deg']} deg)")
+        g_ev = next((r for r in rep['start']['rows'] if r['boat'] == 'Garm'), None)
+        g_me = next((x for x in D['start']['races'].get(rn, []) if x['boat'] == TEAM), None)
+        if g_ev and g_me:
+            check(f'r{rn} Garm speed at the gun within 0.3 kn of the event', abs(g_me['sog'] - g_ev['sog_gun_kn']) <= 0.3,
+                  f"ours {g_me['sog']} kn, event {g_ev['sog_gun_kn']} kn")
+            check(f'r{rn} Garm time to the line within 2 s of the event', abs(g_me['late_s'] - g_ev['line_time_s']) <= 2,
+                  f"ours {g_me['late_s']} s, event {g_ev['line_time_s']} s")
+
     # ---- 5. against the log itself, re-read ----------------------------------
     from src.sailing_agents.vkx_parser import parse_file
     from src.sailing_agents import race_multi_leg as rml

@@ -7,6 +7,8 @@ same tokens, type and imagery, and driven by the real payload instead of the
 placeholder numbers the mockup shipped with. Images are inlined as data URIs so
 the page is one file with no external requests but the two Google fonts.
 """
+import sys
+import glob
 import statistics as st
 import json, os, base64, re, unicodedata as ud
 
@@ -27,8 +29,9 @@ DAY_NOTE = {
   '2026-09-11': 'Races 7 and 8. The widest telemetry of the regatta — 26 logs and 22 — with '
                 'the wind and the line measured from them rather than published.',
   '2026-09-12': 'Races 9 and 10, the closing day. Fifteen logs and fourteen — half the fleet '
-                'had packed up — but every one of them agrees on both guns, and the measured '
-                'wind holds to a few degrees across the boats on all but two legs.',
+                'had packed up — but every one of them agrees on both guns. Race 10 carries the '
+                'event\'s own published leg winds and line, which the tracks reproduce: both '
+                'beats exact, both runs within 4°, the line bias within a metre.',
 }
 fold = lambda s: ud.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower()
 
@@ -377,6 +380,45 @@ def main():
     t = D['official']['team']
     P = D['progress']
     bias = D['ib']['bias_rows'][0]
+    D['eventReports'] = {}
+    for fp in sorted(glob.glob(os.path.join(ROOT, 'data/event/race*_report.json'))):
+        rep = json.load(open(fp)); D['eventReports'][rep['race']] = rep
+    # ---- the opening card: the model held against the event's own report ----------
+    # Every row pairs a figure the event published for a race with the same figure the
+    # model had already produced from the fleet's logs, before the report was seen.
+    sys.path.insert(0, ROOT)
+    from tools.build_legs import MEASURED_WIND
+    validation = []
+    for rn, rep in sorted(D['eventReports'].items()):
+        rows, ours = [], (D['ib'].get('our_lines') or {}).get(str(rn), {})
+        me = MEASURED_WIND.get(str(rn))
+        for i, (k, lbl) in enumerate([('uw1', 'Wind, first beat'), ('dw1', 'Wind, first run'),
+                                       ('uw2', 'Wind, second beat'), ('dw2', 'Wind, second run')]):
+            if me:
+                d = abs(((me[i] - rep['wind_legs'][k] + 180) % 360) - 180)
+                rows.append({'k': lbl, 'event': f"{rep['wind_legs'][k]}°", 'model': f"{me[i]}°", 'diff': f"{d:.0f}°", 'ok': d <= 5, 'exact': d == 0})
+        if ours:
+            ln = rep['line']
+            rows.append({'k': 'Wind at the gun', 'event': f"{ln['setting']}°", 'model': f"{ours['gun_wind']}°",
+                         'diff': f"{abs(ours['gun_wind'] - ln['setting'])}°", 'ok': abs(ours['gun_wind'] - ln['setting']) <= 3,
+                         'exact': ours['gun_wind'] == ln['setting']})
+            rows.append({'k': 'Line bias at the gun', 'event': f"{ln['bias_deg']}° · {ln['bias_m']} m · {ln['favoured'].lower()}",
+                         'model': f"{ours['bias_deg']}° · {ours['bias_m']} m · {ours['favoured'].lower()}",
+                         'diff': f"{abs(ours['bias_m'] - ln['bias_m'])} m", 'ok': abs(ours['bias_m'] - ln['bias_m']) <= 5,
+                         'exact': ours['bias_m'] == ln['bias_m'] and ours['bias_deg'] == ln['bias_deg']})
+            rows.append({'k': 'Line length', 'event': f"{ln['line_m']} m", 'model': f"{ours['line_m']} m",
+                         'diff': f"{abs(ours['line_m'] - ln['line_m'])} m", 'ok': abs(ours['line_m'] - ln['line_m']) <= 5,
+                         'exact': ours['line_m'] == ln['line_m']})
+        g_ev = next((r for r in rep['start']['rows'] if r['boat'] == 'Garm'), None)
+        g_me = next((x for x in D['start']['races'].get(str(rn), []) if x['boat'] == 'Team Sweden'), None)
+        if g_ev and g_me:
+            rows.append({'k': 'Garm, speed at the gun', 'event': f"{g_ev['sog_gun_kn']} kn", 'model': f"{g_me['sog']} kn",
+                         'diff': f"{abs(g_me['sog'] - g_ev['sog_gun_kn']):.1f} kn", 'ok': abs(g_me['sog'] - g_ev['sog_gun_kn']) <= 0.3, 'exact': False})
+            rows.append({'k': 'Garm, time to the line', 'event': f"{g_ev['line_time_s']} s", 'model': f"{g_me['late_s']} s",
+                         'diff': f"{abs(g_me['late_s'] - g_ev['line_time_s']):.1f} s", 'ok': abs(g_me['late_s'] - g_ev['line_time_s']) <= 2, 'exact': False})
+        validation.append({'race': rn, 'date': rep['date'], 'rows': rows,
+                           'exact': sum(1 for r in rows if r['exact']), 'within': sum(1 for r in rows if r['ok']), 'n': len(rows),
+                           'boats_event': rep['start']['boats'], 'boats_model': len(D['start']['races'].get(str(rn), []))})
 
     # ---- what the analyser can be asked. Every number below is computed here from the
     # same payload the cards draw from, so an answer cannot drift from the page. ----
@@ -500,7 +542,10 @@ def main():
                         for n, r in sorted(gw.items()))
             + f". Race 5 is the case in point: <b>square at the gun ({r5['bias_deg']}°, {r5['bias_m']} m)</b>, then an "
             f"{r5['shift_deg']:+}° right shift during the beat that made the beat-average read a pin bias nobody on the line could have used. "
-            f"A right shift eats a pin bias; a left one compounds it. Races 1–4 use the event's published figures."},
+            f"A right shift eats a pin bias; a left one compounds it. "
+            + (f"The event's own race 10 report puts the line at {gw[10]['bias_deg']}° and {gw[10]['bias_m']} m with the wind set at "
+               f"{gw[10]['setting']}° — the figures the tracks had already given, within a metre. " if gw.get(10) and gw[10].get('source', '').startswith('the event') else '')
+            + f"Races 1–4 use the event's published figures."},
       {'label': 'Is "places gained" a fair measure?', 'k': ['gained', 'capture', 'gain', 'paradox', 'fair measure'],
        'q': 'Is "places gained" a fair measure?',
        'a': f"Not on its own. A boat rounding the top mark 67th has 66 places to win; one rounding 10th has nine. Measured as places won "
@@ -605,6 +650,8 @@ def main():
       'malfunction': D['official']['telemetry'].get('malfunction'),
       'tracks': D.get('tracks'),
       'eventLegs': D.get('eventLegs'),
+      'eventReports': {str(k): v for k, v in D.get('eventReports', {}).items()},
+      'validation': validation,
       'compare': build_compare(D),
       'qa': qa,
     }

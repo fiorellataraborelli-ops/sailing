@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-12T20:17:27Z",
+ "generated": "2026-09-23T15:14:33Z",
  "source": "Open-Meteo consensus: ICON-EU, ECMWF IFS 0.25, GFS",
  "position": {
   "lat": 38.68,
@@ -8,91 +8,5 @@
  "bias_deg": 16.1,
  "tack_deg": 80.5,
  "min_kn_for_bias": 8,
- "days": [
-  {
-   "date": "2026-09-12",
-   "rows": [
-    {
-     "hr": 11,
-     "raw": 138.4,
-     "cor": null,
-     "sp": 41.6,
-     "kn": 1.5,
-     "gust": 8.4,
-     "mslp": 1018.6,
-     "trust": false
-    },
-    {
-     "hr": 12,
-     "raw": 146.2,
-     "cor": null,
-     "sp": 53.8,
-     "kn": 1.9,
-     "gust": 10.1,
-     "mslp": 1018.6,
-     "trust": false
-    },
-    {
-     "hr": 13,
-     "raw": 179.3,
-     "cor": null,
-     "sp": 42.7,
-     "kn": 1.5,
-     "gust": 11.5,
-     "mslp": 1018.2,
-     "trust": false
-    },
-    {
-     "hr": 14,
-     "raw": 226.3,
-     "cor": null,
-     "sp": 46.3,
-     "kn": 2.0,
-     "gust": 11.7,
-     "mslp": 1017.7,
-     "trust": false
-    },
-    {
-     "hr": 15,
-     "raw": 272.3,
-     "cor": null,
-     "sp": 8.7,
-     "kn": 2.9,
-     "gust": 11.5,
-     "mslp": 1017.1,
-     "trust": false
-    },
-    {
-     "hr": 16,
-     "raw": 295.3,
-     "cor": null,
-     "sp": 14.3,
-     "kn": 3.7,
-     "gust": 11.9,
-     "mslp": 1016.4,
-     "trust": false
-    },
-    {
-     "hr": 17,
-     "raw": 314.0,
-     "cor": null,
-     "sp": 6.0,
-     "kn": 4.9,
-     "gust": 13.4,
-     "mslp": 1016.3,
-     "trust": false
-    },
-    {
-     "hr": 18,
-     "raw": 326.3,
-     "cor": null,
-     "sp": 2.7,
-     "kn": 6.4,
-     "gust": 15.9,
-     "mslp": 1016.3,
-     "trust": false
-    }
-   ]
-  }
- ]
+ "days": []
 }

@@ -80,7 +80,7 @@ def main():
         done = set()
         for s, e in rml.race_windows(log):
             rn = race_of(day, s)
-            if rn not in DERIVE or rn in done:
+            if rn is None or rn in done:
                 continue
             done.add(rn)
             ends = sl.line_at(log, s)
@@ -103,10 +103,39 @@ def main():
     DERIVED_NOTE = 'derived from the logs'
     D['ib']['races'] = [r for r in D['ib']['races']
                         if DERIVED_NOTE not in (r.get('source') or '')]
+    # published per-race reports the team has opened and read in: these rows are the
+    # event's own figures and take precedence over anything derived from the logs
+    from tools.build_legs import EVENT_REPORTS
+    D['ib']['races'] = [r for r in D['ib']['races'] if str(r['n']) not in EVENT_REPORTS]
+    for rn, rep in EVENT_REPORTS.items():
+        ln, wl = rep['line'], rep['wind_legs']
+        gun_hhmm = next(h for h, n in RACE_GUN[rep['date']].items() if n == rn)
+        D['ib']['races'].append({
+            'n': int(rn), 'date': rep['date'],
+            'start_local': f"{int(gun_hhmm[:2]) + LOCAL_OFFSET_H:02d}{gun_hhmm[2:]}", 'start_utc': gun_hhmm + ':00',
+            'setting': ln['setting'], 'square': None, 'bias_deg': ln['bias_deg'], 'bias_m': ln['bias_m'],
+            'favoured': ln['favoured'], 'line_m': ln['line_m'], 'calc_m': ln['bias_m'],
+            'gun_wind': ln['setting'], 'beat_wind': wl['uw1'],
+            'shift_deg': ((wl['uw1'] - ln['setting'] + 180) % 360) - 180,
+            'legs': dict(wl), 'top_vmg': [],
+            'source': "the event's per-race report",
+        })
+    # our own line geometry for every race the logs carry line rows for, kept beside
+    # the rows above whatever their source: where the event has published, this is
+    # what the audit and the opening card hold against it
+    D['ib']['our_lines'] = {}
+    for rn, v in sorted(per.items(), key=lambda kv: int(kv[0])):
+        line_m = round(st.median(v['len'])); brg = round(st.median(v['brg']), 1)
+        gw = GUN_WIND.get(rn, WIND[rn][0]); square = square_heading(brg, gw)
+        off = ((gw - square + 180) % 360) - 180
+        D['ib']['our_lines'][rn] = {'line_m': line_m, 'line_brg': brg, 'square': round(square),
+                                    'gun_wind': gw, 'bias_deg': abs(round(off)),
+                                    'bias_m': round(line_m * abs(math.sin(math.radians(off)))),
+                                    'favoured': 'Pin' if off < 0 else 'Boat', 'logs': len(v['len'])}
     existing = {r['n'] for r in D['ib']['races']}
     added = []
     for rn, v in sorted(per.items()):
-        if int(rn) in existing:
+        if int(rn) in existing or rn not in DERIVE:
             continue
         line_m = round(st.median(v['len']))
         brg = round(st.median(v['brg']), 1)
