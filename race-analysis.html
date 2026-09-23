@@ -433,24 +433,11 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
   .reveal,.heroin > *,.strip div{opacity:1!important;transform:none!important;}
   .hound img{opacity:.9!important;transform:none!important;}}
 
-/* ---- how each race unfolded: the mark-by-mark animation ---- */
-.pgnow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:4px 0 10px;}
-.pgbig{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
-.pgbig .pgrace{font:500 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
-  align-self:center;padding:3px 8px;border:1px solid var(--line);border-radius:3px;}
-.pgbig b{font:500 46px/1 var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.03em;color:var(--ink);}
-.pgbig span:last-child{font-size:13px;color:var(--muted);}
-.pgdelta{font:500 12.5px var(--mono);font-variant-numeric:tabular-nums;color:var(--muted);}
-.pgdelta.up{color:var(--green);} .pgdelta.down{color:var(--red,#B4531E);}
-.pgbtn{min-height:44px;padding:0 18px;font-weight:600;}
-.pgctl{margin-top:12px;}
 @media (max-width:760px){
   /* a race picker that scrolls off the edge hides the races it holds; wrap it, and
      make each pill a real thumb target */
   .seg{flex-wrap:wrap;}
   .seg button{min-height:40px;}
-  .pgbig b{font-size:56px;}
-  .pgbtn{flex:1 1 40%;}
   /* the tracks card, phone order: pick a race, read the line, press play, see the
      plot — and only then the wall of boat chips */
   #tracks{display:flex;flex-direction:column;}
@@ -521,28 +508,6 @@ footer{padding:8px 20px 0;text-align:center;font-size:11px;color:var(--faint);li
     </div>
     <svg id="arc-plot" viewBox="0 0 600 120" style="width:100%;height:auto;display:block" role="img"></svg>
     <div class="arcstats" id="arc-stats"></div>
-  </section>
-
-  <section id="progress" data-tab="team" class="rd-card">
-    <div class="cardhead">
-      <div class="title"><h2>How each race unfolded</h2></div>
-      <div class="seg" id="pg-races"></div>
-    </div>
-    <p class="lede">Where Garm lay at each mark of the course, against every boat the event could
-      place there. The thick line is Garm; the faint ones are the rest of the fleet. Play one race,
-      or all of them in a row.</p>
-    <div class="pgnow">
-      <div class="pgbig"><span class="pgrace" id="pg-race"></span><b class="tnum" id="pg-pos">&mdash;</b><span id="pg-ck"></span></div>
-      <div class="pgdelta" id="pg-delta"></div>
-    </div>
-    <svg id="pg-plot" viewBox="0 0 600 340" style="width:100%;height:auto;display:block;" role="img"></svg>
-    <div class="ctlrow pgctl">
-      <button class="btn pgbtn" id="pg-play" type="button">Play</button>
-      <button class="btn pgbtn" id="pg-all" type="button">Play all</button>
-      <input type="range" id="pg-scrub" min="0" max="100" value="100" step="1"
-             aria-label="Progress through the race" style="flex:1;min-width:120px;">
-    </div>
-    <p class="fine" id="pg-note"></p>
   </section>
 
   <section id="overview" data-tab="team" class="rd-card">
@@ -942,147 +907,6 @@ function seg(el, items, active, onPick){
    cannot outlive the result that earned it. A card only appears if its own test
    passes — a best race worth showing, a mark rounding inside the top ten, a leg
    the boat actually led. */
-
-/* ---------------- how each race unfolded ---------------- */
-/* The event's own estimate of where the boat lay at each course checkpoint — Garm
-   and every boat it could resolve — drawn as one line per boat from the first
-   windward mark to the finish and played through in about three seconds. Built for
-   a phone in the boat park: one race at a time, big controls, the current position
-   as a number you can read at arm's length. Nothing here is typed in; a race with
-   an unresolved checkpoint simply has no dot there and the line skips it. */
-let pgRace = null, pgT = 0, pgAnim = null, pgAll = false;
-const PG_CK = ['Windward 1', 'Leeward gate', 'Windward 2', 'Finish'];
-const PG_SHORT = ['W1', 'Gate', 'W2', 'Finish'];
-const pgRaces = () => Object.keys(D.progress.marks.team).sort((a, b) => a - b);
-const pgPts = arr => arr.map((p, i) => p == null ? null : [i, p]).filter(Boolean);
-
-function pgSeg(){
-  seg($('pg-races'), pgRaces().map(k => ({key: k, label: 'Race ' + k})), pgRace,
-      k => { pgAll = false; pgStop(); pgRace = k; pgT = 3; pgSeg(); pgCaption(); pgPaint(); });
-}
-
-function pgInterp(pts, t){
-  if (t <= pts[0][0]) return pts[0][1];
-  for (let i = 1; i < pts.length; i++){
-    const [xa, ya] = pts[i - 1], [xb, yb] = pts[i];
-    if (t <= xb) return ya + (yb - ya) * ((t - xa) / (xb - xa));
-  }
-  return pts[pts.length - 1][1];
-}
-
-function pgPaint(){
-  const M = D.progress.marks, team = M.team[pgRace] || [], fleet = M.fleet[pgRace] || [];
-  const W = 600, H = 340, L = 44, R = 22, T = 26, B = 40, N = D.progress.fleet || 100;
-  const px = i => L + i * (W - L - R) / 3;
-  const py = p => T + (p - 1) / (N - 1) * (H - T - B);
-  const pt = ([i, p]) => `${px(i).toFixed(1)},${py(p).toFixed(1)}`;
-  let s = '';
-  for (let i = 0; i < 4; i++)
-    s += `<line x1="${px(i)}" y1="${T}" x2="${px(i)}" y2="${H - B}" stroke="var(--line)" stroke-width="1"/>` +
-         `<text x="${px(i)}" y="${H - B + 18}" text-anchor="middle" font-family="var(--mono)" ` +
-         `font-size="11" fill="var(--muted)">${PG_SHORT[i]}</text>`;
-  for (const p of [1, 25, 50, 75, 100])
-    s += `<text x="${L - 8}" y="${py(p) + 4}" text-anchor="end" font-family="var(--mono)" ` +
-         `font-size="10" fill="var(--faint)">${p}</text>`;
-  // the fleet, faint: a boat draws only across checkpoints where it was resolved
-  for (const row of fleet){
-    if (row[0] === D.official.team.sail.replace(' ', '')) continue;
-    const pts = pgPts(row.slice(1));
-    if (pts.length >= 2)
-      s += `<polyline fill="none" stroke="var(--ink)" stroke-opacity=".09" stroke-width="1" points="${pts.map(pt).join(' ')}"/>`;
-  }
-  const pts = pgPts(team);
-  $('pg-race').textContent = 'Race ' + pgRace;
-  if (!pts.length){
-    $('pg-pos').textContent = '—'; $('pg-ck').textContent = 'not resolved'; $('pg-delta').textContent = '';
-    $('pg-plot').innerHTML = s; return;
-  }
-  const t0 = pts[0][0], t1 = pts[pts.length - 1][0];
-  const tx = Math.max(t0, Math.min(pgT, t1));         // where the head of the line is
-  const cur = pgInterp(pts, tx);
-  const drawn = pts.filter(([i]) => i <= tx + 1e-6);
-  if (drawn.length && drawn[drawn.length - 1][0] < tx - 1e-6) drawn.push([tx, cur]);
-  if (drawn.length >= 2)
-    s += `<polyline fill="none" stroke="var(--green)" stroke-width="3.5" stroke-linejoin="round" ` +
-         `stroke-linecap="round" points="${drawn.map(pt).join(' ')}"/>`;
-  for (const q of pts) if (q[0] <= tx + 1e-6)
-    s += `<circle cx="${px(q[0]).toFixed(1)}" cy="${py(q[1]).toFixed(1)}" r="5" fill="var(--card)" ` +
-         `stroke="var(--green)" stroke-width="2.5"/>`;
-  s += `<circle cx="${px(tx).toFixed(1)}" cy="${py(cur).toFixed(1)}" r="8" fill="var(--green)" stroke="#fff" stroke-width="2"/>`;
-  $('pg-plot').innerHTML = s;
-
-  const at = Math.round(cur), ck = Math.round(tx), onMark = Math.abs(tx - ck) < 0.03;
-  $('pg-pos').textContent = ord(at);
-  $('pg-ck').textContent = onMark ? (ck === 3 ? 'at the finish' : `at ${PG_CK[ck]}`)
-                                  : `between ${PG_SHORT[Math.floor(tx)]} and ${PG_SHORT[Math.ceil(tx)]}`;
-  const d = pts[0][1] - at;
-  $('pg-delta').textContent = tx <= t0 + 1e-6 ? `from ${PG_CK[t0]}`
-    : d > 0 ? `↑ ${d} place${d === 1 ? '' : 's'} since ${PG_CK[t0]}`
-    : d < 0 ? `↓ ${-d} place${d === -1 ? '' : 's'} since ${PG_CK[t0]}` : `level with ${PG_CK[t0]}`;
-  $('pg-delta').className = 'pgdelta ' + (d > 0 ? 'up' : d < 0 ? 'down' : '');
-  $('pg-scrub').value = String(Math.round(pgT / 3 * 100));
-  $('pg-plot').setAttribute('aria-label',
-    `Race ${pgRace}: Garm ${ord(at)} ${$('pg-ck').textContent}, against ${fleet.length} boats`);
-}
-
-function pgCaption(){
-  const M = D.progress.marks, team = M.team[pgRace] || [];
-  const times = (M.team_times || {})[pgRace] || [], rng = (M.team_range || {})[pgRace] || [];
-  const bits = [], gone = [];
-  team.forEach((p, i) => {
-    if (p == null){ gone.push(PG_CK[i]); return; }
-    const t = times[i] ? ` at ${times[i].slice(0, 5)}` : '';
-    const r = rng[i] ? ` (event range ${rng[i][0]}–${rng[i][1]})` : '';
-    bits.push(i === 3 ? `finished <b>${ord(p)}</b>` : `${PG_CK[i]} <b>~${ord(p)}</b>${t}${r}`);
-  });
-  $('pg-note').innerHTML = bits.join(' · ') +
-    (gone.length ? ` · ${gone.join(' and ')} not resolved by the event for Garm in this race.` : '.') +
-    ' Mark positions are the event’s own estimates from its tracking; the finish is the official result. Times are Lisbon.';
-}
-
-function pgStop(){
-  if (pgAnim) cancelAnimationFrame(pgAnim);
-  pgAnim = null;
-  $('pg-play').textContent = pgT >= 3 ? 'Replay' : 'Play';
-}
-
-function pgPlay(restart){
-  if (restart || pgT >= 3) pgT = 0;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches){
-    pgT = 3; pgPaint(); pgStop(); if (pgAll) pgNext(); return;
-  }
-  $('pg-play').textContent = 'Pause';
-  let last = performance.now();
-  const step = now => {
-    pgT = Math.min(3, pgT + (now - last) / 3200 * 3); last = now;   // one race in ~3.2 s
-    pgPaint();
-    if (pgT >= 3){ pgStop(); if (pgAll) pgNext(); return; }
-    pgAnim = requestAnimationFrame(step);
-  };
-  pgPaint(); pgAnim = requestAnimationFrame(step);
-}
-
-function pgNext(){
-  const ks = pgRaces(), i = ks.indexOf(pgRace);
-  if (i < 0 || i >= ks.length - 1){ pgAll = false; $('pg-all').textContent = 'Play all ' + ks.length; return; }
-  setTimeout(() => { if (!pgAll) return; pgRace = ks[i + 1]; pgSeg(); pgCaption(); pgPlay(true); }, 900);
-}
-
-function pgInit(){
-  if (!$('pg-plot') || !D.progress || !D.progress.marks) return;
-  const ks = pgRaces(); if (!ks.length) return;
-  pgRace = ks[ks.length - 1]; pgT = 3;                 // land on the latest race, finished
-  pgSeg(); pgCaption(); pgPaint();
-  $('pg-all').textContent = 'Play all ' + ks.length;
-  $('pg-play').onclick = () => { if (pgAnim){ pgAll = false; pgStop(); } else pgPlay(pgT >= 3); };
-  $('pg-all').onclick = () => {
-    if (pgAll){ pgAll = false; pgStop(); $('pg-all').textContent = 'Play all ' + ks.length; return; }
-    pgAll = true; $('pg-all').textContent = 'Stop';
-    pgRace = ks[0]; pgSeg(); pgCaption(); pgPlay(true);
-  };
-  $('pg-scrub').oninput = e => { pgAll = false; pgStop(); pgT = Number(e.target.value) / 100 * 3; pgPaint(); };
-}
-
 
 /* ---------------- the opener ---------------- */
 /* The regatta in one line: standing after each scoring cut, first to last, with the
@@ -2539,7 +2363,7 @@ function drawNav(){
 }
 
 function drawAll(){
-  drawArc(); drawOverview(); pgInit(); drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawEventLegs(); drawTracks(); drawManoeuvres(); drawFleet();
+  drawArc(); drawOverview(); drawSummary(); drawWind(); drawGap(); drawStart(); drawStartAnalysis(); drawCoachTest(); drawEventLegs(); drawTracks(); drawManoeuvres(); drawFleet();
   drawMan(); drawVmg(); drawCompare(); drawSeg(); drawKpi(); drawCoach();
 }
 drawAll(); drawChat(); drawNav(); initShell(); srInit();
